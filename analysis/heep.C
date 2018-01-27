@@ -4,6 +4,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
+
 void heep::Loop()
 {
 //   In a ROOT session, you can do:
@@ -38,17 +39,29 @@ void heep::Loop()
    Double_t MD = 1.87561; //GeV
    Double_t MN = 0.939566; //GeV
 
-   TString simc_filename = "weighted_simc.root";
+   TString *ofile_name = new TString("weighted_simc");
+   //ofile_name->Append(ofile);
+   
+   
 
-   TFile *outfile = new TFile(simc_filename);
+   //create output root file
+   TFile *outfile = new TFile(ofile_name->Data(), "recreate");
    
    Long64_t nentries = fChain->GetEntriesFast();
 
    Long64_t nbytes = 0, nb = 0;
+
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
+
+
+      //ANALYSIS OF EVENT-BY-EVENT GOES HERE!!!!!!
+
+
       // if (Cut(ientry) < 0) continue;
    }
+
+   outfile->Write();
 }
