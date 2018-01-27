@@ -18,7 +18,7 @@ class heep {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
-
+   TString         ifilename;
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
@@ -163,6 +163,7 @@ public :
    TBranch        *b_h_Thf;   //!
    TBranch        *b_Ein_v;   //!
 
+   //Constructor/Destructor
    heep(TTree *tree=0);
    virtual ~heep();
    virtual Int_t    Cut(Long64_t entry);
@@ -177,21 +178,23 @@ public :
 #endif
 
 #ifdef heep_cxx
-heep::heep(TTree *tree) : fChain(0) 
+heep::heep(TTree *tree) : fChain(0)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
-   if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("ep_coin_th_27.5_pcen3.609.rad.root");
+  /*
+  if (tree == 0) {
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("");
       if (!f || !f->IsOpen()) {
-         f = new TFile("ep_coin_th_27.5_pcen3.609.rad.root");
+         f = new TFile("");
       }
       f->GetObject("SNT",tree);
 
    }
    Init(tree);
+  */
 }
-
+  
 heep::~heep()
 {
    if (!fChain) return;
