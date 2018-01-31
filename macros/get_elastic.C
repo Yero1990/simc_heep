@@ -1,8 +1,7 @@
-//Calculate H(e,e'p) Elastics Kinematics for Hall C Commissioning Experiment: E12-10-003 Calibration Run
-
-
-void get_H_elastic_kinematics() 
+void get_elastic(TString target, Double_t Ebeam, Double_t theta_elec)
 {
+
+
   double rad2deg = 180./3.14159265359;
   
   //units: energy: GeV, angle: degree,  set speed of light c = 1.  
@@ -35,18 +34,21 @@ void get_H_elastic_kinematics()
   double m_targ;
   double x_bj;               //B-jorken scale
   
-  //Define Particle Masses
+  //Define Particle Masses in GeV/c2
   m_p = 0.938272;
   m_n = 0.939565;
   m_d = 1.875612;
   m_e = 0.000511;
-  m_c = 11.17793184;
-  m_targ = m_p;
-  //Set Beam Energy and electron scattering angle (FIXED! -- We want to keep SHMS fixed for E12-10-003) 
-  E_beam = 10.6;
-  theta_e =  12.1688;
-    
-  TString ofile = "elastics_kin.dat";
+  m_c = 11.187898;
+ 
+  
+  if(target=="hydrogen") {m_targ = m_p;}
+  else if(target=="carbon") {m_targ = m_c;}
+
+  E_beam = Ebeam;
+  theta_e = theta_elec;
+
+TString ofile = target+"_elastics_kin.dat";
   ofstream ofs;
   ofs.open(ofile);
 
@@ -68,9 +70,33 @@ void get_H_elastic_kinematics()
   p_p = sqrt(pow(E_p,2) - pow(m_targ,2));
   
   theta_p = asin( kf * sin(theta_e/rad2deg) / p_p )  ;
-  
-      
 
+
+  //Cout results to screen
+  cout << "*****" << target + "Elastics ! ***** " << endl;
+  cout << "*************************" << endl;
+  cout << " Electron Kinematics " << endl;
+  cout << "*************************" << endl;
+  cout << "Beam Energy: " << E_beam << " GeV" << endl;
+  cout << "e- Scattered Energy = " << E_ep << " GeV" << endl;
+  cout << "e- Scattered Angle = " << theta_e << " deg " << endl;
+  cout << "Energy Transfer (E-E') = " << w  << " GeV" << endl;		 
+  cout << "Q2 = " << Q2 << " GeV2" << endl;		 
+  cout << "B-jorken X = " << x_bj << endl; 
+  cout << "Beam Momentum = " << ki << " GeV/c" << endl;		 
+  cout << "e-Scattered Momentum = " << kf << " GeV/c" << endl;		 
+  cout << "*************************" << endl;
+  cout << " \n";
+  cout << "*************************" << endl;
+  cout << " Proton Kinematics " << endl;
+  cout << "*************************" << endl;
+  cout << "p-Scattered Energy = " << E_p << " GeV" << endl;		 
+  cout << "p-Scattered Momentum = " << p_p << " GeV/c" << endl;		 
+  cout << "p-Scattered Angle = " << theta_p *rad2deg<< " deg " << endl;
+  cout << "*************************q" << endl;
+
+  //Write results to a file
+  ofs << "*****" << target + "Elastics ! ***** " << endl;
   ofs << "*************************" << endl;
   ofs << " Electron Kinematics " << endl;
   ofs << "*************************" << endl;
@@ -91,14 +117,8 @@ void get_H_elastic_kinematics()
   ofs << "p-Scattered Momentum = " << p_p << " GeV/c" << endl;		 
   ofs << "p-Scattered Angle = " << theta_p *rad2deg<< " deg " << endl;
   ofs << "*************************q" << endl;
-    
-			 
-			 //ofstream ofs;
-			 //TString my_file = "h_elastic_kinematics.dat"; 
-			 //ofs.open(my_file);     
 
- 
-	
+  
+  
+  
 }
-
-

@@ -18,7 +18,6 @@ class heep {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
-   TString         ifilename;
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
@@ -182,17 +181,23 @@ heep::heep(TTree *tree) : fChain(0)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
-  /*
+  
   if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("");
+
+    string simc_file;   //added
+    TString f0 = "../worksim/simc_ROOTfiles_list.data";
+    ifstream  infile(f0);
+    infile >> simc_file;
+    string simc_file_path = "../worksim/"+simc_file;
+    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(simc_file_path.c_str());
       if (!f || !f->IsOpen()) {
-         f = new TFile("");
+         f = new TFile(simc_file_path.c_str());
       }
       f->GetObject("SNT",tree);
 
    }
    Init(tree);
-  */
+  
 }
   
 heep::~heep()
