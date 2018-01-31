@@ -1,6 +1,7 @@
-#define  heep_cxx
+#include "TROOT.h"
+#include <TChain.h>
 #include "heep.h"
-#include <iostream>
+#include <fstream>
 
 // run an analysis based on SNT.C the analyysis script for the simc n-tuple
 //
@@ -8,20 +9,36 @@
 
 void analyze()
 {
-  //gROOT->Reset();
 
-  //gROOT->ProcessLine(".L heep.C");
-  gROOT->LoadMacro("heep.C");
+
+  //TFile *f = new TFile("weighted_simc_ep_coin_simc_1929.root");
+
+  //TTree *SNT = (TTree*)f->Get("SNT");
+      
+  gROOT->Reset();
+
+  // gROOT->ProcessLine("heep.C");
+
+  gROOT->LoadMacro("heep.C+");
 
 
   TChain *chain = new TChain("SNT");
-  chain->Add("ep_coin_Eb6.4_earm_27.5_rad.root");
 
-  heep simc;
+  heep* simc = new heep(chain);
+  
+
+  //chain->Add("ep_coin_Eb6.4_earm_27.5_rad.root");
+
+  /*
+
+  cout << chain << endl;
+  gROOT->ProcessLine("heep simc(chain)");
+
+  
   
   //heep simc;
   //simc.Loop("ep_coin_Eb6.4_earm_27.5_rad.root");
-  
+  */
   // create a chain of output files
   /*
   TString datadir = "../worksim/";

@@ -1,4 +1,4 @@
-! Simulation for coin. H(e,e'p) runs 1893-1901, January 2018, Hall c
+! Simulation for coin. H(e,e'p) runs 1854, January 2018, Hall c
 ! of radiative corrections
 !
 ! kinematics from mceep input q3_d20_mp.inp
@@ -22,12 +22,12 @@
  &KINEMATICS_MAIN
      Ebeam  =  6405.0                       !  (MeV)
      dEbeam  =  0.05                                   !  beam energy variation (%)
-     electron_arm  =  1                                !  1=hms,2=sos,3=hrsr,4=hrsl,5 = shms
-     hadron_arm  =  5                                  !  1=hms,2=sos,3=hrsr,4=hrsl,5 = shms
-     spec%e%P  =   2869.                    !  e arm central momentum (MeV/c)
-     spec%e%theta  =   35                !  e arm angle setting (degrees)
-     spec%p%P  =     4314.3                !  p arm central momentum (MeV/c)
-     spec%p%theta  =     22.04                !  p arm angle setting (degrees)
+     electron_arm  =  5                                !  1=hms,2=sos,3=hrsr,4=hrsl,5 = shms
+     hadron_arm  =  1                                  !  1=hms,2=sos,3=hrsr,4=hrsl,5 = shms
+     spec%e%P  =   3554.865                    !  e arm central momentum (MeV/c)
+     spec%e%theta  =   27.6                !  e arm angle setting (degrees)
+     spec%p%P  =     3609.0                !  p arm central momentum (MeV/c)
+     spec%p%theta  =     27.5                !  p arm angle setting (degrees)
 / 
 
  ?=
@@ -54,7 +54,7 @@
 
  &E_ARM_ACCEPT
      SPedge%e%delta%min  =   -15.0	!  delta min (SPECTROMETER ACCEPTANC
-     SPedge%e%delta%max  =   15.0	!  delta max
+     SPedge%e%delta%max  =   25.0	!  delta max
      SPedge%e%yptar%min  =   -90.0	!  yptar min = {TF} / 1000 (mrad)
      SPedge%e%yptar%max  =   90.0	!  yptar max = {TF} / 1000
      SPedge%e%xptar%min  =   -100.0	!  xptar min = {TF} / 1000 (mrad)
@@ -63,7 +63,7 @@
 
  &P_ARM_ACCEPT
      SPedge%p%delta%min  =   -15.0	!  delta min (SPECTROMETER ACCEPTANC
-     SPedge%p%delta%max  =   25.0	!  delta max
+     SPedge%p%delta%max  =   15.0	!  delta max
      SPedge%p%yptar%min  =   -90.0	!  yptar min = {TF} / 1000 (mrad)
      SPedge%p%yptar%max  =   90.0	!  yptar max = {TF} / 1000
      SPedge%p%xptar%min  =   -100.0	!  xptar min = {TF} / 1000 (mrad)

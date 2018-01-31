@@ -44,7 +44,7 @@
      cuts%Em%min  =  0.	        !  (Em.min=Em.max=0.0 gives wide open cuts)
      cuts%Em%max  =  200.	!  Must be wider than cuts in analysis(elastic or e,e'p)
      using_Eloss  =  T	        !  (ONE = TRUE)
-     correct_Eloss  = T	        !  ONE = correct reconstructed events for eloss.
+     correct_Eloss  = F	        !  ONE = correct reconstructed events for eloss.
      correct_raster  =  T	!  ONE = Reconstruct events using 'raster' matrix elements.
      mc_smear  =  T		!  ONE = target & hut mult scatt AND DC smearing.
      deForest_flag  =  0	!  0=sigcc1, 1=sigcc2, -1=sigcc1 ONSHELL

@@ -1,4 +1,6 @@
+
 void get_normfac(string ifile);
+
 
 void run_simc_h2()
 {
@@ -11,7 +13,9 @@ void run_simc_h2()
   //********** read input kinematics data file *************
 
   ifstream ikin;
+  ofstream ofile;
   string ikin_file = "input_kinematics.data";
+  string simc_file = "simc_ROOTfiles_list.data";
   string line;
 
   vector <string> ikin_vec;
@@ -47,20 +51,21 @@ void run_simc_h2()
 
   //************************************************************
 
-
+  string CMD; // string command to be used as terminal commands
   //Loop over each kinematic input file
     for (int i = 0; i<ikin_vec.size(); i++)
       {
 	string input_path = INDIR+ikin_vec[i];
 	string ikin_file = ikin_vec[i];
 
-	cout << input_path << endl;
+	cout << "removing ./infiles/current.data . . . " << endl;
+
+	gSystem->Exec("rm ./infiles/current.data"); 
 	
+	cout << "copy: " << input_path.c_str() << " to ./infiles/current.data " << endl; 
 	//copy input file name to current.data
-	gSystem->CopyFile(input_path.c_str(), "./current.data"); 
-		
-	gSystem->Exec("mv ./current.data ./infiles");
-	
+	gSystem->CopyFile(input_path.c_str(), "./infiles/current.data"); 
+
 	//Run SIMC  
 	gSystem->Exec("./run_simc.sh current.data");
 	
@@ -72,25 +77,29 @@ void run_simc_h2()
 	    
 
 	//replace '.data' with '.root' in file name
-	size_t pos = ikin_file.find( "data" );
-
-	if ( pos != string::npos )
-	  {
-	    ikin_file.replace( pos, 5, "root" );   // 5 = length( $name )
-	  }
+	//	cout << ikin_file << endl;
+	size_t pos = ikin_file.find("data");
 	
 	
+	ikin_file.replace(pos, std::string("data").length(), "root");   // 5 = length( $name )
+	 
+       
 	string oldname = WORKSIM + "simc.root";
 	string newname = WORKSIM + ikin_file;
 
 	//define command to change file name 
-	string CMD = "mv " + oldname + " " + newname;
-
+	CMD = "mv " + oldname + " " + newname;
+       
 	//Execute command to change root file name
 	gSystem->Exec(CMD.c_str());
-
+	
+	ofile.open("./worksim/"+simc_file);
+	ofile << ikin_file << endl;;
+	ofile.close();
+	
 	//EXIT ROOT
 	gSystem->Exit(kTRUE);
+	
 	
       }
     
