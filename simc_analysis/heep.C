@@ -129,12 +129,12 @@ void heep::Loop()
    //Q_bcm2 = 211696.549;
 
    //Total charge given by BCM1/2 on run 1871
-   Q_bcm1 = 40054.171;
-   Q_bcm2 = 40694.697;
+  // Q_bcm1 = 40054.171;
+  // Q_bcm2 = 40694.697;
 
    //Total charge given by BCMs on run 1929
-   // Q_bcm1 = 161934.203;
-   //Q_bcm2 = 164491.161;
+    Q_bcm1 = 161934.203;
+    Q_bcm2 = 164491.161;
    
    Double_t Q_avg = (Q_bcm1 + Q_bcm2) / 2.;
    Double_t charge_factor = Q_avg / 1000.;   //in mC
@@ -160,11 +160,11 @@ void heep::Loop()
       //can be compare to actual data
       FullWeight = Normfac*Weight*charge_factor/nentries;
 
-      cout << "Normfac: " << Normfac << endl;
-      cout << "Weight: " << Weight << endl;
-      cout << "charge: " << charge_factor << endl;
-      cout << "nentries: " << nentries << endl;
-      cout << "FullWeght: " << FullWeight << endl;
+   //   cout << "Normfac: " << Normfac << endl;
+   //   cout << "Weight: " << Weight << endl;
+   //   cout << "charge: " << charge_factor << endl;
+   //   cout << "nentries: " << nentries << endl;
+   //   cout << "FullWeght: " << FullWeight << endl;
 
 
       //ANALYSIS OF EVENT-BY-EVENT GOES HERE!!!!!!
