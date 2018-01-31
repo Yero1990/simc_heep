@@ -6,16 +6,16 @@ int setup_simc()
   
   
   //Adjust directories to your needs
-  TString SIMCDIR = "~/HallC/deut_simc/";
+  TString SIMCDIR = "../deut_simc/";
   
   //setup symbolic links to SIMC directory
-  TString link_simc = "ln -s " + SIMCDIR+"simc";
-  TString link_hms = "ln -s " + SIMCDIR+"hms";
-  TString link_shms = "ln -s " + SIMCDIR+"shms";
-  TString link_fmake_tree = "ln -s " + SIMCDIR+"root/fmake_tree";
-  TString link_h2theory = "ln -s " + SIMCDIR+"h2.theory";
-  TString link_runsimc = "ln -s " + SIMCDIR+"run_simc.sh";
-  TString link_nml_data = "ln -s " + SIMCDIR+"nml_default.data";
+  TString link_simc = "ln -sf " + SIMCDIR+"simc";
+  TString link_hms = "ln -sf " + SIMCDIR+"hms";
+  TString link_shms = "ln -sf " + SIMCDIR+"shms";
+  TString link_fmake_tree = "ln -sf " + SIMCDIR+"root/fmake_tree";
+  TString link_h2theory = "ln -sf " + SIMCDIR+"h2.theory";
+  TString link_runsimc = "ln -sf " + SIMCDIR+"run_simc.sh";
+  TString link_nml_data = "ln -sf " + SIMCDIR+"nml_default.data";
   
   system(link_simc);
   system(link_hms);

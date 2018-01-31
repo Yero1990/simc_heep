@@ -7,7 +7,8 @@ void heep_data_analysis()
   TString file_name = "coin_replay_production_1929_-1.root";
     
   //Open data ROOTfile and call TTree
-  TFile *data_file = new TFile("../../hallc_replay/ROOTfiles/coin_replay_production_1929_-1.root", "READ");
+//  TFile *data_file = new TFile("../../hallc_replay/ROOTfiles/coin_replay_production_1929_-1.root", "READ");
+    TFile *data_file = new TFile("../ROOTfiles/coin_replay_production_1929_-1.root", "READ");
 
   TTree *T = (TTree*)data_file->Get("T");
 
@@ -87,8 +88,8 @@ void heep_data_analysis()
 
    //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta), theta: xptar, phi:yptar
    T->Draw("P.gtr.y>>data_hytar");
-   T->Draw("P.tr.th>>data_hxptar");
-   T->Draw("P.tr.ph>>data_hyptar");
+   T->Draw("P.gtr.th>>data_hxptar");
+   T->Draw("P.gtr.ph>>data_hyptar");
    T->Draw("P.gtr.dp>>data_hdelta");
 
    //Hadron arm Focal Plane Quantities
@@ -98,9 +99,9 @@ void heep_data_analysis()
    T->Draw("P.dc.yp_fp>>data_hypfp");
    
    //Electron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta), theta: xptar, phi:yptar
-   T->Draw("H.tr.y>>data_eytar");
-   T->Draw("H.tr.th>>data_exptar");
-   T->Draw("H.tr.ph>>data_eyptar"); 
+   T->Draw("H.gtr.y>>data_eytar");
+   T->Draw("H.gtr.th>>data_exptar");
+   T->Draw("H.gtr.ph>>data_eyptar"); 
    T->Draw("H.gtr.dp>>data_edelta");
 
    //Electron arm Focal Plane Quantities
