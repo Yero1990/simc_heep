@@ -1,17 +1,17 @@
 //Analysis for HMS/SHMS coincidence H(e,e'p)
 
 
-#define heep_cxx
-#include "heep.h"
+#define singles_cxx
+#include "singles.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void heep::Loop()
+void singles::Loop()
 {
 //   In a ROOT session, you can do:
-//      root> .L heep.C
-//      root> heep t
+//      root> .L singles.C
+//      root> singles t
 //      root> t.GetEntry(12); // Fill t data members with entry number 12
 //      root> t.Show();       // Show values of entry 12
 //      root> t.Show(16);     // Read and show values of entry 16
@@ -58,7 +58,7 @@ void heep::Loop()
    Double_t MD = 1.87561; //GeV
    Double_t MN = 0.939566; //GeV
 
-   TString ofile_name("weighted_simc_");
+   TString ofile_name("UNweighted_simc_");
    ofile_name.Append(simc_file);
    
    //create output root file
@@ -72,9 +72,9 @@ void heep::Loop()
    //Kinematics Quantities
    TH1F *Emiss = new TH1F("Emiss","missing energy", bins, -0.5, 0.8);  //binwidth = 0.0025
    TH1F *pm = new TH1F("pm","missing momentum", bins, -0.5, 1.6);
-   TH1F *Q_2 = new TH1F("Q_2","Q2", 100, 6., 14.);
-   TH1F *omega = new TH1F("omega","Energy Transfer, #omega", bins, 0., 8.);
-   TH1F *W_inv = new TH1F("W_inv", "Invariant Mass, W", bins, 0.6, 1.8);
+   TH1F *Q_2 = new TH1F("Q_2","Q2", 100, 0., 10.);
+   TH1F *omega = new TH1F("omega","Energy Transfer, #omega", bins, 0., 6.5);
+   TH1F *W_inv = new TH1F("W_inv", "Invariant Mass, W", bins, 0.6, 1.3);
    TH1F *theta_elec = new TH1F("theta_elec", "Electron Scatt. Angle", 100, 0.3, 0.45);
    TH1F *theta_prot = new TH1F("theta_prot", "Proton Scatt. Angle", 100, 0.5, 0.65);
 
@@ -100,12 +100,12 @@ void heep::Loop()
    TH1F *eytar = new TH1F("eytar", electron_arm + " Y_{tar}", bins, -4., 4.);
    TH1F *exptar = new TH1F("exptar", electron_arm + " X'_{tar}", bins, -0.08, 0.08);
    TH1F *eyptar = new TH1F("eyptar", electron_arm + " Y'_{tar}", bins, -0.04, 0.04);
-   TH1F *edelta = new TH1F("edelta", electron_arm + " Momentum Acceptance, #delta", bins, -15., 15. );
+   TH1F *edelta = new TH1F("edelta", electron_arm + " Momentum Acceptance, #delta", bins, -40., 40. );
 
    //Electron Arm Focal Plane Quantities
-   TH1F *exfp = new TH1F("exfp", electron_arm + " X_{fp}", bins, -60., 30.);
-   TH1F *eyfp = new TH1F("eyfp", electron_arm + " Y_{fp}", bins, -20., 30.);
-   TH1F *expfp = new TH1F("expfp", electron_arm + " X'_{fp}", bins, -0.1, 0.06);
+   TH1F *exfp = new TH1F("exfp", electron_arm + " X_{fp}", bins, -40., 40.);
+   TH1F *eyfp = new TH1F("eyfp", electron_arm + " Y_{fp}", bins, -40., 40.);
+   TH1F *expfp = new TH1F("expfp", electron_arm + " X'_{fp}", bins, -0.1, 0.1);
    TH1F *eypfp = new TH1F("eypfp", electron_arm + " Y'_{fp}", bins, -0.04, 0.04);
 
 
@@ -114,49 +114,8 @@ void heep::Loop()
    TH2F *h_xfp_vs_yfp = new TH2F("h_xfp_vs_yfp", "X_{fp} vs Y_{fp}", bins, -50., 20., bins, -10., 20.);
    
    
-   /************Define Histos to APPLY CUTS*********************************/
- 
-     //Kinematics Quantities
-   TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", bins, -0.5, 0.8);  //binwidth = 0.0025
-   TH1F *cut_pm = new TH1F("cut_pm","missing momentum", bins, -0.5, 1.6);
-   TH1F *cut_Q_2 = new TH1F("cut_Q_2","Q2", 100, 6., 14.);
-   TH1F *cut_omega = new TH1F("cut_omega","Energy Transfer, #omega", bins, 0., 8.);
-   TH1F *cut_W_inv = new TH1F("cut_W_inv", "Invariant Mass, W", bins, 0.6, 1.8);
-   TH1F *cut_theta_elec = new TH1F("cut_theta_elec", "Electron Scatt. Angle", 100, 0.3, 0.45);
-   TH1F *cut_theta_prot = new TH1F("cut_theta_prot", "Proton Scatt. Angle", 100, 0.5, 0.65);
-
-   //Target Reconstruction Variables
-   TH1F *cut_x_tar = new TH1F("cut_x_tar", "x_Target", bins, -0.25, 0.25);
-   TH1F *cut_y_tar = new TH1F("cut_y_tar", "y_Target", bins, -0.25, 0.25);
-   TH1F *cut_z_tar = new TH1F("cut_z_tar", "z_Target", bins, -5.5, 5.5);
+   /*********************************************/
    
-   //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
-   TH1F *cut_hytar = new TH1F("cut_hytar", hadron_arm + " Y_{tar}", bins, -4., 4.);
-   TH1F *cut_hxptar = new TH1F("cut_hxptar", hadron_arm + " X'_{tar}", bins, -0.08, 0.08 );
-   TH1F *cut_hyptar = new TH1F("cut_hyptar", hadron_arm + " Y'_{tar}", bins, -0.04, 0.04 );
-   TH1F *cut_hdelta = new TH1F("cut_hdelta", hadron_arm + " Momentum Acceptance, #delta", bins, -10., 10. );
-
-   //Hadron arm Focal Plane Quantities
-   TH1F *cut_hxfp = new TH1F("cut_hxfp", hadron_arm + " X_{fp}", bins, -30., 20.);
-   TH1F *cut_hyfp = new TH1F("cut_hyfp", hadron_arm + " Y_{fp}", bins, -15., 10.);
-   TH1F *cut_hxpfp = new TH1F("cut_hxpfp", hadron_arm + " X'_{fp}", bins, -0.06, 0.06 );
-   TH1F *cut_hypfp = new TH1F("cut_hypfp", hadron_arm + " Y'_{fp}", bins, -0.03, 0.02);
-
-      
-   //Electron Arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
-   TH1F *cut_eytar = new TH1F("cut_eytar", electron_arm + " Y_{tar}", bins, -4., 4.);
-   TH1F *cut_exptar = new TH1F("cut_exptar", electron_arm + " X'_{tar}", bins, -0.08, 0.08);
-   TH1F *cut_eyptar = new TH1F("cut_eyptar", electron_arm + " Y'_{tar}", bins, -0.04, 0.04);
-   TH1F *cut_edelta = new TH1F("cut_edelta", electron_arm + " Momentum Acceptance, #delta", bins, -15., 15. );
-
-   //Electron Arm Focal Plane Quantities
-   TH1F *cut_exfp = new TH1F("cut_exfp", electron_arm + " X_{fp}", bins, -60., 30.);
-   TH1F *cut_eyfp = new TH1F("cut_eyfp", electron_arm + " Y_{fp}", bins, -20., 30.);
-   TH1F *cut_expfp = new TH1F("cut_expfp", electron_arm + " X'_{fp}", bins, -0.1, 0.06);
-   TH1F *cut_eypfp = new TH1F("cut_eypfp", electron_arm + " Y'_{fp}", bins, -0.04, 0.04);
-
-
-
 
    //Determine the charge factor:
    //definition: total charge deposited on target over a time period
@@ -184,9 +143,9 @@ void heep::Loop()
   // Q_bcm1 = 40054.171;
   // Q_bcm2 = 40694.697;
 
-   //Total charge given by BCMs on run 2279
-   Q_bcm1 = 165921.873*0.67*0.95*0.95;       //take into account tracking efficiencies, and beam_on time
-   Q_bcm2 = 168627.503*0.67*0.95*0.95;
+   //Total charge given by BCMs on run 2261
+   Q_bcm1 = 23617.797;
+   Q_bcm2 = 23974.405;
 
    Double_t Q_avg = (Q_bcm1 + Q_bcm2) / 2.;
    Double_t charge_factor = Q_avg / 1000.;   //in mC
@@ -210,7 +169,7 @@ void heep::Loop()
       
       //The events must be weighted properly, so that they represent true Yield, and
       //can be compare to actual data
-      FullWeight = Normfac*Weight*charge_factor/nentries;
+      FullWeight = 1.;//Normfac*Weight*charge_factor/nentries;
 
    //   cout << "Normfac: " << Normfac << endl;
    //   cout << "Weight: " << Weight << endl;
@@ -220,50 +179,6 @@ void heep::Loop()
 
 
       //ANALYSIS OF EVENT-BY-EVENT GOES HERE!!!!!!
-      
-      //APPLY CUTS
-      if (W < 1.080)
-	{
-	  //Kinematics
-      cut_Emiss->Fill(Em, FullWeight);
-      cut_pm->Fill(Pm, FullWeight);
-      cut_Q_2->Fill(Q2, FullWeight);
-      cut_omega->Fill(nu, FullWeight);
-      cut_W_inv->Fill(W, FullWeight);
-      cut_theta_elec->Fill(theta_e, FullWeight);
-      cut_theta_prot->Fill(theta_p, FullWeight);
-      
-      //Reconstructed Target Quantities (Lab Frame)
-      cut_x_tar->Fill(tar_x, FullWeight);
-      cut_y_tar->Fill(tar_y, FullWeight);
-      cut_z_tar->Fill(tar_z, FullWeight);
-
-      
-      //Hadron-Arm Target Reconstruction 
-      cut_hytar->Fill(h_ytar, FullWeight);
-      cut_hxptar->Fill(h_xptar, FullWeight);
-      cut_hyptar->Fill(h_yptar, FullWeight);
-      cut_hdelta->Fill(h_delta, FullWeight);
-      
-      //Hadron-Arm Focal Plane
-      cut_hxfp->Fill(h_xfp, FullWeight);
-      cut_hyfp->Fill(h_yfp, FullWeight);
-      cut_hxpfp->Fill(h_xpfp, FullWeight);
-      cut_hypfp->Fill(h_ypfp, FullWeight);
-      
-      //Electron-Arm Target Reconstruction
-      cut_eytar->Fill(e_ytar, FullWeight);
-      cut_exptar->Fill(e_xptar, FullWeight);
-      cut_eyptar->Fill(e_yptar, FullWeight);
-      cut_edelta->Fill(e_delta, FullWeight);
-      
-      //Electron-Arm Focal Plane
-      cut_exfp->Fill(e_xfp, FullWeight);
-      cut_eyfp->Fill(e_yfp, FullWeight);
-      cut_expfp->Fill(e_xpfp, FullWeight);
-      cut_eypfp->Fill(e_ypfp, FullWeight);
-
-	 //END CUTS
 
 
       //Kinematics
@@ -308,10 +223,10 @@ void heep::Loop()
       
       //Fill 2D HMS Focal Plane Quantities
       h_xfp_vs_yfp->Fill(h_xfp, h_yfp, FullWeight);
-	
+
 
 	// if (Cut(ientry) < 0) continue;
-	}
    }
+   
    outfile->Write();
 }
