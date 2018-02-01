@@ -5,8 +5,9 @@ void make_comparison_kinematics()
 {
   
 
-  TString simc_filename = "ep_coin_simc_1929.root";
-  TString data_filename = "heep_data_1929.root";
+  TString simc_filename =  "ep_coin_simc_2279_shift.root"; //"ep_coin_simc_1929.root";
+  TString data_filename =  "ep_coin_data_2279.root";  //"heep_data_1929.root";
+
 
   TString simc_rootfile;
   TString data_rootfile;
