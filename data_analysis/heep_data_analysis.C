@@ -14,8 +14,8 @@ void heep_data_analysis()
 //  TString file_name = "coin_replay_production_1929_-1.root";
     
   //Open data ROOTfile and call TTree
-//  TFile *data_file = new TFile("../../hallc_replay/ROOTfiles/coin_replay_production_1929_-1.root", "READ");
-    TFile *data_file = new TFile("../ROOTfiles/coin_replay_production_2279_-1.root", "READ");
+  TFile *data_file = new TFile("../ROOTfiles/coin_replay_production_2279_-1.root", "READ");
+//    TFile *data_file = new TFile("../ROOTfiles/coin_replay_production_2279_-1.root", "READ");
 
   TTree *T = (TTree*)data_file->Get("T");
 
@@ -31,7 +31,7 @@ void heep_data_analysis()
    //Kinematics Quantities
    TH1F *data_Emiss = new TH1F("data_Emiss","missing energy", bins, -0.5, 0.8);  //binwidth = 0.0025
    TH1F *data_pm = new TH1F("data_pm","missing momentum", bins, -0.5, 1.6);
-   TH1F *data_Q2 = new TH1F("data_Q2","Q2", 100, 6., 14.);
+   TH1F *data_Q2 = new TH1F("data_Q2","Q2", 100, 2., 14.);
    TH1F *data_omega = new TH1F("data_omega","Energy Transfer, #omega", bins, 0., 8.);
    TH1F *data_W_inv = new TH1F("data_W_inv", "Invariant Mass, W", bins, 0.6, 1.8);
    TH1F *data_theta_elec = new TH1F("data_theta_elec", "Electron Scatt. Angle", 100, 0.3, 0.45);
@@ -84,7 +84,7 @@ void heep_data_analysis()
    T->Draw("P.kin.secondary.pmiss>>data_pm", "H.kin.primary.W<1.080");
    T->Draw("H.kin.primary.Q2>>data_Q2", "H.kin.primary.W<1.080");
    T->Draw("H.kin.primary.nu>>data_omega", "H.kin.primary.W<1.080");
-   T->Draw("H.kin.primary.W>>data_W_inv", "H.kin.primary.W<1.080");
+   T->Draw("H.kin.primary.W>>data_W_inv", "");
    T->Draw("H.kin.primary.scat_ang_rad>>data_theta_elec", "H.kin.primary.W<1.080");
    // T->Draw("P.kin.secondary.scat_ang_rad>>data_theta_prot") Missin leaf in data
 

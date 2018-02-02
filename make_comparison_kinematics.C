@@ -5,14 +5,14 @@ void make_comparison_kinematics()
 {
   
 
-  TString simc_filename =  "ep_coin_simc_2279_shift.root"; //"ep_coin_simc_1929.root";
-  TString data_filename =  "ep_coin_data_2279.root";  //"heep_data_1929.root";
+  TString simc_filename =  "ep_coin_simc_1929.root"; //"ep_coin_simc_1929.root";
+  TString data_filename =  "ep_coin_data_1929.root";  //"heep_data_1929.root";
 
 
   TString simc_rootfile;
   TString data_rootfile;
   
-  simc_rootfile = "simc_analysis/weighted_simc_"+simc_filename;
+  simc_rootfile = "simc_analysis/weighted_"+simc_filename;
   data_rootfile = "data_analysis/"+data_filename;
   
   //Open SIMC/data ROOT files;
@@ -40,11 +40,11 @@ void make_comparison_kinematics()
   simc_file->cd();
 
   //Get Histogram objects from SIMC rootfile
-  simc_file->GetObject("Emiss", simc_emiss);
-  simc_file->GetObject("pm", simc_pmiss);
-  simc_file->GetObject("Q_2", simc_Q2);
-  simc_file->GetObject("omega", simc_omega);
-  simc_file->GetObject("W_inv", simc_W);
+  simc_file->GetObject("cut_Emiss", simc_emiss);
+  simc_file->GetObject("cut_pm", simc_pmiss);
+  simc_file->GetObject("cut_Q_2", simc_Q2);
+  simc_file->GetObject("cut_omega", simc_omega);
+  simc_file->GetObject("cut_W_inv", simc_W);
 
 
   //Set SIMC Histo Aesthetics

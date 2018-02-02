@@ -58,7 +58,7 @@ void heep::Loop()
    Double_t MD = 1.87561; //GeV
    Double_t MN = 0.939566; //GeV
 
-   TString ofile_name("weighted_simc_");
+   TString ofile_name("weighted_");
    ofile_name.Append(simc_file);
    
    //create output root file
@@ -72,7 +72,7 @@ void heep::Loop()
    //Kinematics Quantities
    TH1F *Emiss = new TH1F("Emiss","missing energy", bins, -0.5, 0.8);  //binwidth = 0.0025
    TH1F *pm = new TH1F("pm","missing momentum", bins, -0.5, 1.6);
-   TH1F *Q_2 = new TH1F("Q_2","Q2", 100, 6., 14.);
+   TH1F *Q_2 = new TH1F("Q_2","Q2", 100, 2., 14.);
    TH1F *omega = new TH1F("omega","Energy Transfer, #omega", bins, 0., 8.);
    TH1F *W_inv = new TH1F("W_inv", "Invariant Mass, W", bins, 0.6, 1.8);
    TH1F *theta_elec = new TH1F("theta_elec", "Electron Scatt. Angle", 100, 0.3, 0.45);
@@ -184,13 +184,34 @@ void heep::Loop()
   // Q_bcm1 = 40054.171;
   // Q_bcm2 = 40694.697;
 
+   //Total charge given by BCMs on run 1929
+   //Q_bcm1 = 161894.365;       
+   //Q_bcm2 = 164440.222;
+
+   
    //Total charge given by BCMs on run 2279
-   Q_bcm1 = 165921.873*0.67*0.95*0.95;       //take into account tracking efficiencies, and beam_on time
-   Q_bcm2 = 168627.503*0.67*0.95*0.95;
+   Q_bcm1 = 162303.590;       //take into account HMS/SHMS tracking efficiencies, and beam_on time
+   Q_bcm2 = 164865.479;
 
    Double_t Q_avg = (Q_bcm1 + Q_bcm2) / 2.;
    Double_t charge_factor = Q_avg / 1000.;   //in mC
 
+   //Tracking efficiencies and beamON time
+   Double_t e_trk_eff;
+   Double_t h_trk_eff;
+   Double_t beam_time;
+
+   //Tracking efficiencies and beamON time (Run 1929)
+   // e_trk_eff = 0.9982;
+   // h_trk_eff = 0.9375;
+   // beam_time = 0.894;
+
+   //Tracking efficiencies and beamON time (Run 2279)
+    e_trk_eff = 0.9990;
+    h_trk_eff = 0.9615;
+    beam_time = 0.6756;
+
+   
    Double_t FullWeight;
    
 
@@ -210,7 +231,7 @@ void heep::Loop()
       
       //The events must be weighted properly, so that they represent true Yield, and
       //can be compare to actual data
-      FullWeight = Normfac*Weight*charge_factor/nentries;
+      FullWeight = (Normfac*Weight*charge_factor*e_trk_eff*h_trk_eff*beam_time)/nentries;
 
    //   cout << "Normfac: " << Normfac << endl;
    //   cout << "Weight: " << Weight << endl;
@@ -221,49 +242,51 @@ void heep::Loop()
 
       //ANALYSIS OF EVENT-BY-EVENT GOES HERE!!!!!!
       
-      //APPLY CUTS
+      //APPLY CUTS: BEGIN CUTS LOOP
       if (W < 1.080)
 	{
 	  //Kinematics
-      cut_Emiss->Fill(Em, FullWeight);
-      cut_pm->Fill(Pm, FullWeight);
-      cut_Q_2->Fill(Q2, FullWeight);
-      cut_omega->Fill(nu, FullWeight);
-      cut_W_inv->Fill(W, FullWeight);
-      cut_theta_elec->Fill(theta_e, FullWeight);
-      cut_theta_prot->Fill(theta_p, FullWeight);
+	  cut_Emiss->Fill(Em, FullWeight);
+	  cut_pm->Fill(Pm, FullWeight);
+	  cut_Q_2->Fill(Q2, FullWeight);
+	  cut_omega->Fill(nu, FullWeight);
+	  cut_W_inv->Fill(W, FullWeight);
+	  cut_theta_elec->Fill(theta_e, FullWeight);
+	  cut_theta_prot->Fill(theta_p, FullWeight);
+	  
+	  //Reconstructed Target Quantities (Lab Frame)
+	  cut_x_tar->Fill(tar_x, FullWeight);
+	  cut_y_tar->Fill(tar_y, FullWeight);
+	  cut_z_tar->Fill(tar_z, FullWeight);
+	  
+	  
+	  //Hadron-Arm Target Reconstruction 
+	  cut_hytar->Fill(h_ytar, FullWeight);
+	  cut_hxptar->Fill(h_xptar, FullWeight);
+	  cut_hyptar->Fill(h_yptar, FullWeight);
+	  cut_hdelta->Fill(h_delta, FullWeight);
+	  
+	  //Hadron-Arm Focal Plane
+	  cut_hxfp->Fill(h_xfp, FullWeight);
+	  cut_hyfp->Fill(h_yfp, FullWeight);
+	  cut_hxpfp->Fill(h_xpfp, FullWeight);
+	  cut_hypfp->Fill(h_ypfp, FullWeight);
+	  
+	  //Electron-Arm Target Reconstruction
+	  cut_eytar->Fill(e_ytar, FullWeight);
+	  cut_exptar->Fill(e_xptar, FullWeight);
+	  cut_eyptar->Fill(e_yptar, FullWeight);
+	  cut_edelta->Fill(e_delta, FullWeight);
+	  
+	  //Electron-Arm Focal Plane
+	  cut_exfp->Fill(e_xfp, FullWeight);
+	  cut_eyfp->Fill(e_yfp, FullWeight);
+	  cut_expfp->Fill(e_xpfp, FullWeight);
+	  cut_eypfp->Fill(e_ypfp, FullWeight);
+	  
+	  
+	}//End CUTS LOOP
       
-      //Reconstructed Target Quantities (Lab Frame)
-      cut_x_tar->Fill(tar_x, FullWeight);
-      cut_y_tar->Fill(tar_y, FullWeight);
-      cut_z_tar->Fill(tar_z, FullWeight);
-
-      
-      //Hadron-Arm Target Reconstruction 
-      cut_hytar->Fill(h_ytar, FullWeight);
-      cut_hxptar->Fill(h_xptar, FullWeight);
-      cut_hyptar->Fill(h_yptar, FullWeight);
-      cut_hdelta->Fill(h_delta, FullWeight);
-      
-      //Hadron-Arm Focal Plane
-      cut_hxfp->Fill(h_xfp, FullWeight);
-      cut_hyfp->Fill(h_yfp, FullWeight);
-      cut_hxpfp->Fill(h_xpfp, FullWeight);
-      cut_hypfp->Fill(h_ypfp, FullWeight);
-      
-      //Electron-Arm Target Reconstruction
-      cut_eytar->Fill(e_ytar, FullWeight);
-      cut_exptar->Fill(e_xptar, FullWeight);
-      cut_eyptar->Fill(e_yptar, FullWeight);
-      cut_edelta->Fill(e_delta, FullWeight);
-      
-      //Electron-Arm Focal Plane
-      cut_exfp->Fill(e_xfp, FullWeight);
-      cut_eyfp->Fill(e_yfp, FullWeight);
-      cut_expfp->Fill(e_xpfp, FullWeight);
-      cut_eypfp->Fill(e_ypfp, FullWeight);
-
-	 //END CUTS
 
 
       //Kinematics
@@ -311,7 +334,9 @@ void heep::Loop()
 	
 
 	// if (Cut(ientry) < 0) continue;
-	}
+
+
+
    }
    outfile->Write();
 }

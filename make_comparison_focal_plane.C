@@ -5,14 +5,14 @@ void make_comparison_focal_plane()
 {
   
 
-  TString simc_filename =  "ep_coin_simc_2279_shift.root"; //"ep_coin_simc_1929.root";
-  TString data_filename =  "ep_coin_data_2279.root";  //"heep_data_1929.root";
+  TString simc_filename =  "ep_coin_simc_1929.root"; //"ep_coin_simc_1929.root";
+  TString data_filename =  "ep_coin_data_1929.root";  //"heep_data_1929.root";
 
 
   TString simc_rootfile;
   TString data_rootfile;
   
-  simc_rootfile = "simc_analysis/weighted_simc_"+simc_filename;
+  simc_rootfile = "simc_analysis/weighted_"+simc_filename;
   data_rootfile = "data_analysis/"+data_filename;
   
   //Open SIMC/data ROOT files;
@@ -48,15 +48,15 @@ void make_comparison_focal_plane()
   simc_file->cd();
 
   //Get Histogram objects from SIMC rootfile
-  simc_file->GetObject("hxfp", simc_hxfp);
-  simc_file->GetObject("hyfp", simc_hyfp);
-  simc_file->GetObject("hxpfp", simc_hxpfp);
-  simc_file->GetObject("hypfp", simc_hypfp);
+  simc_file->GetObject("cut_hxfp", simc_hxfp);
+  simc_file->GetObject("cut_hyfp", simc_hyfp);
+  simc_file->GetObject("cut_hxpfp", simc_hxpfp);
+  simc_file->GetObject("cut_hypfp", simc_hypfp);
 
-  simc_file->GetObject("exfp", simc_exfp);
-  simc_file->GetObject("eyfp", simc_eyfp);
-  simc_file->GetObject("expfp", simc_expfp);
-  simc_file->GetObject("eypfp", simc_eypfp);
+  simc_file->GetObject("cut_exfp", simc_exfp);
+  simc_file->GetObject("cut_eyfp", simc_eyfp);
+  simc_file->GetObject("cut_expfp", simc_expfp);
+  simc_file->GetObject("cut_eypfp", simc_eypfp);
 
 
   //Set SIMC Histo Aesthetics

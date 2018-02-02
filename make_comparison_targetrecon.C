@@ -6,14 +6,14 @@ void make_comparison_targetrecon()
   
 
 //  TString simc_filename =  "ep_coin_simc_2279_noshift.root"; //"ep_coin_simc_1929.root";
-  TString simc_filename =  "ep_coin_simc_2279_shift.root"; //"ep_coin_simc_1929.root";
+  TString simc_filename =  "ep_coin_simc_1929.root"; //"ep_coin_simc_1929.root";
 
-  TString data_filename =  "ep_coin_data_2279.root";  //"heep_data_1929.root";
+  TString data_filename =  "ep_coin_data_1929.root";  //"heep_data_1929.root";
 
   TString simc_rootfile;
   TString data_rootfile;
   
-  simc_rootfile = "simc_analysis/weighted_simc_"+simc_filename;
+  simc_rootfile = "simc_analysis/weighted_"+simc_filename;
   data_rootfile = "data_analysis/"+data_filename;
   
   //Open SIMC/data ROOT files;
@@ -49,15 +49,15 @@ void make_comparison_targetrecon()
   simc_file->cd();
 
   //Get Histogram objects from SIMC rootfile
-  simc_file->GetObject("hytar", simc_hytar);
-  simc_file->GetObject("hxptar", simc_hxptar);
-  simc_file->GetObject("hyptar", simc_hyptar);
-  simc_file->GetObject("hdelta", simc_hdelta);
+  simc_file->GetObject("cut_hytar", simc_hytar);
+  simc_file->GetObject("cut_hxptar", simc_hxptar);
+  simc_file->GetObject("cut_hyptar", simc_hyptar);
+  simc_file->GetObject("cut_hdelta", simc_hdelta);
 
-  simc_file->GetObject("eytar", simc_eytar);
-  simc_file->GetObject("exptar", simc_exptar);
-  simc_file->GetObject("eyptar", simc_eyptar);
-  simc_file->GetObject("edelta", simc_edelta);
+  simc_file->GetObject("cut_eytar", simc_eytar);
+  simc_file->GetObject("cut_exptar", simc_exptar);
+  simc_file->GetObject("cut_eyptar", simc_eyptar);
+  simc_file->GetObject("cut_edelta", simc_edelta);
 
 
   //Set SIMC Histo Aesthetics
