@@ -1,0 +1,14 @@
+#Summary of H(e,e'p) for HMS: electrons, SHMS: protons
+#NO central momentum corrections have been taken into acoount in this table
+#Mark Jones determined a correction of: SHMS = P*0.985, HMS = P*0.99, but
+#still needs fine tuning
+#Units are in GeV and degrees
+
+SIMC W = 0.944
+
+
+Run#    Beam    HMS P     HMS Angle   SHMS P     SHMS Angle      dW (Wsimc-Wdata)      
+1929    6.405   2.869     35.0        4.38       22.04           0.033
+1951    6.405   1.864     50.0        5.41       15.375 	 0.029
+2023    6.405   2.131     45.11        5.122      17.12          0.024
+2279    10.6    5.539     23.186      5.925      21.625          0.106

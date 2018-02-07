@@ -15,7 +15,6 @@ void run_simc_h2()
   ifstream ikin;
   ofstream ofile;
   string ikin_file = "input_kinematics.data";
-  string simc_file = "simc_ROOTfiles_list.data";
   string line;
 
   vector <string> ikin_vec;
@@ -42,7 +41,7 @@ void run_simc_h2()
       //read kinematic input file
       else
 	{
-	  //cout << "Reading " + line << endl;
+	  cout << "Reading " + line << endl;
 	  ikin_vec.push_back(line);
 
 	}
@@ -93,12 +92,11 @@ void run_simc_h2()
 	//Execute command to change root file name
 	gSystem->Exec(CMD.c_str());
 	
-	ofile.open("./worksim/"+simc_file);
 	ofile << ikin_file << endl;;
 	ofile.close();
 	
 	//EXIT ROOT
-	gSystem->Exit(kTRUE);
+	//gSystem->Exit(kTRUE);
 	
 	
       }

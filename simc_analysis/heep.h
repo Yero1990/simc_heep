@@ -169,7 +169,7 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop();
+   virtual void     Loop(TString simc_file, TString electron_arm);
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };
@@ -177,23 +177,27 @@ public :
 #endif
 
 #ifdef heep_cxx
-heep::heep(TTree *tree) : fChain(0)
+heep::heep(TTree *tree) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
   
   if (tree == 0) {
 
-    string simc_file;   //added
-    TString f0 = "../worksim/simc_ROOTfiles_list.data";
-    ifstream  infile(f0);
-    infile >> simc_file;
-    string simc_file_path = "../worksim/"+simc_file;
-    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(simc_file_path.c_str());
-      if (!f || !f->IsOpen()) {
-         f = new TFile(simc_file_path.c_str());
+    //   string simc_file;   //added
+    //  TString f0 = "../worksim/simc_ROOTfiles_list.data";
+    //  ifstream  infile(f0);
+    //  infile >> simc_file;
+    //  string simc_file_path = "../worksim/"+simc_file;
+    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("../worksim/dummy.root");
+      if (!f) {
+         f = new TFile("../worksim/dummy.root");
       }
-      f->GetObject("SNT",tree);
+
+      tree = (TTree*)gDirectory->Get("SNT");
+
+
+      //f->GetObject("SNT",tree);
 
    }
    Init(tree);
