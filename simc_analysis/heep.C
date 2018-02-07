@@ -6,8 +6,9 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
-
-void heep::Loop()
+//#include <fstream>
+//#include <iostream>
+void heep::Loop(TString simc_file, TString electron_arm)
 {
 //   In a ROOT session, you can do:
 //      root> .L heep.C
@@ -34,21 +35,13 @@ void heep::Loop()
 //by  b_branchname->GetEntry(ientry); //read only this branch
    if (fChain == 0) return;
 
-   TString electron_arm;
    TString hadron_arm;
-   cout << "Enter electron arm (SHMS or HMS): " << endl;
-   cin >> electron_arm;
 
    if (electron_arm=="SHMS")
      {
        hadron_arm ="HMS";
      }
    else{hadron_arm = "SHMS";}
-   
-   string simc_file;   //added
-   TString f0 = "../worksim/simc_ROOTfiles_list.data";
-   ifstream  infile(f0);
-   infile >> simc_file;
 
   
     // define histograms
@@ -163,9 +156,9 @@ void heep::Loop()
    //SIMC assumes it is #generated_events / 1mC
    
    //Charge factor is the total integrated charge assuming a beam current and run time
-   //Double_t Ib = 10;       //beam current in microamps (micro-Coulombs / sec),   1 mC = 1000 uC
-   //Double_t time = 1.;     //estimated time (in hours) a run takes (start - end) of run
-   //Double_t charge_factor = Ib * time * 3600. / 1000.;
+   Double_t Ib = 40;       //beam current in microamps (micro-Coulombs / sec),   1 mC = 1000 uC
+   Double_t time = 1.0;     //estimated time (in hours) a run takes (start - end) of run
+   Double_t charge_factor = Ib * time * 3600. / 1000.;
 
 
    Double_t Q_bcm1;
@@ -185,16 +178,16 @@ void heep::Loop()
   // Q_bcm2 = 40694.697;
 
    //Total charge given by BCMs on run 1929
-   //Q_bcm1 = 161894.365;       
-   //Q_bcm2 = 164440.222;
+   // Q_bcm1 = 161907.065;       
+   //Q_bcm2 = 164453.167;
 
    
    //Total charge given by BCMs on run 2279
-   Q_bcm1 = 162303.590;       //take into account HMS/SHMS tracking efficiencies, and beam_on time
-   Q_bcm2 = 164865.479;
+   //Q_bcm1 = 162303.590;       //take into account HMS/SHMS tracking efficiencies, and beam_on time
+   //Q_bcm2 = 164865.479;
 
-   Double_t Q_avg = (Q_bcm1 + Q_bcm2) / 2.;
-   Double_t charge_factor = Q_avg / 1000.;   //in mC
+   //Double_t Q_avg = (Q_bcm1 + Q_bcm2) / 2.;
+   //Double_t charge_factor = Q_avg / 1000.;   //in mC
 
    //Tracking efficiencies and beamON time
    Double_t e_trk_eff;
@@ -202,14 +195,14 @@ void heep::Loop()
    Double_t beam_time;
 
    //Tracking efficiencies and beamON time (Run 1929)
-   // e_trk_eff = 0.9982;
-   // h_trk_eff = 0.9375;
-   // beam_time = 0.894;
+    e_trk_eff = 0.9982;
+    h_trk_eff = 0.9375;
+    //beam_time = 0.89477;
 
    //Tracking efficiencies and beamON time (Run 2279)
-    e_trk_eff = 0.9990;
-    h_trk_eff = 0.9615;
-    beam_time = 0.6756;
+   // e_trk_eff = 0.9990;
+   // h_trk_eff = 0.9615;
+   // beam_time = 0.6756;
 
    
    Double_t FullWeight;
@@ -217,7 +210,7 @@ void heep::Loop()
 
    //************************************************
    
-   Long64_t nentries = fChain->GetEntriesFast();
+   Long64_t nentries = fChain->GetEntries();
 
    
    Long64_t nbytes = 0, nb = 0;
@@ -231,13 +224,13 @@ void heep::Loop()
       
       //The events must be weighted properly, so that they represent true Yield, and
       //can be compare to actual data
-      FullWeight = (Normfac*Weight*charge_factor*e_trk_eff*h_trk_eff*beam_time)/nentries;
+      FullWeight = (Normfac*Weight*charge_factor*e_trk_eff*h_trk_eff)/nentries;
 
-   //   cout << "Normfac: " << Normfac << endl;
-   //   cout << "Weight: " << Weight << endl;
-   //   cout << "charge: " << charge_factor << endl;
-   //   cout << "nentries: " << nentries << endl;
-   //   cout << "FullWeght: " << FullWeight << endl;
+      cout << "Normfac: " << Normfac << endl;
+      cout << "Weight: " << Weight << endl;
+      cout << "charge: " << charge_factor << endl;
+      cout << "nentries: " << nentries << endl;
+      cout << "FullWeght: " << FullWeight << endl;
 
 
       //ANALYSIS OF EVENT-BY-EVENT GOES HERE!!!!!!
