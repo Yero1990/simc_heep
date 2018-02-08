@@ -1,32 +1,40 @@
 //Macro to analyze H(e,e'p) data from Hall C: HMS (electron arm), SHMS (hadron arm)
 
-void heep_data_analysis()
+void heep_data_analysis(int run_num, TString electron)
 {
 
 
   TString hadron;
-  TString electron;
+ 
+  if (electron == "HMS")
+    {
+      hadron = "SHMS";
+    }
+  else
+    {
+      hadron = "HMS";
+      electron = "SHMS";
+    }
 
-  hadron = "SHMS";
-  electron = "HMS";
-  
-//  TString ROOTfiles = "/Users/deuteron/HallC/hallc_replay/ROOTfiles/";
-//  TString file_name = "coin_replay_production_1929_-1.root";
+  //  TString ROOTfiles = "/Users/deuteron/HallC/hallc_replay/ROOTfiles/";
+  //  TString file_name = "coin_replay_production_1929_-1.root";
     
   //Open data ROOTfile and call TTree
-  TFile *data_file = new TFile("../ROOTfiles/coin_replay_production_2279_-1.root", "READ");
+  TString file_path;
+  file_path = Form("../ROOTfiles/coin_replay_production_%d_-1.root", run_num);
+  TFile *data_file = new TFile(file_path, "READ");
 //    TFile *data_file = new TFile("../ROOTfiles/coin_replay_production_2279_-1.root", "READ");
 
   TTree *T = (TTree*)data_file->Get("T");
 
   //Open root file where new histograms will be stored
-  TFile *outfile = new TFile("ep_coin_data_2279.root", "recreate");
+  TFile *outfile = new TFile(Form("ep_coin_data_%d.root", run_num), "recreate");
 
 
   //These histograms binning MUST be exactly the same as those used in SIMC heep.C analysis
 
   //********* Create 1D Histograms **************
-   Int_t bins = 100;
+   Int_t bins = 300;
 
    //Kinematics Quantities
    TH1F *data_Emiss = new TH1F("data_Emiss","missing energy", bins, -0.5, 0.8);  //binwidth = 0.0025

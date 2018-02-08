@@ -60,7 +60,7 @@ void heep::Loop(TString simc_file, TString electron_arm)
    
    
    //********* Create 1D Histograms **************
-   Int_t bins = 100;
+   Int_t bins = 300;
 
    //Kinematics Quantities
    TH1F *Emiss = new TH1F("Emiss","missing energy", bins, -0.5, 0.8);  //binwidth = 0.0025
@@ -195,10 +195,12 @@ void heep::Loop(TString simc_file, TString electron_arm)
    Double_t beam_time;
 
    //Tracking efficiencies and beamON time (Run 1929)
-    e_trk_eff = 0.9982;
-    h_trk_eff = 0.9375;
+   // e_trk_eff = 0.9982;
+    // h_trk_eff = 0.9375;
     //beam_time = 0.89477;
 
+   e_trk_eff = 1.0;
+   h_trk_eff = 1.0;
    //Tracking efficiencies and beamON time (Run 2279)
    // e_trk_eff = 0.9990;
    // h_trk_eff = 0.9615;
