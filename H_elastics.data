@@ -4,11 +4,28 @@
 #still needs fine tuning
 #Units are in GeV and degrees
 
-SIMC W = 0.944
+Procedure:
+-Perform a simulation for each kinematic setting and compare W_simc
+with W_data.
+-Turn off Eloss_corrections as these are NOT done yet in data.
+-Compare data with SIMC to determine any offsets that might cause a shift in W.
+There can be energy offsets, central momentum offsets and angle offstes.
+
+W (Ebeam, electron_momentum, electron_angle). 
 
 
-Run#    Beam    HMS P     HMS Angle   SHMS P     SHMS Angle      dW (Wsimc-Wdata)      
-1929    6.405   2.869     35.0        4.38       22.04           0.033
-1951    6.405   1.864     50.0        5.41       15.375 	 0.029
-2023    6.405   2.131     45.11        5.122      17.12          0.024
-2279    10.6    5.539     23.186      5.925      21.625          0.106
+Run#    Beam    HMS P     HMS Angle   SHMS P     SHMS Angle      W_simc[GeV]   W_data [GeV]        dW (W_simc - W_data) [GeV]
+1161    2.221   2.078     13.5        --         --              0.9415       0.9345               0.007
+1929    6.430   2.869     35.0        4.38       22.04           0.9454       0.92372              0.02168
+1951    6.430   1.864     50.0        5.41       15.375  	 0.9467       0.9207               0.0260
+2023    6.430   2.131     45.11       5.122      17.12           0.9463       0.9273               0.0190
+2279    10.6    5.539     23.186      5.925      21.625          0.9484       0.8391               0.1093
+2283    10.6    2.982     39.280      8.505      12.8            0.9484   -- THIS data is not good
+
+
+1161 -- HMS SINGLES
+1929 -- COIN.
+1951 -- COIN.
+2023 -- COIN.
+2279 -- COIN.
+2283 -- COIN.
