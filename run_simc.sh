@@ -1,1 +1,1 @@
-/Users/deuteron/HallC/deut_simc/run_simc.sh
+../deut_simc/run_simc.sh
