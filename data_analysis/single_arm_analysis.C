@@ -1,14 +1,24 @@
 //Macro to analyze H(e,e'p) data from Hall C: HMS (electron arm), SHMS (hadron arm)
 
-void single_arm_analysis()
+void single_arm_analysis(string e_arm)
 {
   
+  string h_arm;
+
+  if (e_arm == "HMS")
+    {
+      h_arm = "SHMS";
+    }
+
+  else {
+    h_arm = "HMS";
+  }
 //  TString ROOTfiles = "/Users/deuteron/HallC/hallc_replay/ROOTfiles/";
 //  TString file_name = "coin_replay_production_1929_-1.root";
     
   //Open data ROOTfile and call TTree
 //  TFile *data_file = new TFile("../../hallc_replay/ROOTfiles/coin_replay_production_1929_-1.root", "READ");
-    TFile *data_file = new TFile("../ROOTfiles/shms_replay_production_2261_-1.root", "READ");
+//    TFile *data_file = new TFile("../ROOTfiles/shms_replay_production_2261_-1.root", "READ");
 
   TTree *T = (TTree*)data_file->Get("T");
 
@@ -36,16 +46,16 @@ void single_arm_analysis()
    TH1F *data_z_tar = new TH1F("data_z_tar", "z_Target", bins, -5.5, 5.5);
    
    //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
-   TH1F *data_hytar = new TH1F("data_hytar", "HMS Y_{tar}", bins, -4., 4.);
-   TH1F *data_hxptar = new TH1F("data_hxptar", "HMS X'_{tar}", bins, -0.08, 0.08 );
-   TH1F *data_hyptar = new TH1F("data_hyptar", "HMS Y'_{tar}", bins, -0.04, 0.04 );
-   TH1F *data_hdelta = new TH1F("data_hdelta", "HMS Momentum Acceptance, #delta", bins, -10., 10. );
+   TH1F *data_hytar = new TH1F("data_hytar", h_arm + " Y_{tar}", bins, -4., 4.);
+   TH1F *data_hxptar = new TH1F("data_hxptar", h_arm + "  X'_{tar}", bins, -0.08, 0.08 );
+   TH1F *data_hyptar = new TH1F("data_hyptar", h_arm + "  Y'_{tar}", bins, -0.04, 0.04 );
+   TH1F *data_hdelta = new TH1F("data_hdelta", h_arm + "  Momentum Acceptance, #delta", bins, -10., 10. );
 
    //Hadron arm Focal Plane Quantities
-   TH1F *data_hxfp = new TH1F("data_hxfp", "HMS X_{fp}", bins, -30., 20.);
-   TH1F *data_hyfp = new TH1F("data_hyfp", "HMS Y_{fp}", bins, -15., 10.);
-   TH1F *data_hxpfp = new TH1F("data_hxpfp", "HMS X'_{fp}", bins, -0.06, 0.06 );
-   TH1F *data_hypfp = new TH1F("data_hypfp", "HMS Y'_{fp}", bins, -0.03, 0.02);
+   TH1F *data_hxfp = new TH1F("data_hxfp", h_arm + "  X_{fp}", bins, -30., 20.);
+   TH1F *data_hyfp = new TH1F("data_hyfp", h_arm + "  Y_{fp}", bins, -15., 10.);
+   TH1F *data_hxpfp = new TH1F("data_hxpfp", h_arm + "  X'_{fp}", bins, -0.06, 0.06 );
+   TH1F *data_hypfp = new TH1F("data_hypfp", h_arm + "  Y'_{fp}", bins, -0.03, 0.02);
 
       
    //Electron Arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
