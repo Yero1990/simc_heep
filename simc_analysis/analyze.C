@@ -28,6 +28,17 @@ void analyze()
   TString simc_file;
   string report_file;
 
+  //E12-10-003 H(e,e'p) Check!
+  electron_arm = "SHMS";
+  simc_file = "heep_simc.root";
+  cout << "Analyzing: " << simc_file << endl;
+  chain.Add("../worksim/"+simc_file);
+  simc->Init(&chain);
+  simc->Loop(simc_file, electron_arm);
+  chain.Reset();
+
+  
+  /*
   //Coin Run 1929
   electron_arm = "HMS";
   simc_file = "ep_coin_simc_1929.root";
@@ -37,7 +48,7 @@ void analyze()
   simc->Loop(simc_file, electron_arm);
   chain.Reset();
 
-  /*
+  
   //Coin Run 2279
   electron_arm = "SHMS";
   simc_file = "ep_coin_simc_1929.root";
