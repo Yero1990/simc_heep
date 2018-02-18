@@ -60,16 +60,16 @@ void heep::Loop(TString simc_file, TString electron_arm)
    
    
    //********* Create 1D Histograms **************
-   Int_t bins =100;
+   Int_t bins = 300;
 
    //Kinematics Quantities
-   TH1F *Emiss = new TH1F("Emiss","missing energy", bins, -0.2, 0.8); 
-   TH1F *pm = new TH1F("pm","missing momentum", bins, -0.05, 0.8);  //binwidth = 8.5 MeV
-   TH1F *Q_2 = new TH1F("Q_2","Q2", 100, 3., 5.);
-   TH1F *omega = new TH1F("omega","Energy Transfer, #omega", bins, 1.8., 3.4);
-   TH1F *W_inv = new TH1F("W_inv", "Invariant Mass, W", bins, 0.4, 2.0);
-   TH1F *theta_elec = new TH1F("theta_elec", "Electron Scatt. Angle", bins, 8, 15);
-   TH1F *theta_prot = new TH1F("theta_prot", "Proton Scatt. Angle", bins, 35, 45);
+   TH1F *Emiss = new TH1F("Emiss","missing energy", bins, -0.5, 0.8);  //binwidth = 8.5 MeV
+   TH1F *pm = new TH1F("pm","missing momentum", bins, -0.5, 1.6);  //binwidth = 8.5 MeV
+   TH1F *Q_2 = new TH1F("Q_2","Q2", 100, 2., 14.);
+   TH1F *omega = new TH1F("omega","Energy Transfer, #omega", bins, 0., 8.);
+   TH1F *W_inv = new TH1F("W_inv", "Invariant Mass, W", bins, 0.6, 1.8);
+   TH1F *theta_elec = new TH1F("theta_elec", "Electron Scatt. Angle", 100, 0.3, 0.45);
+   TH1F *theta_prot = new TH1F("theta_prot", "Proton Scatt. Angle", 100, 0.5, 0.65);
 
    //Target Reconstruction Variables
    TH1F *x_tar = new TH1F("x_tar", "x_Target", bins, -0.25, 0.25);
@@ -77,29 +77,29 @@ void heep::Loop(TString simc_file, TString electron_arm)
    TH1F *z_tar = new TH1F("z_tar", "z_Target", bins, -5.5, 5.5);
    
    //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
-   TH1F *hytar = new TH1F("hytar", hadron_arm + " Y_{tar}", bins, -5., 5.);
-   TH1F *hxptar = new TH1F("hxptar", hadron_arm + " X'_{tar}", bins, -0.1, 0.1 );
-   TH1F *hyptar = new TH1F("hyptar", hadron_arm + " Y'_{tar}", bins, -0.05, 0.04 );
-   TH1F *hdelta = new TH1F("hdelta", hadron_arm + " Momentum Acceptance, #delta", bins, -12., 10. );
+   TH1F *hytar = new TH1F("hytar", hadron_arm + " Y_{tar}", bins, -4., 4.);
+   TH1F *hxptar = new TH1F("hxptar", hadron_arm + " X'_{tar}", bins, -0.08, 0.08 );
+   TH1F *hyptar = new TH1F("hyptar", hadron_arm + " Y'_{tar}", bins, -0.04, 0.04 );
+   TH1F *hdelta = new TH1F("hdelta", hadron_arm + " Momentum Acceptance, #delta", bins, -10., 10. );
 
    //Hadron arm Focal Plane Quantities
-   TH1F *hxfp = new TH1F("hxfp", hadron_arm + " X_{fp}", bins, -50., 40.);
-   TH1F *hyfp = new TH1F("hyfp", hadron_arm + " Y_{fp}", bins, -10., 25.);
+   TH1F *hxfp = new TH1F("hxfp", hadron_arm + " X_{fp}", bins, -30., 20.);
+   TH1F *hyfp = new TH1F("hyfp", hadron_arm + " Y_{fp}", bins, -15., 10.);
    TH1F *hxpfp = new TH1F("hxpfp", hadron_arm + " X'_{fp}", bins, -0.06, 0.06 );
-   TH1F *hypfp = new TH1F("hypfp", hadron_arm + " Y'_{fp}", bins, -0.015, 0.03);
+   TH1F *hypfp = new TH1F("hypfp", hadron_arm + " Y'_{fp}", bins, -0.03, 0.02);
 
       
    //Electron Arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
-   TH1F *eytar = new TH1F("eytar", electron_arm + " Y_{tar}", bins, -2., 2.);
-   TH1F *exptar = new TH1F("exptar", electron_arm + " X'_{tar}", bins, -0.03, 0.03);
-   TH1F *eyptar = new TH1F("eyptar", electron_arm + " Y'_{tar}", bins, -0.02, 0.025);
-   TH1F *edelta = new TH1F("edelta", electron_arm + " Momentum Acceptance, #delta", bins, -16., 3. );
+   TH1F *eytar = new TH1F("eytar", electron_arm + " Y_{tar}", bins, -4., 4.);
+   TH1F *exptar = new TH1F("exptar", electron_arm + " X'_{tar}", bins, -0.08, 0.08);
+   TH1F *eyptar = new TH1F("eyptar", electron_arm + " Y'_{tar}", bins, -0.04, 0.04);
+   TH1F *edelta = new TH1F("edelta", electron_arm + " Momentum Acceptance, #delta", bins, -15., 15. );
 
    //Electron Arm Focal Plane Quantities
-   TH1F *exfp = new TH1F("exfp", electron_arm + " X_{fp}", bins, -35., 3.);
-   TH1F *eyfp = new TH1F("eyfp", electron_arm + " Y_{fp}", bins, -25., 15.);
-   TH1F *expfp = new TH1F("expfp", electron_arm + " X'_{fp}", bins, -0.08, 0.02);
-   TH1F *eypfp = new TH1F("eypfp", electron_arm + " Y'_{fp}", bins, -0.04, 0.02);
+   TH1F *exfp = new TH1F("exfp", electron_arm + " X_{fp}", bins, -60., 30.);
+   TH1F *eyfp = new TH1F("eyfp", electron_arm + " Y_{fp}", bins, -20., 30.);
+   TH1F *expfp = new TH1F("expfp", electron_arm + " X'_{fp}", bins, -0.1, 0.06);
+   TH1F *eypfp = new TH1F("eypfp", electron_arm + " Y'_{fp}", bins, -0.04, 0.04);
 
 
 

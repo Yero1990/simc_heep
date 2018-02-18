@@ -1,4 +1,3 @@
-
 void get_normfac(string ifile);
 
 
