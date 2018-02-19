@@ -28,7 +28,7 @@ void heep_data_analysis(int run_num, TString electron)
   TTree *T = (TTree*)data_file->Get("T");
 
   //Open root file where new histograms will be stored
-  TFile *outfile = new TFile(Form("ep_coin_data_%d.root", run_num), "recreate");
+  TFile *outfile = new TFile(Form("ep_coin_data_%d_Wcorr.root", run_num), "recreate");
 
 
   //These histograms binning MUST be exactly the same as those used in SIMC heep.C analysis
