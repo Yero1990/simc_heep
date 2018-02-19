@@ -22,6 +22,7 @@ Run#    Beam    HMS P     HMS Angle   SHMS P     SHMS Angle      W_simc[GeV]   W
 2279    10.6    5.539     23.186      5.925      21.625          0.9484       0.8391               0.1093
 2283    10.6    2.982     39.280      8.505      12.8            0.9484   -- THIS data is not good
 
+2406-2418    10.6    2.982     39.280      8.505      12.8          
 
 1161 -- HMS SINGLES
 1929 -- COIN.

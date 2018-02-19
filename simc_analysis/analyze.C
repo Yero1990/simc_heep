@@ -21,7 +21,8 @@ void analyze()
   heep* simc = new heep(&chain);
 
   TString electron_arm;
-
+  Double_t Ib;       //beam current in uA
+  Double_t time;     //TIME in hrs
 
   //Chain each file
 
@@ -29,12 +30,13 @@ void analyze()
   string report_file;
 
   //E12-10-003 H(e,e'p) Check!
-  electron_arm = "SHMS";
+  Ib = 40.;
+  time = 1.;
   simc_file = "heep_simc.root";
   cout << "Analyzing: " << simc_file << endl;
   chain.Add("../worksim/"+simc_file);
   simc->Init(&chain);
-  simc->Loop(simc_file, electron_arm);
+  simc->Loop(simc_file, Ib, time);
   chain.Reset();
 
   
