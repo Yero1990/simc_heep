@@ -8,8 +8,8 @@
      gen%xwid  =  0.008868		!  beam width - one sigma (cm)  (89microns)
      gen%ywid  =  0.004235		!  beam width - one sigma (cm)  (42microns)
      targ%fr_pattern  =  1		!  raster pattern: 1=square, 2=circular
-     targ%fr1  =  0.1		!  horizontal size OR inner radius(2)
-     targ%fr2  =  0.1		!  vertical size OR outer radius(2)
+     targ%fr1  =  0.2		!  horizontal size OR inner radius(2)
+     targ%fr2  =  0.2		!  vertical size OR outer radius(2)
      targ%xoffset  =  0.0		!  target x-offset (cm): +x = beam right
      targ%yoffset  =  0.0		!  target y-offset (cm): +y = up
      targ%zoffset  =  0.0		!  target z-offset (cm): +z = downstream
@@ -42,10 +42,10 @@
      spect_mode  =  0	        !  0=e+p arms, -1=p arm, -2=e arm only, 1=none
      cuts%Em%min  =  0.	        !  (Em.min=Em.max=0.0 gives wide open cuts)
      cuts%Em%max  =  200.	!  Must be wider than cuts in analysis(elastic or e,e'p)
-     using_Eloss  =  F	        !  (ONE = TRUE)
+     using_Eloss  =  T	        !  (ONE = TRUE)
      correct_Eloss  = F	        !  ONE = correct reconstructed events for eloss.
      correct_raster  =  T	!  ONE = Reconstruct events using 'raster' matrix elements.
-     mc_smear  =  F		!  ONE = target & hut mult scatt AND DC smearing.
+     mc_smear  =  T		!  ONE = target & hut mult scatt AND DC smearing.
      deForest_flag  =  0	!  0=sigcc1, 1=sigcc2, -1=sigcc1 ONSHELL
      rad_flag  =  0		!  (radiative option #1...see init.f)
      extrad_flag  =  2	        !  (rad. option #2...see init.f)
