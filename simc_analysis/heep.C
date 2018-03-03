@@ -52,17 +52,68 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
    //create output root file
    TFile *outfile = new TFile(ofile_name.Data(), "recreate");
 
+    //-------spectrometer resolution calculation----------
+
+   Double_t Eb = 10.6;            //beam energy
+   Double_t hP0 = 2.93814;       //proton arm central momentum in GeV/c 
+   Double_t eP0 = 8.7000;       //electron arm central momentum
+   
+   
+   //define variables to hold standard deviatons 
+   Double_t h_sigma;         //h_sigma = (h_deltai - h_delta) 'delta resolution'
+   Double_t h_Psigma;         //hadron arm momentum resolution
+   Double_t e_sigma;          //e_sigma = (e_deltai - e_delta) 'delta resolution'
+   Double_t e_Psigma;         //electron arm momentum resolution
+   Double_t W_sigma;          //invariant mass resolution
+   Double_t Pm_sigma;
+   Double_t Em_sigma;
+   
+   //variables to be filled
+   Double_t h_Pf_thrown;   //thrown final hadron momentum
+   Double_t e_kf_thrown;   //thrown final electron momentum
+   Double_t Pm_thrown;
+   Double_t Em_thrown;
+   Double_t nu_thrown;      //thrown energy transfer
+   Double_t Ep_thrown;      //final proton energy, thrown
+   Double_t Kp_thrown;      //thrown proton kinetic energy
+   Double_t Kn_thrown;
+   
+   Double_t h_dP;          //hms momentum resolution
+   Double_t h_d_delta;    //hms delta resolution
+
+
+   Double_t dPmiss;        //missing momentum resolution
+   Double_t dEmiss;        //missing energy resolution
+   
+   Double_t e_dP;         //electron arm momentum resolution
+   Double_t e_d_delta;    //electron arm delta resolution
+   Double_t e_dtheta;     //electron arm angle resolution, e_yptar_i - e_yptar
+   Double_t h_dtheta;     //hadron arm angle resolution, h_yptar_i - e_yptar
+
+   Double_t dW;           //Invariant mass resolution
+   
+   //histograms to store filled variables
+   TH1F * res_hdelta = new TH1F("res_hdelta", hadron_arm + " #delta_{i} - #delta", 100,  -2., 2.);   //HISTO to store (hdelta_i - hdelta)
+   TH1F * res_hP = new TH1F("res_hP", "HMS Momentum Resolution", 200, -0.1, 0.1);
+   TH1F * res_pmiss = new TH1F("res_pmiss", "Missing Momentum Resolution", 100,  -0.2, 0.2);
+   TH1F * res_emiss = new TH1F("res_Emiss", "Missing Energy Resolution", 100,  -0.2, 0.2);
+   TH1F * res_W = new TH1F("res_W", "Invariant Mass (W) Resolution", 100,  -0.2, 0.2);
+   TH1F * res_edelta = new TH1F("res_edelta", electron_arm + " #delta_{i} - #delta", 100,  -2., 2.);   //HISTO to store (hdelta_i - hdelta)
+   TH1F * res_ekf = new TH1F("res_ekf", electron_arm + " Momentum Resolution", 200, -0.1, 0.1);
+   TH1F * res_etheta = new TH1F("res_etheta", electron_arm + " Angle Resolution", 200, -0.01, 0.01);        //electron arm angle resolution
+   TH1F * res_htheta = new TH1F("res_htheta", hadron_arm + " Angle Resolution", 200, -0.01, 0.01); 
+   //----------------------------------------------------
    
    
    //********* Create 1D Histograms **************
    Int_t bins =100;
 
    //Kinematics Quantities
-   TH1F *Emiss = new TH1F("Emiss","missing energy", bins, -0.2, 0.8); 
-   TH1F *pm = new TH1F("pm","missing momentum", bins, -0.05, 0.8);  //binwidth = 8.5 MeV
+   TH1F *Emiss = new TH1F("Emiss","missing energy", 40, -0.2, 0.8);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
+   TH1F *pm = new TH1F("pm","missing momentum", bins, -0.5, 1.7);  //min width = 32 MeV (0.032)
    TH1F *Q_2 = new TH1F("Q_2","Q2", 100, 3., 5.);
    TH1F *omega = new TH1F("omega","Energy Transfer, #omega", bins, 1.8, 3.4);
-   TH1F *W_inv = new TH1F("W_inv", "Invariant Mass, W", bins, 0.4, 2.0);
+   TH1F *W_inv = new TH1F("W_inv", "Invariant Mass, W", bins, 0.8, 1.7);     //min width = 19.9 MeV (0.0199) (bin width = 25 MeV)
    TH1F *theta_elec = new TH1F("theta_elec", "Electron Scatt. Angle", bins, 8, 15);
    TH1F *theta_prot = new TH1F("theta_prot", "Proton Scatt. Angle", bins, 35, 45);
 
@@ -95,7 +146,7 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
    TH1F *eytar = new TH1F("eytar", electron_arm + " Y_{tar}", bins, -2., 2.);
    TH1F *exptar = new TH1F("exptar", electron_arm + " X'_{tar}", bins, -0.03, 0.03);
    TH1F *eyptar = new TH1F("eyptar", electron_arm + " Y'_{tar}", bins, -0.02, 0.025);
-   TH1F *edelta = new TH1F("edelta", electron_arm + " Momentum Acceptance, #delta", bins, -16., 5. );
+   TH1F *edelta = new TH1F("edelta", electron_arm + " Momentum Acceptance, #delta", bins, -16., 10. );
 
    //Electron Arm Focal Plane Quantities
    TH1F *exfp = new TH1F("exfp", electron_arm + " X_{fp}", bins, -35., 5.);
@@ -103,6 +154,9 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
    TH1F *expfp = new TH1F("expfp", electron_arm + " X'_{fp}", bins, -0.08, 0.02);
    TH1F *eypfp = new TH1F("eypfp", electron_arm + " Y'_{fp}", bins, -0.04, 0.02);
 
+   //Cross-Check correlations
+   TH2F *emiss_vs_pmiss = new TH2F("emiss_vs_pmiss", " E_{miss} vs. P_{miss}", 104, 0.0, 2.6, 100, -0.1, 0.5);
+   TH2F *edelta_vs_eyptar = new TH2F("edelta_vs_eyptar", electron_arm + " #delta vs. Y'_{tar}", bins, -0.02, 0.025, bins, -16., 5.);
 
 
    //Create 2D Histograms at the Focal Plane Quantities
@@ -121,11 +175,11 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
    /************Define Histos to APPLY CUTS*********************************/
  
      //Kinematics Quantities
-   TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", bins, -0.2, 0.8);  //binwidth = 0.0025
-   TH1F *cut_pm = new TH1F("cut_pm","missing momentum", bins, -0.05, 0.8);
+   TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", 40, -0.2, 0.8);  //binwidth = 0.0025
+   TH1F *cut_pm = new TH1F("cut_pm","missing momentum",  bins, -0.5, 1.7);
    TH1F *cut_Q_2 = new TH1F("cut_Q_2","Q2", 100, 3., 5.);
    TH1F *cut_omega = new TH1F("cut_omega","Energy Transfer, #omega", bins, 1.8, 3.4);
-   TH1F *cut_W_inv = new TH1F("cut_W_inv", "Invariant Mass, W", bins, 0.4, 2.0);
+   TH1F *cut_W_inv = new TH1F("cut_W_inv", "Invariant Mass, W", bins, 0.8, 1.7);
    TH1F *cut_theta_elec = new TH1F("cut_theta_elec", "Electron Scatt. Angle", 100, 8, 15);
    TH1F *cut_theta_prot = new TH1F("cut_theta_prot", "Proton Scatt. Angle", 100, 35, 45);
 
@@ -166,6 +220,9 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
    TH1F *cut_expfp = new TH1F("cut_expfp", electron_arm + " X'_{fp}", bins, -0.08, 0.02);
    TH1F *cut_eypfp = new TH1F("cut_eypfp", electron_arm + " Y'_{fp}", bins, -0.04, 0.02);
 
+   //Cross-Check correlations
+   TH2F *cut_emiss_vs_pmiss = new TH2F("cut_emiss_vs_pmiss", " E_{miss} vs. P_{miss}", 104, 0.0, 2.6, 100, -0.1, 0.5);
+   TH2F *cut_edelta_vs_eyptar = new TH2F("cut_edelta_vs_eyptar", electron_arm + " #delta vs. Y'_{tar}", bins, -0.02, 0.025, bins, -16., 5.);
 
    //Create 2D Histograms at the Focal Plane Quantities
    TH2F *cut_h_xfp_vs_yfp = new TH2F("cut_h_xfp_vs_yfp", "X_{fp} vs Y_{fp}", bins, -10., 25., bins, -50., 40.);
@@ -184,7 +241,9 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
    Double_t Pf;             //Final Proton Momentum 
    Double_t ki;             //Incident e- momentum
    Double_t kf;             //Final electron momentum
-
+   Double_t Ep;             //proton final energy
+   Double_t Ee;             //electron final energy
+   
    //Define Kinematic Limits
    Double_t W_min = 0.8;    //GeV
    Double_t W_max = 1.04;     //pion production threhsold?
@@ -198,8 +257,8 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
    Double_t xbj_max = 1.3; //1.40;
 
    //Missing Energy, Em = 0 MeV (-15 MeV, 15 MeV)
-   Double_t Em_min = -15.e-3;
-   Double_t Em_max = 15.e-3;
+   Double_t Em_min = -60.e-3;
+   Double_t Em_max = 80.e-3;
    
 
    //Determine the charge factor:
@@ -210,25 +269,27 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
    //Double_t Ib = 40;       //beam current in microamps (micro-Coulombs / sec),   1 mC = 1000 uC
    //Double_t time = 1.0;     //estimated time (in hours) a run takes (start - end) of run
 
-   Double_t charge_factor = Ib * time * 3600. / 1000.;
+   //Double_t charge_factor = Ib * time * 3600. / 1000.;   //in units of mC
 
 
-   //Double_t Q_bcm1;
-   //Double_t Q_bcm2;
+   //run 1929
+   Double_t Q_bcm1 = 161907.065;   //in uC
+   Double_t Q_bcm2 = 164453.167;   //in uC
 
 
-   //Double_t Q_avg = (Q_bcm1 + Q_bcm2) / 2.;
-   //Double_t charge_factor = Q_avg / 1000.;   //in mC
+   Double_t Q_avg = (Q_bcm1 + Q_bcm2) / 2.;
+   Double_t charge_factor = Q_avg / 1000.;   //in mC
 
    //Tracking efficiencies and beamON time
-   Double_t e_trk_eff;
-   Double_t h_trk_eff;
+   Double_t cpu_dt;     //computer deadtime
+   Double_t e_trk_eff;  //electron tracking efficiencies
+   Double_t h_trk_eff;  //hadron tracking efficiencies
    Double_t beam_time;
 
  
-   e_trk_eff = 1.0;
-   h_trk_eff = 1.0;
-
+   e_trk_eff = 0.9981;
+   h_trk_eff = 0.9136;      //shms hadron tracking eff
+   cpu_dt = 0.9987;    //99.877 % livetime -- run 1929
 
    
    Double_t FullWeight;
@@ -251,9 +312,49 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
       W2 = W*W;
       X = Q2 / (2.*MP*nu);
       Pf = sqrt(pow(nu+MP,2) - MP*MP);
+      Ep = sqrt(MP*MP + Pf*Pf);
       ki = sqrt(Ein*Ein - me*me);
       kf = Q2 / (4.*ki*pow(sin(theta_e/2.), 2));
-  
+      Ee = sqrt(me*me + kf*kf);
+
+
+      //-------Spectrometer resolution variables-----------
+      h_d_delta = h_deltai - h_delta;      //hadron delta resolutionn
+      e_d_delta = e_deltai - e_delta;      //electron delta resolution
+
+
+      h_dP = h_d_delta*hP0/100.;         //hadron arm momentum resolution
+      e_dP = e_d_delta*eP0/100.;         //electron arm momentum resolution
+      
+      h_Pf_thrown = h_deltai*hP0/100. + hP0;             //thrown final hadron momentum
+      e_kf_thrown = e_deltai*eP0/100. + eP0;             //thrown final electron momentum
+
+      nu_thrown = Ein - e_kf_thrown;                     //thown energy transfer
+      Ep_thrown = sqrt(MP*MP + h_Pf_thrown*h_Pf_thrown);   //thrown proton final energy
+
+      Pm_thrown = sqrt( pow(nu_thrown + MD - Ep_thrown, 2) - MN*MN  );  //thrown missing momentum
+      Kp_thrown = Ep_thrown - MP;
+      Em_thrown = nu_thrown - Kp_thrown - Kn_thrown;
+
+      dPmiss = Pm_thrown - Pm;  //missing momentum resolution
+      dEmiss = (Em_thrown - Em);  //missing energy resolution
+
+      e_dtheta = e_yptari - e_yptar;   //e-arm angle resolution
+      h_dtheta = h_yptari - h_yptar;   //hadron-arm angle resolution
+      
+      
+      //Fill variables
+      res_hdelta->Fill(h_d_delta);
+      res_hP->Fill(h_dP);
+
+      res_edelta->Fill(e_d_delta);
+      res_ekf->Fill(e_dP);
+      res_pmiss->Fill(dPmiss);
+      res_emiss->Fill(dEmiss);
+
+      res_etheta->Fill(e_dtheta);
+      res_htheta->Fill(h_dtheta);
+      
       //---------------------------------------------------
 
 
@@ -285,7 +386,7 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
       
       //The events must be weighted properly, so that they represent true Yield, and
       //can be compare to actual data
-      FullWeight = (Normfac*Weight*charge_factor*e_trk_eff*h_trk_eff)/nentries;
+      FullWeight = (Normfac*Weight*charge_factor*e_trk_eff*h_trk_eff*cpu_dt)/nentries;
 
       //cout << "Normfac: " << Normfac << endl;
       //cout << "Weight: " << Weight << endl;
@@ -355,6 +456,14 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
 	  cut_hxptar_vs_exptar->Fill(e_xptar, h_xptar, FullWeight);
 	  cut_hyptar_vs_eyptar->Fill(e_yptar, h_yptar, FullWeight);
 	  cut_hdelta_vs_edelta->Fill(e_delta, h_delta, FullWeight);
+
+	  
+	  //Heep cross check
+	  cut_emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
+	  cut_edelta_vs_eyptar->Fill(e_yptar, e_delta, FullWeight);
+      
+
+	  
 	  
 	}//End CUTS LOOP
       
@@ -417,22 +526,85 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
       hxptar_vs_exptar->Fill(e_xptar, h_xptar, FullWeight);
       hyptar_vs_eyptar->Fill(e_yptar, h_yptar, FullWeight);
       hdelta_vs_edelta->Fill(e_delta, h_delta, FullWeight);
+
+      //Heep cross check
+      emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
+      edelta_vs_eyptar->Fill(e_yptar, e_delta, FullWeight);
       
 	// if (Cut(ientry) < 0) continue;
 
 
    }
 
-   Double_t Yield = W_inv->Integral();
-   Double_t c_Yield = cut_W_inv->Integral();
-   cout << "Invariant Mass Integral: " << Yield << endl;
-   cout << "Estimated RATE: " << Yield /( time *3600. )<< " events/sec (Hz) " << endl;
-   cout << "Estimated RATE (hrs): " << Yield /( time  )<< " events/hr " << endl;
 
-   cout << "With Missing Energy Cut (-10 10) MeV" << endl;
-   cout << "Invariant Mass Integral: " << c_Yield << endl;
-   cout << "Estimated RATE: " << c_Yield /( time *3600. )<< " events/sec (Hz) " << endl;
-   cout << "Estimated RATE (hrs): " << c_Yield /( time  )<< " events/hr " << endl;
+//----Spectrometer resolution calculation-----
+
+   //hDdelta->Fit(hfit, "R");
+   //h_sigma = hfit->GetParameter(2);
+   //h_P =  h_sigma/100. * hP0 * 1000.;
+
+   //Get Standard deviation from histograms
+   h_sigma = res_hdelta->GetStdDev();
+   h_Psigma = res_hP->GetStdDev();
+
+   e_sigma = res_edelta->GetStdDev();
+   e_Psigma = res_ekf->GetStdDev();       //shms momentum resolution (GeV/c)
+
+   Pm_sigma = res_pmiss->GetStdDev();
+   Em_sigma = res_emiss->GetStdDev();
+
+   e_dtheta = res_etheta->GetStdDev();    //shms angle resolution (radians)
+   h_dtheta = res_htheta->GetStdDev();    //hms angle resolution (radians)
+   
+   //Estimate invariant mass W, resolution (dW = 19.9 Mev)
+   //dW = sqrt ( pow(Eb*e_Psigma/eP0,2) + pow(2.*Eb*e_Psigma*sin(theta_e/2.)*cos(theta_e/2.)*e_dtheta/MP,2) );
+   
+   
+   //Open a data file to store spec. resolution, estimated yields, rates, and statistical uncertainties
+   simc_file.ReplaceAll(".root", ".report");   // 5 = length( $name )
+ 
+   ofstream data;
+   data.open(simc_file); 
+
+   
+   
+   data << "HMS Delta Resolution: " << h_sigma << " %" << endl;
+   data << "HMS Momentum Resolution: " << h_Psigma*1000. << " MeV" << endl;
+   data << "HHMS Angle Resolution: " << h_dtheta/dtr << " deg" << endl;
+   data << "  " << endl;
+   data << "SHMS Delta Resolution: " << e_sigma << " %" << endl;
+   data << "SHMS Momentum Resolution: " << e_Psigma*1000. << " MeV" << endl;
+   data << "SHMS Angle Resolution: " << e_dtheta/dtr << " deg" << endl;
+
+   data << "Missing Momentum Resolution: " << Pm_sigma*1000. << " MeV" << endl;
+   data << "Missing Energy Resolution: " << Em_sigma*1000. << " MeV" << endl;
+   data << "Invariant Mass Resolution: " << dW << " GeV" << endl;
+   data << "  " << endl;
+   //data << "HMS Momentum Resolution " << h_dP << " MeV" << endl;
+   
+   //Estimate the Yield and rates for missing momentum
+   Double_t Yield;
+   Double_t Yield_cut;
+   Double_t Rates;
+   Double_t Rates_cut;
+
+   Double_t counts_per_charge;
+   
+   Yield = W_inv->Integral();
+   Yield_cut = cut_W_inv->Integral();
+   Rates = Yield /( time*3600. );
+   Rates_cut = Yield_cut /( time*3600.  );
+
+   data << "Yield:     " << Yield << endl;
+   data << "Yield w/ Cuts: " << Yield_cut << endl;
+   data << "   " << endl;
+   data << "Rate: " << Rates << " Hz" << endl;
+   data << "Rate /w Cuts: " << Rates_cut << " Hz" << endl;
+   data << "  " << endl;
+   data << "Counts/Charge: " << Yield / (Ib*time*3600.) << " Counts / uC" << endl; 
+
+  
+   data.close();
 
    
    outfile->Write();

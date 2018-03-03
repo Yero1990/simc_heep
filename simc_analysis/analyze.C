@@ -29,6 +29,18 @@ void analyze()
   TString simc_file;
   string report_file;
 
+  /*
+  //--Estimate Spectrometer Resolution
+  Ib = 40.;
+  time = 1.;
+  simc_file = "heep_simc_rad.root";
+  cout << "Analyzing: " << simc_file << endl;
+  chain.Add("../worksim/"+simc_file);
+  simc->Init(&chain);
+  simc->Loop(simc_file, Ib, time);
+  chain.Reset();
+  */
+  /*  
   //E12-10-003 H(e,e'p) Check!
   Ib = 40.;
   time = 1.;
@@ -38,18 +50,21 @@ void analyze()
   simc->Init(&chain);
   simc->Loop(simc_file, Ib, time);
   chain.Reset();
-
+  */
   
-  /*
+  
   //Coin Run 1929
-  electron_arm = "HMS";
+  //electron_arm = "HMS";
+  Ib = 40.;
+  time = 1.;
   simc_file = "ep_coin_simc_1929.root";
   cout << "Analyzing: " << simc_file << endl;
   chain.Add("../worksim/"+simc_file);
   simc->Init(&chain);
-  simc->Loop(simc_file, electron_arm);
+  simc->Loop(simc_file, Ib, time);
   chain.Reset();
 
+  /*
   
   //Coin Run 2279
   electron_arm = "SHMS";
