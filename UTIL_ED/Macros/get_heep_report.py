@@ -20,9 +20,8 @@ for line in f:
     if ('Run #' in data[0])  or ('HMS BCM4a Beam Cut Charge'in data[0]) or ('HMS BCM4b Beam Cut Charge'in data[0]) or('ROC2 Pre-Scaled Ps1 ROC2 Computer Live Time' in data[0]) or('E SING FID TRACK EFFIC'in data[0]or('HADRON SING FID TRACK EFFIC'in data[0])):#and
     
         line_no = line_no+1
-        if line_no == : ' '
         
-        elif line_no == 7:
+        if line_no == 7:
             fout.write('HMS ' + data[0]+ ': '+data[1])
 
         elif line_no == 8:

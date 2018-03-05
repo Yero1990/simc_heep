@@ -1,6 +1,7 @@
 #! /bin/bash
 
 SPEC="COIN"
+exp="heep"
 
 # What is the last run number for the spectrometer.
 # The pre-fix zero must be stripped because ROOT is ... well ROOT
@@ -21,12 +22,17 @@ fi
 numEvents=-1
 
 # Which scripts to run.
-script="./UTIL_ED/replay_production_coin_pElec_hProt.C"
+script="./UTIL_ED/REPLAY/replay_production_coin_pElec_hProt.C"
 #config="CONFIG/${SPEC}/PRODUCTION/${spec}_coin_production.cfg"
 
 # Which commands to run.
 runHcana="./hcana -q \"${script}(${runNum}, ${numEvents})\""
-runReportMon="./readout_${spec}.py ${runNum} ${numEvents}"
+runReportMon="./get_${exp}_report.py ${runNum} ${numEvents}"
+
+#Define smalle e12-10-003 report file directory
+reportDir="UTIL_ED/REPORT_FILES/heep_report_${runNum}.report"
+#Define command to open report file
+openReport="emacs ${reportDir} &"
 
 #runOnlineGUI="./online -f ${config} -r ${runNum}"
 #saveOnlineGUI="./online -f ${config} -r ${runNum} -P"
@@ -46,8 +52,8 @@ latestRootFile="${rootFileDir}/${replayFile}_latest.root"
 #latestMonPdfFile="${monPdfDir}/${spec}_coin_production_latest.pdf"
 
 # Where to put log.
-reportFile="REPORT_OUTPUT/${SPEC}/PRODUCTION/replay_coin_production_${runNum}_${numEvents}.report"
-summaryFile="REPORT_OUTPUT/${SPEC}/PRODUCTION/summary_production_${runNum}_${numEvents}.report"
+reportFile="REPORT_OUTPUT/${SPEC}/PRODUCTION/replay_coin_production_${runNum}_${numEvents}.txt"
+summaryFile="REPORT_OUTPUT/${SPEC}/PRODUCTION/summary_production_${runNum}_${numEvents}.txt"
 
 # What is base name of onlineGUI output.
 #outFile="${spec}_coin_production_${runNum}"
@@ -75,14 +81,25 @@ summaryFile="REPORT_OUTPUT/${SPEC}/PRODUCTION/summary_production_${runNum}_${num
   
   echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
   echo ""
-  echo "Running onlineGUI for analyzed ${SPEC} COIN run ${runNum}:"
-  echo " -> CONFIG:  ${config}"
-  echo " -> RUN:     ${runNum}"
-  echo " -> COMMAND: ${runOnlineGUI}"
+  echo "Running get_${exp}_report.py for analyzed ${SPEC} COIN run ${runNum}:"
+  echo " -> REPORT OUTPUT:  ${reportDir}"
   echo ""
   echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
 
-#  sleep 2
+  sleep 2
+  eval ${runReportMon}   #execute ./get_heep_report.py
+  eval ${openReport}     #open report file
+
+
+#  echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
+#  echo ""
+#  echo "Running onlineGUI for analyzed ${SPEC} COIN run ${runNum}:"
+#  echo " -> CONFIG:  ${config}"
+#  echo " -> RUN:     ${runNum}"
+#  echo " -> COMMAND: ${runOnlineGUI}"
+#  echo ""
+#  echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
+
 #  cd onlineGUI
 #  eval ${runOnlineGUI}
 #  eval ${saveOnlineGUI}
