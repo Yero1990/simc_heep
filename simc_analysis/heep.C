@@ -8,7 +8,7 @@
 #include <TCanvas.h>
 //#include <fstream>
 //#include <iostream>
-void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
+void heep::Loop(TString simc_file, Double_t Ib=1, Double_t time=1, Double_t charge=1) //Default parameter is 1
 {
 //   In a ROOT session, you can do:
 //      root> .L heep.C
@@ -265,20 +265,27 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
    //definition: total charge deposited on target over a time period
    //SIMC assumes it is #generated_events / 1mC
    
-   //Charge factor is the total integrated charge assuming a beam current and run time
-   //Double_t Ib = 40;       //beam current in microamps (micro-Coulombs / sec),   1 mC = 1000 uC
-   //Double_t time = 1.0;     //estimated time (in hours) a run takes (start - end) of run
 
-   //Double_t charge_factor = Ib * time * 3600. / 1000.;   //in units of mC
-
+   //If charge param is set to default, then use Ib and time input param 
+   if(charge==1)
+     {
+       cout << "Using Ib and time as inputs . . " << endl;
+       Double_t charge_factor = Ib * time * 3600. / 1000.;   //in units of mC
+    
+     }
 
    //run 1929
-   Double_t Q_bcm1 = 161907.065;   //in uC
-   Double_t Q_bcm2 = 164453.167;   //in uC
+   //Double_t Q_bcm1 = 161907.065;   //in uC
+   //Double_t Q_bcm2 = 164453.167;   //in uC
 
+   //check if set to default values, take average charge as input
+   if(time==1&&Ib==1)
+     {
+       cout << "Using total charge from data as input ... " << endl;
+       Double_t Q_avg = charge;
+       Double_t charge_factor = Q_avg / 1000.;   //in mC
+     }
 
-   Double_t Q_avg = (Q_bcm1 + Q_bcm2) / 2.;
-   Double_t charge_factor = Q_avg / 1000.;   //in mC
 
    //Tracking efficiencies and beamON time
    Double_t cpu_dt;     //computer deadtime
@@ -287,9 +294,9 @@ void heep::Loop(TString simc_file, Double_t Ib, Double_t time)
    Double_t beam_time;
 
  
-   e_trk_eff = 0.9981;
-   h_trk_eff = 0.9136;      //shms hadron tracking eff
-   cpu_dt = 0.9987;    //99.877 % livetime -- run 1929
+   e_trk_eff = 1.0;
+   h_trk_eff = 1.0;     
+   cpu_dt = 1.0;   
 
    
    Double_t FullWeight;
