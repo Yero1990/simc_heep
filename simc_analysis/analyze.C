@@ -3,13 +3,15 @@
 #include "heep.C"
 #include <fstream>
 
+
+//Define prototype function
+Double_t getCharge(string spec, string bcm, TString filename);
+
 // run an analysis based on SNT.C the analyysis script for the simc n-tuple
-//
 // this script is setup for the proposed commissioning runs. the steps in pm are 0.15 GeV/c
 
 void analyze()
 {
-
 
 
   gROOT->Reset();
@@ -40,7 +42,7 @@ void analyze()
   simc->Loop(simc_file, Ib, time);
   chain.Reset();
   */
-  /*  
+  
   //E12-10-003 H(e,e'p) Check!
   Ib = 40.;
   time = 1.;
@@ -50,7 +52,7 @@ void analyze()
   simc->Init(&chain);
   simc->Loop(simc_file, Ib, time);
   chain.Reset();
-  */
+  
   
   
   //Coin Run 1929
@@ -76,4 +78,48 @@ void analyze()
   chain.Reset();
   */
 
+}
+
+
+Double_t getCharge(string spec, string bcm, TString filename)
+{
+   /*Brief: Get the accumulated charge if beam current was above threhsold (typically > 5 uA)
+   */
+
+  /*PARAMETERS: 
+    spec --> "HMS" or "SHMS"
+    bcm --> "BCM1", "BCM2", "BCM4A", "BCM4B", "BCM17"
+    filename --> "/path/to/ROOTfile/file.root"
+  */
+  
+  TFile *data_file = new TFile(filename, "READ");
+  Double_t charge;    //in uC
+
+  if (spec=="HMS")
+    {
+
+      TTree *TSH = (TTree*)data_file->Get("TSH");		
+      
+      if (bcm=="BCM1") { charge = TSH->GetMaximum("H.BCM1.scalerChargeCut"); }
+      else if (bcm=="BCM2") { charge = TSH->GetMaximum("H.BCM2.scalerChargeCut"); }                                     
+      else if (bcm=="BCM4A") { charge = TSH->GetMaximum("H.BCM4A.scalerChargeCut"); }                                       
+      else if (bcm=="BCM4B") { charge = TSH->GetMaximum("H.BCM4B.scalerChargeCut"); }    
+      else if (bcm=="BCM17") { charge = TSH->GetMaximum("H.BCM17.scalerChargeCut"); }                        
+      return charge;
+      
+    }
+	  
+  else if (spec=="SHMS")
+    {
+      
+      TTree *TSP = (TTree*)data_file->Get("TSP");		
+      
+      if (bcm=="BCM1") { charge = TSP->GetMaximum("P.BCM1.scalerChargeCut"); }
+      else if (bcm=="BCM2") { charge = TSP->GetMaximum("P.BCM2.scalerChargeCut"); }                                     
+      else if (bcm=="BCM4A") { charge = TSP->GetMaximum("P.BCM4A.scalerChargeCut"); }                                       
+      else if (bcm=="BCM4B") { charge = TSP->GetMaximum("P.BCM4B.scalerChargeCut"); }    
+      else if (bcm=="BCM17") { charge = TSP->GetMaximum("P.BCM17.scalerChargeCut"); }                        
+      return charge;
+      
+    }
 }
