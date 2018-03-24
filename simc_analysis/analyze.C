@@ -4,8 +4,10 @@
 #include <fstream>
 
 
-//Define prototype function
+//Define prototype function to get integrated bcm charge
 Double_t getCharge(string spec, string bcm, TString filename);
+
+
 
 // run an analysis based on SNT.C the analyysis script for the simc n-tuple
 // this script is setup for the proposed commissioning runs. the steps in pm are 0.15 GeV/c
@@ -22,14 +24,17 @@ void analyze()
   //Create an instance of the heep class
   heep* simc = new heep(&chain);
 
+  
   TString electron_arm;
   Double_t Ib;       //beam current in uA
   Double_t time;     //TIME in hrs
-
+  Double_t charge;
+  Double_t Q1, Q2;
+  Int_t runNUM, evtNUM;
   //Chain each file
 
   TString simc_file;
-  string report_file;
+  TString data_file;
 
   /*
   //--Estimate Spectrometer Resolution
@@ -44,16 +49,24 @@ void analyze()
   */
   
   //E12-10-003 H(e,e'p) Check!
-  Ib = 40.;
-  time = 1.;
-  simc_file = "heep_simc.root";
+
+  //------Get TRUE accumulated charge from actual data to use in SIMC--------
+  runNUM = 1851;
+  evtNUM = -1;
+  data_file = Form("../ROOTfiles/coin_replay_production_%d_%d.root", runNUM, evtNUM);
+  Q1 = getCharge("SHMS", "BCM4A", data_file);
+  Q2 = getCharge("SHMS", "BCM4B", data_file);
+  charge = (Q1 + Q2)/2.
+  //-------------------------------------------------------------------------
+    
+  simc_file = "heep_simc_rad.root";
   cout << "Analyzing: " << simc_file << endl;
   chain.Add("../worksim/"+simc_file);
   simc->Init(&chain);
-  simc->Loop(simc_file, Ib, time);
+  simc->Loop(simc_file, 1, 1, charge);
   chain.Reset();
   
-  
+  /*
   
   //Coin Run 1929
   //electron_arm = "HMS";
@@ -66,7 +79,7 @@ void analyze()
   simc->Loop(simc_file, Ib, time);
   chain.Reset();
 
-  /*
+  
   
   //Coin Run 2279
   electron_arm = "SHMS";
