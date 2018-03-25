@@ -51,12 +51,12 @@ void analyze()
   //E12-10-003 H(e,e'p) Check!
 
   //------Get TRUE accumulated charge from actual data to use in SIMC--------
-  runNUM = 1851;
+  runNUM = 2283;
   evtNUM = -1;
   data_file = Form("../ROOTfiles/coin_replay_production_%d_%d.root", runNUM, evtNUM);
   Q1 = getCharge("SHMS", "BCM4A", data_file);
   Q2 = getCharge("SHMS", "BCM4B", data_file);
-  charge = (Q1 + Q2)/2.
+  charge = (Q1 + Q2)/2.;
   //-------------------------------------------------------------------------
     
   simc_file = "heep_simc_rad.root";
