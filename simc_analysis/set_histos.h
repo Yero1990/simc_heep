@@ -133,7 +133,7 @@ Double_t eyptar_xmax = 0.025;
 
 Double_t edelta_nbins = nbins;
 Double_t edelta_xmin = -16.;
-Double_t edelta_xmax = 10.;
+Double_t edelta_xmax = 20.;
 
 //Electron Arm Focal Plane Quantities
 Double_t exfp_nbins = nbins;

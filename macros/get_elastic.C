@@ -42,13 +42,13 @@ void get_elastic(TString target, Double_t Ebeam, Double_t theta_elec)
   m_c = 11.187898;
  
   
-  if(target=="hydrogen") {m_targ = m_p;}
-  else if(target=="carbon") {m_targ = m_c;}
+  if(target=="h") {m_targ = m_p;}
+  else if(target=="c") {m_targ = m_c;}
 
   E_beam = Ebeam;
   theta_e = theta_elec;
 
-TString ofile = target+"_elastics_kin.dat";
+  TString ofile = target+"_elastics_kin.dat";
   ofstream ofs;
   ofs.open(ofile);
 

@@ -78,7 +78,7 @@ int fmake_tree()
   }
 
   // create output file in worksim
-  TFile *f = new TFile("worksim/simc.root", "RECREATE", NTtitle);
+  TFile *f = new TFile("worksim_voli/simc.root", "RECREATE", NTtitle);
 
   // Create the tree
 

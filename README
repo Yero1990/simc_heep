@@ -1,0 +1,13 @@
+HOW-TO-RUN SIMC on H(e,e'p) 
+
+1) cd simc_heep/infiles directory and create the input file with the
+   desired kinematics. You can copy a pre-existing .data file as template
+
+2) Add the input data file to simc_heep/input_kinematics.data
+
+3) execute: >> root -l run_simc_h2.C
+   **This script will read the input_kinematics.data file and execute
+     the code to do the raw unweighted simulation (./run_simc.sh )
+     Then, it will open the current.hist file to extract the normfac.
+     Finally, it execute the fmake_tree.C code to make the simc root file
+     containing all the relevant leafs in: /worksim_voli/
