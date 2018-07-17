@@ -7,7 +7,7 @@ void run_simc_h2()
 
   string INDIR = "./infiles/";
   string OUTDIR = "./outfiles/";
-  string WORKSIM="./worksim/";
+  string WORKSIM="./worksim_voli/";
 
   //********** read input kinematics data file *************
 

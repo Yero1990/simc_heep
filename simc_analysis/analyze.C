@@ -51,21 +51,37 @@ void analyze()
   //E12-10-003 H(e,e'p) Check!
 
   //------Get TRUE accumulated charge from actual data to use in SIMC--------
-  runNUM = 2283;
-  evtNUM = -1;
-  data_file = Form("../ROOTfiles/coin_replay_production_%d_%d.root", runNUM, evtNUM);
-  Q1 = getCharge("SHMS", "BCM4A", data_file);
-  Q2 = getCharge("SHMS", "BCM4B", data_file);
-  charge = (Q1 + Q2)/2.;
+  //  runNUM = 2283;
+  // evtNUM = -1;
+  // data_file = Form("../ROOTfiles/coin_replay_production_%d_%d.root", runNUM, evtNUM);
+  // Q1 = getCharge("SHMS", "BCM4A", data_file);
+  // Q2 = getCharge("SHMS", "BCM4B", data_file);
+  // charge = (Q1 + Q2)/2.;
   //-------------------------------------------------------------------------
     
-  simc_file = "heep_simc_rad.root";
+  simc_file = "heep_elasticsv1_rad.root";
   cout << "Analyzing: " << simc_file << endl;
-  chain.Add("../worksim/"+simc_file);
+  chain.Add("../worksim_voli/"+simc_file);
   simc->Init(&chain);
-  simc->Loop(simc_file, 1, 1, charge);
+  simc->Loop(simc_file, 40., 1., 1);
   chain.Reset();
   
+      
+  simc_file = "heep_elasticsv2_rad.root";
+  cout << "Analyzing: " << simc_file << endl;
+  chain.Add("../worksim_voli/"+simc_file);
+  simc->Init(&chain);
+  simc->Loop(simc_file, 40., 1., 1);
+  chain.Reset();
+
+      
+  simc_file = "heep_elasticsv3_rad.root";
+  cout << "Analyzing: " << simc_file << endl;
+  chain.Add("../worksim_voli/"+simc_file);
+  simc->Init(&chain);
+  simc->Loop(simc_file, 40., 1., 1);
+  chain.Reset();
+
   /*
   
   //Coin Run 1929
