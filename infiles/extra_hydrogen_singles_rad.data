@@ -10,10 +10,10 @@
      gen%ywid  =  0.004235		!  beam width - one sigma (cm)  (42microns)
      targ%fr_pattern  =  1		!  raster pattern: 1=square, 2=circular
      targ%fr1  =  0.2		!  horizontal size OR inner radius(2)
-     targ%fr2  =  0.2		!  vertical size OR outer radius(2)
-     targ%xoffset  =  0.0		!  target x-offset (cm): +x = beam right
-     targ%yoffset  =  0.0		!  target y-offset (cm): +y = up
-     targ%zoffset  =  0.0		!  target z-offset (cm): +z = downstream
+     targ%fr2  =  0.2		!  vertical size OR outer radius(2)                                 When Comparing SIMC/DATA, follow below !
+     targ%xoffset  = 0.0 ! 0.001345		  target x-offset (cm): -1.0 * EPICS_yOffset  (tar_x [SIMC-transport coord. sys]  = -1.0 * H.react.y [hallc_replay] )
+     targ%yoffset  = 0.0 ! 0.07016		 target y-offset (cm): -1.0 * EPICS_xOffset  (tar_y [SIMC-transport coord. sys]  =  H.react.x [hallc_replay] )
+     targ%zoffset  =  0.0		!  target z-offset (cm):  EPICS_zOffset        (tar_z [SIMC-transport coord. sys]  =  H.react.z [hallc_replay] )
    				!   zreal = znominal + zoffset
 / 
 !These are offsets applied before the call to the single arm montecarlos.
@@ -22,8 +22,8 @@
 ! thus pointing above target and giving a negative shift to particle's xptar)
 
  &E_ARM_OFFSET
-     spec%e%offset%x  =  0.		!  x offset (cm)
-     spec%e%offset%y  =  0.		!  y offset (cm)
+     spec%e%offset%x  =  0.0 !0.1427		  x offset (cm)
+     spec%e%offset%y  =  0.0 !0.0722		  y offset (cm)
      spec%e%offset%z  =  0.		!  z offset (cm)
      spec%e%offset%xptar  =  0.	!  xptar offset (mr)
      spec%e%offset%yptar  =  0.	!  yptar offset (mr)
@@ -43,10 +43,10 @@
      spect_mode  =  -2	        !  0=e+p arms, -1=p arm, -2=e arm only, 1=none
      cuts%Em%min  =  0.	        !  (Em.min=Em.max=0.0 gives wide open cuts)
      cuts%Em%max  =  200.	!  Must be wider than cuts in analysis(elastic or e,e'p)
-     using_Eloss  =  T	        !  (ONE = TRUE)
+     using_Eloss  =  F	        !  (ONE = TRUE)
      correct_Eloss  = F	        !  ONE = correct reconstructed events for eloss.
      correct_raster  =  T	!  ONE = Reconstruct events using 'raster' matrix elements.
-     mc_smear  =  T		!  ONE = target & hut mult scatt AND DC smearing.
+     mc_smear  =  F		!  ONE = target & hut mult scatt AND DC smearing.
      deForest_flag  =  0	!  0=sigcc1, 1=sigcc2, -1=sigcc1 ONSHELL
      rad_flag  =  0		!  (radiative option #1...see init.f)
      extrad_flag  =  2	        !  (rad. option #2...see init.f)

@@ -184,7 +184,7 @@ singles::singles(TTree *tree) : fChain(0)
   
   if (tree == 0) {
 
-    string simc_file = "hms_single_deltascan_1161_noSMEAR_noEloss.root";   //added
+    string simc_file = "hms_single_deltascan_1161.root";   //added
     //TString f0 = "../worksim/simc_ROOTfiles_list.data";
     //ifstream  infile(f0);
     //infile >> simc_file;
