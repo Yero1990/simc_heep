@@ -1,0 +1,499 @@
+//Script to make comparison between SIMC and Commissioning Data from HallC Spring 2018
+//Compare Target Reconstruction/FOCAL PLANE/ Kinematics Variables
+
+void compare_heep(int runNUM, int evtNUM)
+{
+  
+  gStyle->SetOptStat(1001111);
+  //TString simc_filename =  "weighted_ep_coin_simc_1854.root"; //"ep_coin_simc_1929.root";
+  
+  //Pre-defined SIMC/data root file names containing histogram object to comapare
+  TString simc_filename =  Form("Weighted_simc_hms_single_deltascan_%d_noSMEAR_noEloss.root ", runNUM);
+  TString data_filename =  Form("delta_scan_data_%d_%d.root", runNUM, evtNUM); 
+
+  TString simc_path;
+  TString data_path;
+  
+  simc_path = "../simc_analysis/"+simc_filename;
+  data_path = "./"+data_filename;
+  
+  //Open SIMC/data ROOT files;
+  TFile *simc_file = new TFile(simc_path);
+  TFile *data_file = new TFile(data_path);
+
+  //---------------Target ----------------
+  //Define SIMC histos ('h'-->hadron arm,  'e'-->electron arm)
+  
+  TH1F *simc_xtar =  0;
+  TH1F *simc_ytar =  0;
+  TH1F *simc_ztar =  0;
+
+  //Define data histos
+  TH1F *data_xtar = 0;
+  TH1F *data_ytar = 0;
+  TH1F *data_ztar = 0;
+
+  //---------------Target Reconstruction Variables----------------
+  //Define SIMC histos ('h'-->hadron arm,  'e'-->electron arm)
+  TH1F *simc_eytar =  0;
+  TH1F *simc_exptar =  0;
+  TH1F *simc_eyptar =  0;
+  TH1F *simc_edelta =  0;
+  
+  //Define data histos
+  TH1F *data_eytar = 0;
+  TH1F *data_exptar =  0;
+  TH1F *data_eyptar =  0;
+  TH1F *data_edelta =  0;
+
+  //-----------------------------------------------------------
+ 
+  //--------------FOCAL PLANE VARIABLES------------------------
+
+ //Define SIMC histos ('h'-->hadron arm,  'e'-->electron arm)
+  TH1F *simc_exfp =  0;
+  TH1F *simc_eyfp =  0;
+  TH1F *simc_expfp =  0;
+  TH1F *simc_eypfp =  0;
+
+  
+  //Define data histos
+  TH1F *data_exfp =  0;
+  TH1F *data_eyfp =  0;
+  TH1F *data_expfp =  0;
+  TH1F *data_eypfp =  0;
+
+  //--------------------------------------------------------------
+
+  //-------------------------KINEMATICS---------------------------
+  TH1F *simc_Q2 =  0;
+  TH1F *simc_omega =  0;
+  TH1F *simc_W =  0;
+  TH1F *simc_thq = 0;
+
+  TH1F *simc_xbj = 0;
+  TH1F *simc_th_elec = 0;                                  
+  TH1F *simc_kf = 0;  
+
+  //Define data histos
+  TH1F *data_Q2 =  0;
+  TH1F *data_omega =  0;
+  TH1F *data_W =  0;
+  TH1F *data_thq = 0;
+
+  TH1F *data_xbj = 0;
+  TH1F *data_th_elec = 0;
+  TH1F *data_kf = 0;
+  
+  //---------------------------------------------------------------
+
+ //change to simc_file
+  simc_file->cd();
+
+  //----------Get Target Histograms------------------
+  //Get Histogram objects from SIMC rootfile
+  simc_file->GetObject("cut_x_tar", simc_xtar);
+  simc_file->GetObject("cut_y_tar", simc_ytar);
+  simc_file->GetObject("cut_z_tar", simc_ztar);
+
+
+  //Set SIMC Histo Aesthetics
+  simc_xtar->SetLineColor(kRed);
+  simc_xtar->SetLineWidth(3);
+  simc_ytar->SetLineColor(kRed);
+  simc_ytar->SetLineWidth(3);
+  simc_ztar->SetLineColor(kRed);
+  simc_ztar->SetLineWidth(3);
+
+  
+  //change to data_file
+  data_file->cd();
+
+  //Get Histogram objects from data rootfile
+  data_file->GetObject("data_x_tar", data_xtar);
+  data_file->GetObject("data_y_tar", data_ytar);
+  data_file->GetObject("data_z_tar", data_ztar);
+
+  
+  //Set data Histo Aesthetics
+  data_xtar->SetFillColorAlpha(kBlue, 0.35);
+  data_xtar->SetFillStyle(3004);
+  data_ytar->SetFillColorAlpha(kBlue, 0.35);
+  data_ytar->SetFillStyle(3004);
+  data_ztar->SetFillColorAlpha(kBlue, 0.35);
+  data_ztar->SetFillStyle(3004);
+
+  //-----------------------------------------------------------------
+
+
+  //---------------------------------------------------------------
+
+ //change to simc_file
+  simc_file->cd();
+
+  //----------Get Target Reconstructed Histograms------------------
+  //Get Histogram objects from SIMC rootfile
+  simc_file->GetObject("cut_eytar", simc_eytar);
+  simc_file->GetObject("cut_exptar", simc_exptar);
+  simc_file->GetObject("cut_eyptar", simc_eyptar);
+  simc_file->GetObject("cut_edelta", simc_edelta);
+
+
+  //Set SIMC Histo Aesthetics
+  simc_eytar->SetLineColor(kRed);
+  simc_eytar->SetLineWidth(3);
+  simc_exptar->SetLineColor(kRed);
+  simc_exptar->SetLineWidth(3);
+  simc_eyptar->SetLineColor(kRed);
+  simc_eyptar->SetLineWidth(3);
+  simc_edelta->SetLineColor(kRed);
+  simc_edelta->SetLineWidth(3);
+  
+  
+  //change to data_file
+  data_file->cd();
+
+  //Get Histogram objects from data rootfile
+  data_file->GetObject("data_eytar", data_eytar);
+  data_file->GetObject("data_exptar", data_exptar);
+  data_file->GetObject("data_eyptar", data_eyptar);
+  data_file->GetObject("data_edelta", data_edelta);
+  
+  
+  //Set data Histo Aesthetics
+  data_eytar->SetFillColorAlpha(kBlue, 0.35);
+  data_eytar->SetFillStyle(3004);
+  data_exptar->SetFillColorAlpha(kBlue, 0.35);
+  data_exptar->SetFillStyle(3004);
+  data_eyptar->SetFillColorAlpha(kBlue, 0.35);
+  data_eyptar->SetFillStyle(3004);
+  data_edelta->SetFillColorAlpha(kBlue, 0.35);
+  data_edelta->SetFillStyle(3004);
+  
+  //-----------------------------------------------------------------
+
+  //---------------Get FOCAL PLANE Histograms------------------------
+
+   //change to simc_file
+  simc_file->cd();
+
+  //Get Histogram objects from SIMC rootfile
+  simc_file->GetObject("cut_exfp", simc_exfp);
+  simc_file->GetObject("cut_eyfp", simc_eyfp);
+  simc_file->GetObject("cut_expfp", simc_expfp);
+  simc_file->GetObject("cut_eypfp", simc_eypfp);
+
+
+  //Set SIMC Histo Aesthetics
+  simc_exfp->SetLineColor(kRed);
+  simc_exfp->SetLineWidth(3);
+  simc_eyfp->SetLineColor(kRed);
+  simc_eyfp->SetLineWidth(3);
+  simc_expfp->SetLineColor(kRed);
+  simc_expfp->SetLineWidth(3);
+  simc_eypfp->SetLineColor(kRed);
+  simc_eypfp->SetLineWidth(3);
+  
+  
+  //change to data_file
+  data_file->cd();
+
+  //Get Histogram objects from data rootfile
+  data_file->GetObject("data_exfp", data_exfp);
+  data_file->GetObject("data_eyfp", data_eyfp);
+  data_file->GetObject("data_expfp", data_expfp);
+  data_file->GetObject("data_eypfp", data_eypfp);
+
+  
+  //Set data Histo Aesthetics
+  data_exfp->SetFillColorAlpha(kBlue, 0.35);
+  data_exfp->SetFillStyle(3004);
+  data_eyfp->SetFillColorAlpha(kBlue, 0.35);
+  data_eyfp->SetFillStyle(3004);
+  data_expfp->SetFillColorAlpha(kBlue, 0.35);
+  data_expfp->SetFillStyle(3004);
+  data_eypfp->SetFillColorAlpha(kBlue, 0.35);
+  data_eypfp->SetFillStyle(3004);
+
+  //--------------------------------------------------------------
+
+  //------------------Get KINEMATICS VARIABLES--------------------
+
+   //change to simc_file
+  simc_file->cd();
+
+  //Get Histogram objects from SIMC rootfile
+  simc_file->GetObject("cut_Q_2", simc_Q2);
+  simc_file->GetObject("cut_omega", simc_omega);
+  simc_file->GetObject("cut_W_inv", simc_W);
+  simc_file->GetObject("cut_theta_q", simc_thq);
+
+  simc_file->GetObject("cut_xbj", simc_xbj);
+  simc_file->GetObject("cut_theta_elec", simc_th_elec);
+  simc_file->GetObject("cut_kf", simc_kf);
+
+  
+
+  //Set SIMC Histo Aesthetics
+  simc_Q2->SetLineColor(kRed);
+  simc_Q2->SetLineWidth(3);
+  simc_omega->SetLineColor(kRed);
+  simc_omega->SetLineWidth(3);
+  simc_W->SetLineColor(kRed);
+  simc_W->SetLineWidth(3);
+  simc_thq->SetLineColor(kRed);
+  simc_thq->SetLineWidth(3);
+
+  simc_xbj->SetLineColor(kRed);
+  simc_xbj->SetLineWidth(3);
+  simc_th_elec->SetLineColor(kRed);
+  simc_th_elec->SetLineWidth(3);
+  simc_kf->SetLineColor(kRed);
+  simc_kf->SetLineWidth(3);
+  //change to data_file
+  data_file->cd();
+  
+  //Get Histogram objects from data rootfile
+  data_file->GetObject("data_Q2", data_Q2);
+  data_file->GetObject("data_omega", data_omega);
+  data_file->GetObject("data_W_inv", data_W);
+  data_file->GetObject("data_theta_q", data_thq);
+
+
+  data_file->GetObject("data_xbj", data_xbj);
+  data_file->GetObject("data_theta_elec", data_th_elec);
+  data_file->GetObject("data_kf", data_kf);
+
+  //Set data Histo Aesthetics
+  data_Q2->SetFillColorAlpha(kBlue, 0.35);
+  data_Q2->SetFillStyle(3004);
+  data_omega->SetFillColorAlpha(kBlue, 0.35);
+  data_omega->SetFillStyle(3004);
+  data_W->SetFillColorAlpha(kBlue, 0.35);
+  data_W->SetFillStyle(3004);
+  data_thq->SetFillColorAlpha(kBlue, 0.35);
+  data_thq->SetFillStyle(3004);
+
+  data_xbj->SetFillColorAlpha(kBlue, 0.35);
+  data_xbj->SetFillStyle(3004);
+  data_th_elec->SetFillColorAlpha(kBlue, 0.35);
+  data_th_elec->SetFillStyle(3004);
+  data_kf->SetFillColorAlpha(kBlue, 0.35);
+  data_kf->SetFillStyle(3004);
+
+
+  //Overlay SIMC/data plots (*** VERY IMPORTANT ***: Range and #bins must be same)
+
+   //Set Legend
+   auto leg1 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg2 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg3 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg4 = new TLegend(0.1,0.8,0.28,0.9);
+
+   //Set Legend
+   auto leg5 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg6 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg7 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg8 = new TLegend(0.1,0.8,0.28,0.9);
+
+
+   //-----------------PLOT Target Reconstructed Variables SIMC/Data comparison-----------------------
+
+   //Create A Canvas to store Target Recon. variable comparisons in HADRON ARM
+   
+   TCanvas *c1 = new TCanvas("c1", "Electron Arm: Target Reconstruction", 2000, 1000);
+   c1->Divide(2,2);
+
+   c1->cd(1);
+   data_eytar->Draw();
+   simc_eytar->Draw("sames");
+   leg5->AddEntry(data_eytar,"Data","f");
+   leg5->AddEntry(simc_eytar,"SIMC");
+   leg5->Draw();
+
+   c1->cd(2);
+   data_exptar->Draw();
+   simc_exptar->Draw("sames");
+   leg6->AddEntry(data_exptar,"Data", "f");
+   leg6->AddEntry(simc_exptar,"SIMC");
+   leg6->Draw();
+
+   c1->cd(3);
+   data_eyptar->Draw();
+   simc_eyptar->Draw("sames");
+   leg7->AddEntry(data_eyptar,"Data", "f");
+   leg7->AddEntry(simc_eyptar,"SIMC");
+   leg7->Draw();
+     
+   c1->cd(4);
+   data_edelta->Draw();
+   simc_edelta->Draw("sames");
+   leg8->AddEntry(data_edelta,"Data", "f");
+   leg8->AddEntry(simc_edelta,"SIMC");
+   leg8->Draw();
+
+   //------------------------------------------------------------------------------
+
+
+   //-----------------PLOT FOCAL PLANE  Variables SIMC/Data comparison-----------------------
+
+  //Set Legend
+   auto leg9 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg10 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg11 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg12 = new TLegend(0.1,0.8,0.28,0.9);
+
+      //Set Legend
+   auto leg13 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg14 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg15 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg16 = new TLegend(0.1,0.8,0.28,0.9);
+
+   TCanvas *c2 = new TCanvas("c2", "Electron Arm: Focal Plane", 2000, 1000);
+   c2->Divide(2,2);
+
+   c2->cd(1);
+   data_exfp->Draw();
+   simc_exfp->Draw("sames");
+   leg13->AddEntry(data_exfp,"Data","f");
+   leg13->AddEntry(simc_exfp,"SIMC");
+   leg13->Draw();
+   
+   c2->cd(2);
+   data_eyfp->Draw();
+   simc_eyfp->Draw("sames");
+   leg14->AddEntry(data_eyfp,"Data", "f");
+   leg14->AddEntry(simc_eyfp,"SIMC");
+   leg14->Draw();
+
+   c2->cd(3);
+   data_expfp->Draw();
+   simc_expfp->Draw("sames");
+   leg15->AddEntry(data_expfp,"Data", "f");
+   leg15->AddEntry(simc_expfp,"SIMC");
+   leg15->Draw();
+     
+   c2->cd(4);
+   data_eypfp->Draw();
+   simc_eypfp->Draw("sames");
+   leg16->AddEntry(data_eypfp,"Data", "f");
+   leg16->AddEntry(simc_eypfp,"SIMC");
+   leg16->Draw();
+
+   //----------------------------------------------------------- 
+ 
+   //-----------------PLOT KINEMATICS SIMC/Data comparison---------------
+
+//Set Legend
+   auto leg17 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg18 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg19 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg20 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg21 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg22 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg23 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg24 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg25 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg26 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg27 = new TLegend(0.1,0.8,0.28,0.9);
+   
+
+
+   //Create A Canvas to store kinematic variable comparisons
+   TCanvas *c3 = new TCanvas("c3", "Kinematics", 2000, 1000);
+   c3->Divide(4,2);
+
+   c3->cd(1);
+   data_Q2->GetXaxis()->SetTitle("Q^{2} [GeV^{2}]");
+   data_Q2->GetXaxis()->CenterTitle();
+   data_Q2->Draw();
+   simc_Q2->Draw("sames");
+   leg19->AddEntry(data_Q2,"Data", "f");
+   leg19->AddEntry(simc_Q2,"SIMC");
+   leg19->Draw();
+     
+   c3->cd(2);
+   data_omega->GetXaxis()->SetTitle("Energy Transfer, #omega [GeV]");
+   data_omega->GetXaxis()->CenterTitle();  
+   data_omega->Draw();
+   simc_omega->Draw("sames");
+   leg20->AddEntry(data_omega,"Data", "f");
+   leg20->AddEntry(simc_omega,"SIMC");
+   leg20->Draw();
+
+   c3->cd(3);
+   data_W->GetXaxis()->SetTitle("Invariant Mass, W [GeV]");
+   data_W->GetXaxis()->CenterTitle();
+   data_W->Draw();
+   simc_W->Draw("sames");
+   leg21->AddEntry(data_W,"Data", "f");
+   leg21->AddEntry(simc_W,"SIMC");
+   leg21->Draw();
+
+   c3->cd(4);
+   data_thq->GetXaxis()->SetTitle("q-vector Angle, #theta_{q} [deg]");
+   data_thq->GetXaxis()->CenterTitle();
+   data_thq->Draw();
+   simc_thq->Draw("sames");
+   leg22->AddEntry(data_thq,"Data", "f");
+   leg22->AddEntry(simc_thq,"SIMC");
+   leg22->Draw();
+
+   c3->cd(5);
+   simc_xbj->Draw();
+   data_xbj->Draw("sames");
+   leg23->AddEntry(data_xbj,"Data","f");
+   leg23->AddEntry(simc_xbj,"SIMC");
+   leg23->Draw();
+
+   c3->cd(6);
+   data_th_elec->GetXaxis()->SetTitle("Electron Scatt. Angle, #theta_{e} [deg]");
+   data_th_elec->GetXaxis()->CenterTitle();
+   data_th_elec->Draw();
+   simc_th_elec->Draw("sames");
+   leg24->AddEntry(data_th_elec,"Data","f");
+   leg24->AddEntry(simc_th_elec,"SIMC");
+   leg24->Draw();
+
+   c3->cd(7);
+   data_kf->GetXaxis()->SetTitle("Electron Final Momentum, k_{f} [GeV/c] ");
+   data_kf->GetXaxis()->CenterTitle();   
+   data_kf->Draw();
+   simc_kf->Draw("sames");
+   leg25->AddEntry(data_kf,"Data","f");
+   leg25->AddEntry(simc_kf,"SIMC");
+   leg25->Draw();
+
+ //-----------------PLOT TARGET  Variables SIMC/Data comparison-----------------------
+
+  //Set Legend
+   auto leg28 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg29 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg30 = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg31 = new TLegend(0.1,0.8,0.28,0.9);
+
+
+   TCanvas *c4 = new TCanvas("c4", "Target Variables", 2000, 1000);
+   c4->Divide(3,1);
+
+   c4->cd(1);
+   data_xtar->Draw();
+   simc_ytar->Draw("sames");
+   leg28->AddEntry(data_xtar,"Data","f");
+   leg28->AddEntry(simc_ytar,"SIMC");
+   leg28->Draw();
+  
+   c4->cd(2);
+   data_ytar->Draw();
+   simc_xtar->Draw("sames");
+   leg29->AddEntry(data_ytar,"Data","f");
+   leg29->AddEntry(simc_xtar,"SIMC");
+   leg29->Draw();
+
+   c4->cd(3);
+   data_ztar->Draw();
+   simc_ztar->Draw("sames");
+   leg30->AddEntry(data_ztar,"Data","f");
+   leg30->AddEntry(simc_ztar,"SIMC");
+   leg30->Draw();
+}

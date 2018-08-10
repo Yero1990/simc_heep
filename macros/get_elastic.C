@@ -93,7 +93,7 @@ void get_elastic(TString target, Double_t Ebeam, Double_t theta_elec)
   cout << "p-Scattered Energy = " << E_p << " GeV" << endl;		 
   cout << "p-Scattered Momentum = " << p_p << " GeV/c" << endl;		 
   cout << "p-Scattered Angle = " << theta_p *rad2deg<< " deg " << endl;
-  cout << "*************************q" << endl;
+  cout << "*************************" << endl;
 
   //Write results to a file
   ofs << "*****" << target + "Elastics ! ***** " << endl;
@@ -116,7 +116,7 @@ void get_elastic(TString target, Double_t Ebeam, Double_t theta_elec)
   ofs << "p-Scattered Energy = " << E_p << " GeV" << endl;		 
   ofs << "p-Scattered Momentum = " << p_p << " GeV/c" << endl;		 
   ofs << "p-Scattered Angle = " << theta_p *rad2deg<< " deg " << endl;
-  ofs << "*************************q" << endl;
+  ofs << "*************************" << endl;
 
   
   
