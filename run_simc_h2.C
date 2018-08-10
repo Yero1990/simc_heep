@@ -1,3 +1,5 @@
+#include <fstream>
+
 void get_normfac(string ifile);
 
 
@@ -19,7 +21,7 @@ void run_simc_h2()
   vector <string> ikin_vec;
 
   
-  ikin.open(ikin_file);
+  ikin.open(ikin_file.c_str());
 
   if (!ikin)
     {
@@ -63,7 +65,8 @@ void run_simc_h2()
 	cout << "copy: " << input_path.c_str() << " to ./infiles/current.data " << endl; 
 	//copy input file name to current.data
 	gSystem->CopyFile(input_path.c_str(), "./infiles/current.data"); 
-
+	
+	
 	//Run SIMC  
 	gSystem->Exec("./run_simc.sh current.data");
 	
@@ -96,7 +99,7 @@ void run_simc_h2()
 	
 	//EXIT ROOT
 	//gSystem->Exit(kTRUE);
-	
+		
 	
       }
     
@@ -112,7 +115,7 @@ void get_normfac(string ifile)
   string line;
   string found;
   size_t pos;
-  file.open (ifile); 
+  file.open (ifile.c_str()); 
 
   //find the line containing normfac
   while (getline(file, line))    //6 being the 6th line
