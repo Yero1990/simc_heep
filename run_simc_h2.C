@@ -121,9 +121,8 @@ void run_simc_h2(Int_t simc=0)
 	    
 	
 	//EXIT ROOT
-	    //gSystem->Exit(kTRUE);
-	    
-	    
+  	    //gSystem->Exit(kTRUE);
+
       }
        
 	
