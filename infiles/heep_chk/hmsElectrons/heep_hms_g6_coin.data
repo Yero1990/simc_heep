@@ -1,4 +1,4 @@
- ! Simulation for coin. H(e,e'p) Kinematic Group g11_coin, Hall c   
+ ! Simulation for coin. H(e,e'p) Kinematic Group g6_coin, Hall c   
 ! of radiative corrections 
 !               
 !   
@@ -23,10 +23,10 @@
     dEbeam  =  0.05                                   !  beam energy variation (%)  
      electron_arm  =  1                                !  1=hms,2=sos,3=hrsr,4=hrsl,5 = shms  
      hadron_arm  =  5                                  !  1=hms,2=sos,3=hrsr,4=hrsl,5 = shms  
-     spec%e%P  =   5542.2                    !  e arm central momentum (MeV/c)  
-     spec%e%theta  =   23.189                !  e arm angle setting (degrees)  
-     spec%p%P  =   5925.0                !  p arm central momentum (MeV/c)   
-     spec%p%theta  =  21.595                !  p arm angle setting (degrees)  
+     spec%e%P  =   2982.0                    !  e arm central momentum (MeV/c)  
+     spec%e%theta  =   39.28                !  e arm angle setting (degrees)  
+     spec%p%P  =   8505.0                !  p arm central momentum (MeV/c)   
+     spec%p%theta  =  12.799                !  p arm angle setting (degrees)  
 /    
      
  ?=   

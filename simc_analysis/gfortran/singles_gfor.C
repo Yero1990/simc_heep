@@ -1,58 +1,61 @@
-//Analysis for HMS/SHMS coincidence H(e,e'p)
-#define singles_cxx
-#include "singles.h"
+#define singles_gfor_cxx
+#include "singles_gfor.h"
 #include "set_heep_histos.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
-//#include <fstream>
-//#include <iostream>
-void singles::Loop() 
+
+void singles_gfor::Loop()
 {
-//   In a ROOT session, you can do:
-//      root> .L heep.C
-//      root> heep t
-//      root> t.GetEntry(12); // Fill t data members with entry number 12
-//      root> t.Show();       // Show values of entry 12
-//      root> t.Show(16);     // Read and show values of entry 16
-//      root> t.Loop("HMS", "SHMS");       // Loop on all entries
-//
+  //   In a ROOT session, you can do:
+  //      Root > .L singles_gfor.C
+  //      Root > singles_gfor t
+  //      Root > t.GetEntry(12); // Fill t data members with entry number 12
+  //      Root > t.Show();       // Show values of entry 12
+  //      Root > t.Show(16);     // Read and show values of entry 16
+  //      Root > t.Loop();       // Loop on all entries
+  //
+  
+  //     This is the loop skeleton where:
+  //    jentry is the global entry number in the chain
+  //    ientry is the entry number in the current Tree
+  //  Note that the argument to GetEntry must be:
+  //    jentry for TChain::GetEntry
+  //    ientry for TTree::GetEntry and TBranch::GetEntry
+  //
+  //       To read only selected branches, Insert statements like:
+  // METHOD1:
+  //    fChain->SetBranchStatus("*",0);  // disable all branches
+  //    fChain->SetBranchStatus("branchname",1);  // activate branchname
+  // METHOD2: replace line
+  //    fChain->GetEntry(jentry);       //read all branches
+  //by  b_branchname->GetEntry(ientry); //read only this branch
+  if (fChain == 0) return;
+  
+  TString hadron_arm="SHMS";
+  TString electron_arm = "HMS";
 
-//     This is the loop skeleton where:
-//    jentry is the global entry number in the chain
-//    ientry is the entry number in the current Tree
-//  Note that the argument to GetEntry must be:
-//    jentry for TChain::GetEntry
-//    ientry for TTree::GetEntry and TBranch::GetEntry
-//
-//       To read only selected branches, Insert statements like:
-// METHOD1:
-//    fChain->SetBranchStatus("*",0);  // disable all branches
-//    fChain->SetBranchStatus("branchname",1);  // activate branchname
-// METHOD2: replace line
-//    fChain->GetEntry(jentry);       //read all branches
-//by  b_branchname->GetEntry(ientry); //read only this branch
-   if (fChain == 0) return;
 
-   TString hadron_arm="SHMS";
-   TString electron_arm = "HMS";
+  //Read Normfac
+  Long64_t Normfac = 0.105308E+08;  //1272
+  //Long64_t Normfac = 0.105371E+08;  //1161
 
-    // define histograms
-   Double_t pi = 3.141592654;
-   Double_t dtr = pi/180.;
-   Double_t MP = 0.938272; //GeV
-   Double_t MD = 1.87561; //GeV
-   Double_t MN = 0.939566; //GeV
-   Double_t me = 0.000510998;
-
-   //string simc_file = "hms_singles.root";
-   string simc_file = "hms_single_1272.root";
-   TString ofile_name = "Weighted_simc_";
-   ofile_name.Append(simc_file);
+  // define histograms
+  Double_t pi = 3.141592654;
+  Double_t dtr = pi/180.;
+  Double_t MP = 0.938272; //GeV
+  Double_t MD = 1.87561; //GeV
+  Double_t MN = 0.939566; //GeV
+  Double_t me = 0.000510998;
+  
+  string simc_file = "hms_single_1272_gfor.root";
+  
+  TString ofile_name = "Weighted_simc_";
+  ofile_name.Append(simc_file);
    
-   //create output root file
+  //create output root file
    TFile *outfile = new TFile(ofile_name.Data(), "recreate");
-
+   
    //********* Create 1D Histograms **************
  
    //Kinematics Quantities
@@ -116,9 +119,10 @@ void singles::Loop()
    TH2F *hyptar_vs_eyptar = new TH2F("hyptar_vs_eyptar", "HMS vs. SHMS, Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, hyptar_nbins, hyptar_xmin, hyptar_xmax);
    TH2F *hdelta_vs_edelta = new TH2F("hdelta_vs_edelta", "HMS vs. SHMS, #delta", edelta_nbins, edelta_xmin, edelta_xmax, hdelta_nbins, hdelta_xmin, hdelta_xmax);
 
-     
+   
    /************Define Histos to APPLY CUTS*********************************/
  
+   
  //Kinematics Quantities
    TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV
    TH1F *cut_pm = new TH1F("cut_pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
@@ -195,6 +199,9 @@ void singles::Loop()
    Double_t Ep;             //proton final energy
    Double_t Ee;             //electron final energy
    Double_t th_q;        //Angle between q-vector and beamline (+z axis --lab)
+   Double_t hP0;         //HMS Central Momentum
+   Double_t theta_e;
+   Double_t Ein;
 
    //Define Kinematic Limits
    Double_t W_min = 0.8;    //GeV
@@ -222,12 +229,13 @@ void singles::Loop()
    Double_t h_trkEff;
    Double_t c_LT;
 
-   //hms run 1161
+
    //charge_factor = 149.189 / 1000.;   //total charge in mC
+   
+   //Set Efficiencies/computer Live Time to user input
    //e_trkEff = 0.9713;
    //h_trkEff = 1.;
    //c_LT = 0.028247;
-
 
    //hms run 1272
    charge_factor = 0.5*(1356.930 + 1402.242) / 1000.;   //total charge in mC
@@ -238,25 +246,30 @@ void singles::Loop()
    
 
    //************************************************
-   
+
    Long64_t nentries = fChain->GetEntries();
 
-   
    Long64_t nbytes = 0, nb = 0;
 
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
+      // if (Cut(ientry) < 0) continue;
 
-      //-----Define Additional Kinematic Variables--------
-      Ein = Ein / 1000.;
+
+
+     //-----Define Additional Kinematic Variables--------
+      Ein = 2.221;
+      hP0 = 2.055;
       W2 = W*W;
       X = Q2 / (2.*MP*nu);
       Pf = sqrt(pow(nu+MP,2) - MP*MP);
       Ep = sqrt(MP*MP + Pf*Pf);
       ki = sqrt(Ein*Ein - me*me);
-      kf = Q2 / (4.*ki*pow(sin(theta_e/2.), 2));
+      kf = hP0*(hsdelta/100. + 1.0);
+      theta_e = 2.*asin(sqrt(Q2 / (4.*Ein*kf)));
+      // kf = Q2 / (4.*ki*pow(sin(theta_e/2.), 2));
       Ee = sqrt(me*me + kf*kf);
       th_q = acos( (ki - kf*cos(theta_e))/q ); //th_q = theta_pq + theta_p;
 
@@ -270,18 +283,18 @@ void singles::Loop()
        //-----------Define Acceptance Limit Cuts------------
       
       // e-arm
-      Bool_t c_e_xptar = fabs(e_xptar) <= 0.05;
-      Bool_t c_e_yptar = fabs(e_yptar) <= 0.025;
+      Bool_t c_e_xptar = fabs(hsxptar) <= 0.05;
+      Bool_t c_e_yptar = fabs(hsyptar) <= 0.025;
       Bool_t c_e_solid = c_e_xptar * c_e_yptar;
       
       // p-arm
-      Bool_t c_p_xptar = fabs(h_xptar) <= 0.06;
-      Bool_t c_p_yptar = fabs(h_yptar) <= 0.035;
+      Bool_t c_p_xptar = fabs(ssxptar) <= 0.06;
+      Bool_t c_p_yptar = fabs(ssyptar) <= 0.035;
       Bool_t c_p_solid = c_p_xptar * c_p_yptar;
       
       // momentum acceptance
-      Bool_t c_e_delta = (-8 <= e_delta) && ( e_delta <= 4);
-      Bool_t c_p_delta = (-10 <= h_delta) && ( h_delta <= 12);
+      Bool_t c_e_delta = (-8 <= hsdelta) && ( hsdelta <= 4);
+      Bool_t c_p_delta = (-10 <= ssdelta) && ( ssdelta <= 12);
       
       // acceptance
       Bool_t c_accept = c_e_solid * c_p_solid * c_e_delta * c_p_delta;
@@ -291,15 +304,18 @@ void singles::Loop()
       //can be compare to actual data
       FullWeight = (Normfac*Weight*charge_factor*e_trkEff*c_LT)/nentries;
 
-      cout << "---Full Weight---: " << FullWeight << endl;
-      cout << "Normfac = " << Normfac << endl;
-      cout << "Weight = " << Weight << endl;
-      cout << "Charge factor = " << charge_factor << endl;
-      cout << "e- trk eff = " << e_trkEff << endl;
-      cout << "h trk eff = " << h_trkEff << endl;
-      cout << "C. LT = " << c_LT << endl;
-      cout << "nentries = " << nentries << endl;
+      if (W>0.938 && W<0.939)
+	{
 
+      cout << "FUll Weight: " << FullWeight << endl;
+      cout << "Weight: " << Weight << endl;
+      cout << "Charge Factor: " << charge_factor << endl;
+      cout << "Normfac: " << Normfac << endl;
+      cout << "nentries: " << nentries << endl;
+      cout << "CLT: " << c_LT << endl;
+      cout << "e-_eff: " << e_trkEff << endl;
+      cout << "W: " << W << endl;
+	}
       //ANALYSIS OF EVENT-BY-EVENT GOES HERE!!!!!!
       
       //APPLY CUTS: BEGIN CUTS LOOP
@@ -312,7 +328,7 @@ void singles::Loop()
 	  cut_omega->Fill(nu, FullWeight);
 	  cut_W_inv->Fill(W, FullWeight);
 	  cut_theta_elec->Fill(theta_e/dtr, FullWeight);
-	  cut_theta_prot->Fill(theta_p/dtr, FullWeight);
+	  //cut_theta_prot->Fill(theta_p/dtr, FullWeight);
 
 	  
 	  //Additional Kinematics Variables
@@ -323,49 +339,49 @@ void singles::Loop()
 	  cut_theta_q->Fill(th_q/dtr, FullWeight);
 		  
 	  //Reconstructed Target Quantities (Lab Frame)
-	  cut_x_tar->Fill(-1.*tar_x, FullWeight); //MULT. by -1.0 to compare to H.react.Y
-	  cut_y_tar->Fill(tar_y, FullWeight);  //tar_y = H.react.x  
-	  cut_z_tar->Fill(tar_z, FullWeight);
+	  //cut_x_tar->Fill(-1.*tar_x, FullWeight); //MULT. by -1.0 to compare to H.react.Y
+	  //cut_y_tar->Fill(tar_y, FullWeight);  //tar_y = H.react.x  
+	  //cut_z_tar->Fill(tar_z, FullWeight);
 	  
 	  
 	  //Hadron-Arm Target Reconstruction 
-	  cut_hytar->Fill(h_ytar, FullWeight);
-	  cut_hxptar->Fill(h_xptar, FullWeight);
-	  cut_hyptar->Fill(h_yptar, FullWeight);
-	  cut_hdelta->Fill(h_delta, FullWeight);
+	  cut_hytar->Fill(ssytar, FullWeight);
+	  cut_hxptar->Fill(ssxptar, FullWeight);
+	  cut_hyptar->Fill(ssyptar, FullWeight);
+	  cut_hdelta->Fill(ssdelta, FullWeight);
 	  
 	  //Hadron-Arm Focal Plane
-	  cut_hxfp->Fill(h_xfp, FullWeight);
-	  cut_hyfp->Fill(h_yfp, FullWeight);
-	  cut_hxpfp->Fill(h_xpfp, FullWeight);
-	  cut_hypfp->Fill(h_ypfp, FullWeight);
+	  cut_hxfp->Fill(ssxfp, FullWeight);
+	  cut_hyfp->Fill(ssyfp, FullWeight);
+	  cut_hxpfp->Fill(ssxpfp, FullWeight);
+	  cut_hypfp->Fill(ssypfp, FullWeight);
 	  
 	  //Electron-Arm Target Reconstruction
-	  cut_eytar->Fill(e_ytar, FullWeight);
-	  cut_exptar->Fill(e_xptar, FullWeight);
-	  cut_eyptar->Fill(e_yptar, FullWeight);
-	  cut_edelta->Fill(e_delta, FullWeight);
+	  cut_eytar->Fill(hsytar, FullWeight);
+	  cut_exptar->Fill(hsxptar, FullWeight);
+	  cut_eyptar->Fill(hsyptar, FullWeight);
+	  cut_edelta->Fill(hsdelta, FullWeight);
 	  
 	  //Electron-Arm Focal Plane
-	  cut_exfp->Fill(e_xfp, FullWeight);
-	  cut_eyfp->Fill(e_yfp, FullWeight);
-	  cut_expfp->Fill(e_xpfp, FullWeight);
-	  cut_eypfp->Fill(e_ypfp, FullWeight);
+	  cut_exfp->Fill(hsxfp, FullWeight);
+	  cut_eyfp->Fill(hsyfp, FullWeight);
+	  cut_expfp->Fill(hsxpfp, FullWeight);
+	  cut_eypfp->Fill(hsypfp, FullWeight);
 	  
 
 	  //Fill 2D HMS Focal Plane Quantities
-	  cut_h_xfp_vs_yfp->Fill(h_yfp, h_xfp, FullWeight);
-	  cut_e_xfp_vs_yfp->Fill(e_yfp, e_xfp, FullWeight);
+	  cut_h_xfp_vs_yfp->Fill(ssyfp, ssxfp, FullWeight);
+	  cut_e_xfp_vs_yfp->Fill(hsyfp, hsxfp, FullWeight);
 	  
 	  //Fill 2D reconstructed variables
-	  cut_hxptar_vs_exptar->Fill(e_xptar, h_xptar, FullWeight);
-	  cut_hyptar_vs_eyptar->Fill(e_yptar, h_yptar, FullWeight);
-	  cut_hdelta_vs_edelta->Fill(e_delta, h_delta, FullWeight);
+	  cut_hxptar_vs_exptar->Fill(hsxptar, ssxptar, FullWeight);
+	  cut_hyptar_vs_eyptar->Fill(hsyptar, ssyptar, FullWeight);
+	  cut_hdelta_vs_edelta->Fill(hsdelta, ssdelta, FullWeight);
 
 	  
 	  //Heep cross check
 	  cut_emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
-	  cut_edelta_vs_eyptar->Fill(e_yptar, e_delta, FullWeight);
+	  cut_edelta_vs_eyptar->Fill(hsyptar, hsdelta, FullWeight);
       
 
 	  
@@ -381,7 +397,7 @@ void singles::Loop()
       omega->Fill(nu, FullWeight);
       W_inv->Fill(W, FullWeight);
       theta_elec->Fill(theta_e/dtr, FullWeight);
-      theta_prot->Fill(theta_p/dtr, FullWeight);
+      //theta_prot->Fill(theta_p/dtr, FullWeight);
 
 
       //Additional Kinematics Variables
@@ -393,54 +409,54 @@ void singles::Loop()
 
       
       //Reconstructed Target Quantities (Lab Frame)
-      x_tar->Fill(tar_x, FullWeight);
-      y_tar->Fill(tar_y, FullWeight);
-      z_tar->Fill(tar_z, FullWeight);
+      //x_tar->Fill(tar_x, FullWeight);
+      //y_tar->Fill(tar_y, FullWeight);
+      //z_tar->Fill(tar_z, FullWeight);
 
       
       //Hadron-Arm Target Reconstruction 
-      hytar->Fill(h_ytar, FullWeight);
-      hxptar->Fill(h_xptar, FullWeight);
-      hyptar->Fill(h_yptar, FullWeight);
-      hdelta->Fill(h_delta, FullWeight);
+      hytar->Fill(ssytar, FullWeight);
+      hxptar->Fill(ssxptar, FullWeight);
+      hyptar->Fill(ssyptar, FullWeight);
+      hdelta->Fill(ssdelta, FullWeight);
       
       //Hadron-Arm Focal Plane
-      hxfp->Fill(h_xfp, FullWeight);
-      hyfp->Fill(h_yfp, FullWeight);
-      hxpfp->Fill(h_xpfp, FullWeight);
-      hypfp->Fill(h_ypfp, FullWeight);
+      hxfp->Fill(ssxfp, FullWeight);
+      hyfp->Fill(ssyfp, FullWeight);
+      hxpfp->Fill(ssxpfp, FullWeight);
+      hypfp->Fill(ssypfp, FullWeight);
       
       //Electron-Arm Target Reconstruction
-      eytar->Fill(e_ytar, FullWeight);
-      exptar->Fill(e_xptar, FullWeight);
-      eyptar->Fill(e_yptar, FullWeight);
-      edelta->Fill(e_delta, FullWeight);
+      eytar->Fill(hsytar, FullWeight);
+      exptar->Fill(hsxptar, FullWeight);
+      eyptar->Fill(hsyptar, FullWeight);
+      edelta->Fill(hsdelta, FullWeight);
       
       //Electron-Arm Focal Plane
-      exfp->Fill(e_xfp, FullWeight);
-      eyfp->Fill(e_yfp, FullWeight);
-      expfp->Fill(e_xpfp, FullWeight);
-      eypfp->Fill(e_ypfp, FullWeight);
+      exfp->Fill(hsxfp, FullWeight);
+      eyfp->Fill(hsyfp, FullWeight);
+      expfp->Fill(hsxpfp, FullWeight);
+      eypfp->Fill(hsypfp, FullWeight);
 
       
       //Fill 2D HMS Focal Plane Quantities
-      h_xfp_vs_yfp->Fill(h_yfp, h_xfp, FullWeight);
-      e_xfp_vs_yfp->Fill(e_yfp, e_xfp, FullWeight);
+      h_xfp_vs_yfp->Fill(ssyfp, ssxfp, FullWeight);
+      e_xfp_vs_yfp->Fill(hsyfp, hsxfp, FullWeight);
 
       //Fill 2D reconstructed variables
-      hxptar_vs_exptar->Fill(e_xptar, h_xptar, FullWeight);
-      hyptar_vs_eyptar->Fill(e_yptar, h_yptar, FullWeight);
-      hdelta_vs_edelta->Fill(e_delta, h_delta, FullWeight);
+      hxptar_vs_exptar->Fill(hsxptar, ssxptar, FullWeight);
+      hyptar_vs_eyptar->Fill(hsyptar, ssyptar, FullWeight);
+      hdelta_vs_edelta->Fill(hsdelta, ssdelta, FullWeight);
 
       //Heep cross check
       emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
-      edelta_vs_eyptar->Fill(e_yptar, e_delta, FullWeight);
+      edelta_vs_eyptar->Fill(hsyptar, hsdelta, FullWeight);
       
 	// if (Cut(ientry) < 0) continue;
 
 
-   }
+   } //end entry loop
 
-   
    outfile->Write();
+    
 }

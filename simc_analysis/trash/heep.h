@@ -5,8 +5,8 @@
 // found on file: ep_coin_th_27.5_pcen3.609.rad.root
 //////////////////////////////////////////////////////////
 
-#ifndef singles_h
-#define singles_h
+#ifndef heep_h
+#define heep_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -14,7 +14,7 @@
 
 // Header file for the classes stored in the TTree if any.
 
-class singles {
+class heep {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
@@ -163,8 +163,8 @@ public :
    TBranch        *b_Ein_v;   //!
 
    //Constructor/Destructor
-   singles(TTree *tree=0);
-   virtual ~singles();
+   heep(TTree *tree=0);
+   virtual ~heep();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
@@ -176,44 +176,47 @@ public :
 
 #endif
 
-#ifdef singles_cxx
-singles::singles(TTree *tree) : fChain(0)
+#ifdef heep_cxx
+heep::heep(TTree *tree) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
   
   if (tree == 0) {
 
-    string simc_file = "hms_single_1272.root";   //added
-    //string simc_file = "hms_single_deltascan_1161.root";
-    //TString f0 = "../worksim/simc_ROOTfiles_list.data";
-    //ifstream  infile(f0);
-    //infile >> simc_file;
-    string simc_file_path = "../worksim_voli/"+simc_file;
-    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(simc_file_path.c_str());
-      if (!f || !f->IsOpen()) {
-         f = new TFile(simc_file_path.c_str());
+    //   string simc_file;   //added
+    //  TString f0 = "../worksim/simc_ROOTfiles_list.data";
+    //  ifstream  infile(f0);
+    //  infile >> simc_file;
+    //  string simc_file_path = "../worksim/"+simc_file;
+    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("../worsim_voli/ep_coin_simc_hProt_kg1.root");
+      if (!f) {
+         f = new TFile("../worksim/dummy.root");
       }
-      f->GetObject("SNT",tree);
+
+      tree = (TTree*)gDirectory->Get("SNT");
+
+
+      //f->GetObject("SNT",tree);
 
    }
    Init(tree);
   
 }
   
-singles::~singles()
+heep::~heep()
 {
    if (!fChain) return;
    delete fChain->GetCurrentFile();
 }
 
-Int_t singles::GetEntry(Long64_t entry)
+Int_t heep::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
-Long64_t singles::LoadTree(Long64_t entry)
+Long64_t heep::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
@@ -226,7 +229,7 @@ Long64_t singles::LoadTree(Long64_t entry)
    return centry;
 }
 
-void singles::Init(TTree *tree)
+void heep::Init(TTree *tree)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -314,7 +317,7 @@ void singles::Init(TTree *tree)
    Notify();
 }
 
-Bool_t singles::Notify()
+Bool_t heep::Notify()
 {
    // The Notify() function is called when a new file is opened. This
    // can be either for a new TTree in a TChain or when when a new TTree
@@ -325,18 +328,18 @@ Bool_t singles::Notify()
    return kTRUE;
 }
 
-void singles::Show(Long64_t entry)
+void heep::Show(Long64_t entry)
 {
 // Print contents of entry.
 // If entry is not specified, print current entry
    if (!fChain) return;
    fChain->Show(entry);
 }
-Int_t singles::Cut(Long64_t entry)
+Int_t heep::Cut(Long64_t entry)
 {
 // This function may be called from Loop.
 // returns  1 if entry is accepted.
 // returns -1 otherwise.
    return 1;
 }
-#endif // #ifdef singles_cxx
+#endif // #ifdef heep_cxx

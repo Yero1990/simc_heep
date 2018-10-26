@@ -1,13 +1,16 @@
 //Analysis for HMS/SHMS coincidence H(e,e'p)
-#define singles_cxx
-#include "singles.h"
-#include "set_heep_histos.h"
+
+
+#define heep_cxx
+#include "heep.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include "set_heep_histos.h"
+
 //#include <fstream>
 //#include <iostream>
-void singles::Loop() 
+void heep::Loop()
 {
 //   In a ROOT session, you can do:
 //      root> .L heep.C
@@ -34,24 +37,35 @@ void singles::Loop()
 //by  b_branchname->GetEntry(ientry); //read only this branch
    if (fChain == 0) return;
 
-   TString hadron_arm="SHMS";
-   TString electron_arm = "HMS";
+   TString hadron_arm;
+   TString electron_arm = "SHMS";
 
+   if (electron_arm=="SHMS")
+     {
+       hadron_arm ="HMS";
+     }
+   else{hadron_arm = "SHMS";}
+
+  
     // define histograms
    Double_t pi = 3.141592654;
    Double_t dtr = pi/180.;
    Double_t MP = 0.938272; //GeV
    Double_t MD = 1.87561; //GeV
    Double_t MN = 0.939566; //GeV
-   Double_t me = 0.000510998;
 
-   //string simc_file = "hms_singles.root";
-   string simc_file = "hms_single_1272.root";
-   TString ofile_name = "Weighted_simc_";
+   TString simc_file = "ep_coin_simc_hProt_kg1.root";
+
+   TString ofile_name("weighted_");
    ofile_name.Append(simc_file);
    
    //create output root file
    TFile *outfile = new TFile(ofile_name.Data(), "recreate");
+
+   
+   
+   //********* Create 1D Histograms **************
+   Int_t bins = 300;
 
    //********* Create 1D Histograms **************
  
@@ -186,54 +200,63 @@ void singles::Loop()
    
    //-------------------------------------------------------------------------------------------------------------------------
 
-   //Define Additional Kinematic Variables
-   Double_t W2;             //Invarianrt Mass Squared
-   Double_t X;              //B-jorken X
-   Double_t Pf;             //Final Proton Momentum 
-   Double_t ki;             //Incident e- momentum
-   Double_t kf;             //Final electron momentum
-   Double_t Ep;             //proton final energy
-   Double_t Ee;             //electron final energy
-   Double_t th_q;        //Angle between q-vector and beamline (+z axis --lab)
-
-   //Define Kinematic Limits
-   Double_t W_min = 0.8;    //GeV
-   Double_t W_max = 1.04;     //pion production threhsold?
-
-   //Q2_cent = 4.25 +/- 0.25 limits
-   Double_t Q2_min = 3.0;
-   Double_t Q2_max = 5.0; //4.5;
-
-   //x-Bjorken Limits x = 1.35 +/- 0.05
-   Double_t xbj_min = 0.7;
-   Double_t xbj_max = 1.3; //1.40;
-
-   //Missing Energy, Em = 0 MeV (-15 MeV, 15 MeV)
-   Double_t Em_min = -60.e-3;
-   Double_t Em_max = 80.e-3;
-   
 
    //Determine the charge factor:
    //definition: total charge deposited on target over a time period
    //SIMC assumes it is #generated_events / 1mC
-
-   Double_t charge_factor;
-   Double_t e_trkEff;
-   Double_t h_trkEff;
-   Double_t c_LT;
-
-   //hms run 1161
-   //charge_factor = 149.189 / 1000.;   //total charge in mC
-   //e_trkEff = 0.9713;
-   //h_trkEff = 1.;
-   //c_LT = 0.028247;
+   
+   //Charge factor is the total integrated charge assuming a beam current and run time
+   Double_t Ib = 40;       //beam current in microamps (micro-Coulombs / sec),   1 mC = 1000 uC
+   Double_t time = 1.0;     //estimated time (in hours) a run takes (start - end) of run
+   Double_t charge_factor = Ib * time * 3600. / 1000.;
 
 
-   //hms run 1272
-   charge_factor = 0.5*(1356.930 + 1402.242) / 1000.;   //total charge in mC
-   e_trkEff = 0.9865;
-   c_LT = 0.058813;
+   Double_t Q_bcm1;
+   Double_t Q_bcm2;
 
+   //Total charge given by BCMs on run 1866:
+   // Q_bcm1 = 27323.84;  //uC
+   // Q_bcm2 = 27749.918;
+   
+   
+   //Total charge given by BCM1/2 on run 1854
+   //Q_bcm1 = 208127.865;
+   //Q_bcm2 = 211696.549;
+
+   //Total charge given by BCM1/2 on run 1871
+  // Q_bcm1 = 40054.171;
+  // Q_bcm2 = 40694.697;
+
+   //Total charge given by BCMs on run 1929
+   // Q_bcm1 = 161907.065;       
+   //Q_bcm2 = 164453.167;
+
+   
+   //Total charge given by BCMs on run 2279
+   //Q_bcm1 = 162303.590;       //take into account HMS/SHMS tracking efficiencies, and beam_on time
+   //Q_bcm2 = 164865.479;
+
+   //Double_t Q_avg = (Q_bcm1 + Q_bcm2) / 2.;
+   //Double_t charge_factor = Q_avg / 1000.;   //in mC
+
+   //Tracking efficiencies and beamON time
+   Double_t e_trk_eff;
+   Double_t h_trk_eff;
+   Double_t beam_time;
+
+   //Tracking efficiencies and beamON time (Run 1929)
+   // e_trk_eff = 0.9982;
+    // h_trk_eff = 0.9375;
+    //beam_time = 0.89477;
+
+   e_trk_eff = 1.0;
+   h_trk_eff = 1.0;
+   //Tracking efficiencies and beamON time (Run 2279)
+   // e_trk_eff = 0.9990;
+   // h_trk_eff = 0.9615;
+   // beam_time = 0.6756;
+
+   
    Double_t FullWeight;
    
 
@@ -249,61 +272,23 @@ void singles::Loop()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
 
-      //-----Define Additional Kinematic Variables--------
-      Ein = Ein / 1000.;
-      W2 = W*W;
-      X = Q2 / (2.*MP*nu);
-      Pf = sqrt(pow(nu+MP,2) - MP*MP);
-      Ep = sqrt(MP*MP + Pf*Pf);
-      ki = sqrt(Ein*Ein - me*me);
-      kf = Q2 / (4.*ki*pow(sin(theta_e/2.), 2));
-      Ee = sqrt(me*me + kf*kf);
-      th_q = acos( (ki - kf*cos(theta_e))/q ); //th_q = theta_pq + theta_p;
 
-
-      //Define Kinematic Cuts
-      Bool_t c_Em = Em>Em_min&&Em<Em_max;
-      Bool_t c_Xbj = X>xbj_min&&X<xbj_max;
-      Bool_t c_Q2 = Q2>Q2_min&&Q2<Q2_max;
-      Bool_t c_W = W<W_max;
-      
-       //-----------Define Acceptance Limit Cuts------------
-      
-      // e-arm
-      Bool_t c_e_xptar = fabs(e_xptar) <= 0.05;
-      Bool_t c_e_yptar = fabs(e_yptar) <= 0.025;
-      Bool_t c_e_solid = c_e_xptar * c_e_yptar;
-      
-      // p-arm
-      Bool_t c_p_xptar = fabs(h_xptar) <= 0.06;
-      Bool_t c_p_yptar = fabs(h_yptar) <= 0.035;
-      Bool_t c_p_solid = c_p_xptar * c_p_yptar;
-      
-      // momentum acceptance
-      Bool_t c_e_delta = (-8 <= e_delta) && ( e_delta <= 4);
-      Bool_t c_p_delta = (-10 <= h_delta) && ( h_delta <= 12);
-      
-      // acceptance
-      Bool_t c_accept = c_e_solid * c_p_solid * c_e_delta * c_p_delta;
-      
       
       //The events must be weighted properly, so that they represent true Yield, and
       //can be compare to actual data
-      FullWeight = (Normfac*Weight*charge_factor*e_trkEff*c_LT)/nentries;
+      FullWeight = (Normfac*Weight*charge_factor*e_trk_eff*h_trk_eff)/nentries;
 
-      cout << "---Full Weight---: " << FullWeight << endl;
-      cout << "Normfac = " << Normfac << endl;
-      cout << "Weight = " << Weight << endl;
-      cout << "Charge factor = " << charge_factor << endl;
-      cout << "e- trk eff = " << e_trkEff << endl;
-      cout << "h trk eff = " << h_trkEff << endl;
-      cout << "C. LT = " << c_LT << endl;
-      cout << "nentries = " << nentries << endl;
+      cout << "Normfac: " << Normfac << endl;
+      cout << "Weight: " << Weight << endl;
+      cout << "charge: " << charge_factor << endl;
+      cout << "nentries: " << nentries << endl;
+      cout << "FullWeght: " << FullWeight << endl;
+
 
       //ANALYSIS OF EVENT-BY-EVENT GOES HERE!!!!!!
       
       //APPLY CUTS: BEGIN CUTS LOOP
-      if (X>0.9)
+      if (W < 1.080)
 	{
 	  //Kinematics
 	  cut_Emiss->Fill(Em, FullWeight);
@@ -311,20 +296,12 @@ void singles::Loop()
 	  cut_Q_2->Fill(Q2, FullWeight);
 	  cut_omega->Fill(nu, FullWeight);
 	  cut_W_inv->Fill(W, FullWeight);
-	  cut_theta_elec->Fill(theta_e/dtr, FullWeight);
-	  cut_theta_prot->Fill(theta_p/dtr, FullWeight);
-
+	  cut_theta_elec->Fill(theta_e, FullWeight);
+	  cut_theta_prot->Fill(theta_p, FullWeight);
 	  
-	  //Additional Kinematics Variables
-	  cut_W_2->Fill(W2, FullWeight); 
-	  cut_xbj->Fill(X, FullWeight); 
-	  cut_P_f->Fill(Pf, FullWeight);
-	  cut_k_f->Fill(kf, FullWeight);
-	  cut_theta_q->Fill(th_q/dtr, FullWeight);
-		  
 	  //Reconstructed Target Quantities (Lab Frame)
-	  cut_x_tar->Fill(-1.*tar_x, FullWeight); //MULT. by -1.0 to compare to H.react.Y
-	  cut_y_tar->Fill(tar_y, FullWeight);  //tar_y = H.react.x  
+	  cut_x_tar->Fill(tar_x, FullWeight);
+	  cut_y_tar->Fill(tar_y, FullWeight);
 	  cut_z_tar->Fill(tar_z, FullWeight);
 	  
 	  
@@ -352,23 +329,6 @@ void singles::Loop()
 	  cut_expfp->Fill(e_xpfp, FullWeight);
 	  cut_eypfp->Fill(e_ypfp, FullWeight);
 	  
-
-	  //Fill 2D HMS Focal Plane Quantities
-	  cut_h_xfp_vs_yfp->Fill(h_yfp, h_xfp, FullWeight);
-	  cut_e_xfp_vs_yfp->Fill(e_yfp, e_xfp, FullWeight);
-	  
-	  //Fill 2D reconstructed variables
-	  cut_hxptar_vs_exptar->Fill(e_xptar, h_xptar, FullWeight);
-	  cut_hyptar_vs_eyptar->Fill(e_yptar, h_yptar, FullWeight);
-	  cut_hdelta_vs_edelta->Fill(e_delta, h_delta, FullWeight);
-
-	  
-	  //Heep cross check
-	  cut_emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
-	  cut_edelta_vs_eyptar->Fill(e_yptar, e_delta, FullWeight);
-      
-
-	  
 	  
 	}//End CUTS LOOP
       
@@ -380,17 +340,8 @@ void singles::Loop()
       Q_2->Fill(Q2, FullWeight);
       omega->Fill(nu, FullWeight);
       W_inv->Fill(W, FullWeight);
-      theta_elec->Fill(theta_e/dtr, FullWeight);
-      theta_prot->Fill(theta_p/dtr, FullWeight);
-
-
-      //Additional Kinematics Variables
-      W_2->Fill(W2, FullWeight); 
-      xbj->Fill(X, FullWeight); 
-      P_f->Fill(Pf, FullWeight);
-      k_f->Fill(kf, FullWeight);
-      theta_q->Fill(th_q/dtr, FullWeight);
-
+      theta_elec->Fill(theta_e, FullWeight);
+      theta_prot->Fill(theta_p, FullWeight);
       
       //Reconstructed Target Quantities (Lab Frame)
       x_tar->Fill(tar_x, FullWeight);
@@ -424,23 +375,13 @@ void singles::Loop()
 
       
       //Fill 2D HMS Focal Plane Quantities
-      h_xfp_vs_yfp->Fill(h_yfp, h_xfp, FullWeight);
-      e_xfp_vs_yfp->Fill(e_yfp, e_xfp, FullWeight);
+      h_xfp_vs_yfp->Fill(h_xfp, h_yfp, FullWeight);
+	
 
-      //Fill 2D reconstructed variables
-      hxptar_vs_exptar->Fill(e_xptar, h_xptar, FullWeight);
-      hyptar_vs_eyptar->Fill(e_yptar, h_yptar, FullWeight);
-      hdelta_vs_edelta->Fill(e_delta, h_delta, FullWeight);
-
-      //Heep cross check
-      emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
-      edelta_vs_eyptar->Fill(e_yptar, e_delta, FullWeight);
-      
 	// if (Cut(ientry) < 0) continue;
 
 
-   }
 
-   
+   }
    outfile->Write();
 }
