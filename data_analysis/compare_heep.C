@@ -8,7 +8,8 @@ void compare_heep(int runNUM, int evtNUM)
   //TString simc_filename =  "weighted_ep_coin_simc_1854.root"; //"ep_coin_simc_1929.root";
   
   //Pre-defined SIMC/data root file names containing histogram object to comapare
-  TString simc_filename =  Form("Weighted_simc_hms_single_deltascan_%d_noSMEAR_noEloss.root ", runNUM);
+  TString simc_filename =  Form("Weighted_simc_hms_single_%d.root", runNUM);
+  //TString simc_filename =  Form("Weighted_simc_hms_single_%d_gfor.root", runNUM);
   TString data_filename =  Form("delta_scan_data_%d_%d.root", runNUM, evtNUM); 
 
   TString simc_path;
@@ -305,29 +306,29 @@ void compare_heep(int runNUM, int evtNUM)
    c1->Divide(2,2);
 
    c1->cd(1);
-   data_eytar->Draw();
-   simc_eytar->Draw("sames");
+   data_eytar->DrawNormalized();
+   simc_eytar->DrawNormalized("sames");
    leg5->AddEntry(data_eytar,"Data","f");
    leg5->AddEntry(simc_eytar,"SIMC");
    leg5->Draw();
 
    c1->cd(2);
-   data_exptar->Draw();
-   simc_exptar->Draw("sames");
+   data_exptar->DrawNormalized();
+   simc_exptar->DrawNormalized("sames");
    leg6->AddEntry(data_exptar,"Data", "f");
    leg6->AddEntry(simc_exptar,"SIMC");
    leg6->Draw();
 
    c1->cd(3);
-   data_eyptar->Draw();
-   simc_eyptar->Draw("sames");
+   data_eyptar->DrawNormalized();
+   simc_eyptar->DrawNormalized("sames");
    leg7->AddEntry(data_eyptar,"Data", "f");
    leg7->AddEntry(simc_eyptar,"SIMC");
    leg7->Draw();
      
    c1->cd(4);
-   data_edelta->Draw();
-   simc_edelta->Draw("sames");
+   data_edelta->DrawNormalized();
+   simc_edelta->DrawNormalized("sames");
    leg8->AddEntry(data_edelta,"Data", "f");
    leg8->AddEntry(simc_edelta,"SIMC");
    leg8->Draw();
@@ -353,29 +354,29 @@ void compare_heep(int runNUM, int evtNUM)
    c2->Divide(2,2);
 
    c2->cd(1);
-   data_exfp->Draw();
-   simc_exfp->Draw("sames");
+   data_exfp->DrawNormalized();
+   simc_exfp->DrawNormalized("sames");
    leg13->AddEntry(data_exfp,"Data","f");
    leg13->AddEntry(simc_exfp,"SIMC");
    leg13->Draw();
    
    c2->cd(2);
-   data_eyfp->Draw();
-   simc_eyfp->Draw("sames");
+   data_eyfp->DrawNormalized();
+   simc_eyfp->DrawNormalized("sames");
    leg14->AddEntry(data_eyfp,"Data", "f");
    leg14->AddEntry(simc_eyfp,"SIMC");
    leg14->Draw();
 
    c2->cd(3);
-   data_expfp->Draw();
-   simc_expfp->Draw("sames");
+   data_expfp->DrawNormalized();
+   simc_expfp->DrawNormalized("sames");
    leg15->AddEntry(data_expfp,"Data", "f");
    leg15->AddEntry(simc_expfp,"SIMC");
    leg15->Draw();
      
    c2->cd(4);
-   data_eypfp->Draw();
-   simc_eypfp->Draw("sames");
+   data_eypfp->DrawNormalized();
+   simc_eypfp->DrawNormalized("sames");
    leg16->AddEntry(data_eypfp,"Data", "f");
    leg16->AddEntry(simc_eypfp,"SIMC");
    leg16->Draw();
@@ -406,8 +407,8 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(1);
    data_Q2->GetXaxis()->SetTitle("Q^{2} [GeV^{2}]");
    data_Q2->GetXaxis()->CenterTitle();
-   data_Q2->Draw();
-   simc_Q2->Draw("sames");
+   data_Q2->DrawNormalized();
+   simc_Q2->DrawNormalized("sames");
    leg19->AddEntry(data_Q2,"Data", "f");
    leg19->AddEntry(simc_Q2,"SIMC");
    leg19->Draw();
@@ -415,8 +416,8 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(2);
    data_omega->GetXaxis()->SetTitle("Energy Transfer, #omega [GeV]");
    data_omega->GetXaxis()->CenterTitle();  
-   data_omega->Draw();
-   simc_omega->Draw("sames");
+   data_omega->DrawNormalized();
+   simc_omega->DrawNormalized("sames");
    leg20->AddEntry(data_omega,"Data", "f");
    leg20->AddEntry(simc_omega,"SIMC");
    leg20->Draw();
@@ -424,8 +425,8 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(3);
    data_W->GetXaxis()->SetTitle("Invariant Mass, W [GeV]");
    data_W->GetXaxis()->CenterTitle();
-   data_W->Draw();
-   simc_W->Draw("sames");
+   data_W->DrawNormalized();
+   simc_W->DrawNormalized("sames");
    leg21->AddEntry(data_W,"Data", "f");
    leg21->AddEntry(simc_W,"SIMC");
    leg21->Draw();
@@ -433,15 +434,15 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(4);
    data_thq->GetXaxis()->SetTitle("q-vector Angle, #theta_{q} [deg]");
    data_thq->GetXaxis()->CenterTitle();
-   data_thq->Draw();
-   simc_thq->Draw("sames");
+   data_thq->DrawNormalized();
+   simc_thq->DrawNormalized("sames");
    leg22->AddEntry(data_thq,"Data", "f");
    leg22->AddEntry(simc_thq,"SIMC");
    leg22->Draw();
 
    c3->cd(5);
-   simc_xbj->Draw();
-   data_xbj->Draw("sames");
+   simc_xbj->DrawNormalized();
+   data_xbj->DrawNormalized("sames");
    leg23->AddEntry(data_xbj,"Data","f");
    leg23->AddEntry(simc_xbj,"SIMC");
    leg23->Draw();
@@ -449,8 +450,8 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(6);
    data_th_elec->GetXaxis()->SetTitle("Electron Scatt. Angle, #theta_{e} [deg]");
    data_th_elec->GetXaxis()->CenterTitle();
-   data_th_elec->Draw();
-   simc_th_elec->Draw("sames");
+   data_th_elec->DrawNormalized();
+   simc_th_elec->DrawNormalized("sames");
    leg24->AddEntry(data_th_elec,"Data","f");
    leg24->AddEntry(simc_th_elec,"SIMC");
    leg24->Draw();
@@ -458,8 +459,8 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(7);
    data_kf->GetXaxis()->SetTitle("Electron Final Momentum, k_{f} [GeV/c] ");
    data_kf->GetXaxis()->CenterTitle();   
-   data_kf->Draw();
-   simc_kf->Draw("sames");
+   data_kf->DrawNormalized();
+   simc_kf->DrawNormalized("sames");
    leg25->AddEntry(data_kf,"Data","f");
    leg25->AddEntry(simc_kf,"SIMC");
    leg25->Draw();
@@ -477,22 +478,22 @@ void compare_heep(int runNUM, int evtNUM)
    c4->Divide(3,1);
 
    c4->cd(1);
-   data_xtar->Draw();
-   simc_ytar->Draw("sames");
+   data_xtar->DrawNormalized();
+   simc_xtar->DrawNormalized("sames");
    leg28->AddEntry(data_xtar,"Data","f");
-   leg28->AddEntry(simc_ytar,"SIMC");
+   leg28->AddEntry(simc_xtar,"SIMC");
    leg28->Draw();
   
    c4->cd(2);
-   data_ytar->Draw();
-   simc_xtar->Draw("sames");
+   data_ytar->DrawNormalized();
+   simc_ytar->DrawNormalized("sames");
    leg29->AddEntry(data_ytar,"Data","f");
-   leg29->AddEntry(simc_xtar,"SIMC");
+   leg29->AddEntry(simc_ytar,"SIMC");
    leg29->Draw();
 
    c4->cd(3);
-   data_ztar->Draw();
-   simc_ztar->Draw("sames");
+   data_ztar->DrawNormalized();
+   simc_ztar->DrawNormalized("sames");
    leg30->AddEntry(data_ztar,"Data","f");
    leg30->AddEntry(simc_ztar,"SIMC");
    leg30->Draw();

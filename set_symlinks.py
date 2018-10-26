@@ -37,7 +37,7 @@ if simc == 'deut':
     sp.call(cmd6, shell=True)
     sp.call(cmd7, shell=True)
     
-if simc == 'simc':    
+if simc == 'gfor':    
 #Create symlinks with simc_gfortran
     cmd2 = "ln -s ../simc_gfortran/simc"
     cmd3 = "ln -s ../simc_gfortran/hms"
