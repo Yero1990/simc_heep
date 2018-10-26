@@ -1,4 +1,4 @@
- ! Simulation for coin. H(e,e'p) Kinematic Group g11_coin, Hall c   
+ ! Simulation for coin. H(e,e'p) Kinematic Group g4_singles_hElec, Hall c   
 ! of radiative corrections 
 !               
 !   
@@ -15,18 +15,18 @@
      doing_pion  =  F		!  (T = TRUE)                                     
      doing_decay  =  F		!  1=decay ON, 0=decay OFF.                       
      ctau  =  780.4			!  decay length (cm)                      
-     extra_dbase_file = 'extra_hydrogen_coin_norad.data' !  additional input parameters. 
+     extra_dbase_file = 'extra_hydrogen_singles_norad.data' !  additional input parameters. 
 /        
  =?      
  &KINEMATICS_MAIN    
-    Ebeam  =  10587.94                       !  (MeV)  
+    Ebeam  =  6430.0                       !  (MeV)  
     dEbeam  =  0.05                                   !  beam energy variation (%)  
      electron_arm  =  1                                !  1=hms,2=sos,3=hrsr,4=hrsl,5 = shms  
      hadron_arm  =  5                                  !  1=hms,2=sos,3=hrsr,4=hrsl,5 = shms  
-     spec%e%P  =   5542.2                    !  e arm central momentum (MeV/c)  
-     spec%e%theta  =   23.189                !  e arm angle setting (degrees)  
-     spec%p%P  =   5925.0                !  p arm central momentum (MeV/c)   
-     spec%p%theta  =  21.595                !  p arm angle setting (degrees)  
+     spec%e%P  =   2131.0                    !  e arm central momentum (MeV/c)  
+     spec%e%theta  =   45.109                !  e arm angle setting (degrees)  
+     spec%p%P  =   5151.87                !  p arm central momentum (MeV/c)   
+     spec%p%theta  =  17.0455                !  p arm angle setting (degrees)  
 /    
      
  ?=   

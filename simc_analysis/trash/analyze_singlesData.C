@@ -1,11 +1,11 @@
 //Macro to analyze H(e,e'p) E12-10-003 data from Hall C: HMS (Hadron arm), SHMS (electron arm)
 
-#include "../simc_analysis/set_heep_histos.h"
+#include "set_heep_histos.h"
 
 //HMS Momentum correction: P0 = P0*0.9968`
 //SHMS Momentum correction: P0 = P0*0.985
 
-void analyze_singlesData(int runNUM, int evtNUM)
+void analyze_heepData(int runNUM, int evtNUM)
 {
 
   
@@ -24,13 +24,13 @@ void analyze_singlesData(int runNUM, int evtNUM)
   //Open data ROOTfile and call TTree
   TString file_path;
   file_path = Form("../../hallc_replay/ROOTfiles/hms_replay_delta_scan_%d_%d.root", runNUM, evtNUM);
- 
+  
   TFile *data_file = new TFile(file_path, "READ");
 
   TTree *T = (TTree*)data_file->Get("T");
 
   //Open root file where new histograms will be stored
-  TFile *outfile = new TFile(Form("./delta_scan_data_%d_%d.root", runNUM, evtNUM), "recreate");
+  TFile *outfile = new TFile(Form("./DATA_ROOTfiles/heep_data_%d_%d.root", runNUM, evtNUM), "recreate");
 
 
   //These histograms binning MUST be exactly the same as those used in SIMC heep.C analysis
@@ -113,80 +113,79 @@ void analyze_singlesData(int runNUM, int evtNUM)
    TCut hcal = "H.cal.etot>0.1";
 
    //DEFINE KINEMATIC CUTS
-   TCut W_cut = Form("%s.kin.W<1.05", primary.c_str());   //select events below pion thresshold
-   //TCut em_cut = Form("%s.kin.secondary.emiss>-0.06&&%s.kin.secondary.emiss<0.08", secondary.c_str(), secondary.c_str());  
-   TCut Q2_cut = Form("%s.kin.Q2>3&&%s.kin.Q2<5.0", primary.c_str(), primary.c_str());
-   TCut xbj_cut = Form("%s.kin.x_bj>0.9", primary.c_str()); 
+   TCut W_cut = Form("%s.kin.primary.W<1.05", primary.c_str());   //select events below pion thresshold
+   TCut em_cut = Form("%s.kin.secondary.emiss>-0.06&&%s.kin.secondary.emiss<0.08", secondary.c_str(), secondary.c_str());  
+   TCut Q2_cut = Form("%s.kin.primary.Q2>3&&%s.kin.primary.Q2<5.0", primary.c_str(), primary.c_str());
+   TCut xbj_cut = Form("%s.kin.primary.x_bj>0.7&&%s.kin.primary.x_bj<1.3", primary.c_str(), primary.c_str()); 
 
 
    //Draw the Histograms from the TTree
 
    //Kinematics Quantities, P.* ->SHMS,  H.* -->HMS
-   //T->Draw(Form("%s.kin.secondary.emiss>>data_Emiss", secondary.c_str()));
-   //T->Draw(Form("%s.kin.secondary.pmiss>>data_pm", secondary.c_str()), xbj_cut);
-   T->Draw(Form("%s.kin.Q2>>data_Q2", primary.c_str()), xbj_cut);
-   T->Draw(Form("%s.kin.nu>>data_omega", primary.c_str()), xbj_cut);
-   T->Draw(Form("%s.kin.W>>data_W_inv", primary.c_str()), xbj_cut);
-   T->Draw(Form("(%s.kin.scat_ang_rad*180./3.14)>>data_theta_elec", primary.c_str()), xbj_cut);
-
-   //T->Draw(Form("(%s.kin.secondary.xangle - %s.kin.scat_ang_rad)*180./3.14>>data_theta_prot", secondary.c_str(), primary.c_str()), xbj_cut); 
+   T->Draw(Form("%s.kin.secondary.emiss>>data_Emiss", secondary.c_str()));
+   T->Draw(Form("%s.kin.secondary.pmiss>>data_pm", secondary.c_str()), em_cut);
+   T->Draw(Form("%s.kin.primary.Q2>>data_Q2", primary.c_str()), em_cut);
+   T->Draw(Form("%s.kin.primary.nu>>data_omega", primary.c_str()), em_cut);
+   T->Draw(Form("%s.kin.primary.W>>data_W_inv", primary.c_str()), em_cut);
+   T->Draw(Form("(%s.kin.primary.scat_ang_rad*180./3.14)>>data_theta_elec", primary.c_str()), em_cut);
+   T->Draw(Form("(%s.kin.secondary.xangle - %s.kin.primary.scat_ang_rad)*180./3.14>>data_theta_prot", secondary.c_str(), primary.c_str()), em_cut); 
    
    //Additional Kinematic Variables
-   T->Draw(Form("%s.kin.W2>>data_W2", primary.c_str()), xbj_cut);
-   T->Draw(Form("%s.kin.x_bj>>data_xbj", primary.c_str()), xbj_cut);
-   //T->Draw(Form("%s.gtr.p>>data_Pf", secondary.c_str()), xbj_cut);
-   T->Draw(Form("%s.gtr.p>>data_kf", primary.c_str()), xbj_cut);
-   T->Draw(Form("%s.kin.th_q*(180./3.14)>>data_theta_q", primary.c_str()), xbj_cut ); //theta_q
+   T->Draw(Form("%s.kin.primary.W2>>data_W2", primary.c_str()), em_cut);
+   T->Draw(Form("%s.kin.primary.x_bj>>data_xbj", primary.c_str()), em_cut);
+   T->Draw(Form("%s.gtr.p>>data_Pf", secondary.c_str()), em_cut);
+   T->Draw(Form("%s.gtr.p>>data_kf", primary.c_str()), em_cut);
+   T->Draw(Form("%s.kin.primary.th_q*(180./3.14)>>data_theta_q", primary.c_str()), em_cut ); //theta_q
 
    //Target Reconstruction Variables ????? What are these in data????
-   T->Draw(Form("%s.react.x>>data_x_tar", primary.c_str()), xbj_cut);
-   T->Draw(Form("%s.react.y>>data_y_tar", primary.c_str()), xbj_cut);
-   T->Draw(Form("%s.react.z>>data_z_tar", primary.c_str()), xbj_cut);
+   T->Draw(Form("%s.react.x>>data_x_tar", primary.c_str()), em_cut);
+   T->Draw(Form("%s.react.y>>data_y_tar", primary.c_str()), em_cut);
+   T->Draw(Form("%s.react.z>>data_z_tar", primary.c_str()), em_cut);
 		   
 		   //Target Recon, 2d
-   //T->Draw(Form("%s.react.z:%s.gtr.ph>>data_reactz_vs_yptar", primary.c_str(), primary.c_str()), xbj_cut);
+   //T->Draw(Form("%s.react.z:%s.gtr.ph>>data_reactz_vs_yptar", primary.c_str(), primary.c_str()), em_cut);
    
    //Secondary arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta), theta: xptar, phi:yptar
-   //T->Draw(Form("%s.gtr.y>>data_hytar", secondary.c_str()), xbj_cut);
-   //T->Draw(Form("%s.gtr.th>>data_hxptar", secondary.c_str()), xbj_cut);
-   //T->Draw(Form("%s.gtr.ph>>data_hyptar", secondary.c_str()), xbj_cut);
-   //T->Draw(Form("%s.gtr.dp>>data_hdelta", secondary.c_str()), xbj_cut);
+   T->Draw(Form("%s.gtr.y>>data_hytar", secondary.c_str()), em_cut);
+   T->Draw(Form("%s.gtr.th>>data_hxptar", secondary.c_str()), em_cut);
+   T->Draw(Form("%s.gtr.ph>>data_hyptar", secondary.c_str()), em_cut);
+   T->Draw(Form("%s.gtr.dp>>data_hdelta", secondary.c_str()), em_cut);
 
    //Secondary arm Focal Plane Quantities
-   //T->Draw(Form("%s.dc.x_fp>>data_hxfp", secondary.c_str()), xbj_cut);
-   //T->Draw(Form("%s.dc.y_fp>>data_hyfp", secondary.c_str()), xbj_cut);
-   //T->Draw(Form("%s.dc.xp_fp>>data_hxpfp", secondary.c_str()), xbj_cut);
-   //T->Draw(Form("%s.dc.yp_fp>>data_hypfp", secondary.c_str()), xbj_cut);
+   T->Draw(Form("%s.dc.x_fp>>data_hxfp", secondary.c_str()), em_cut);
+   T->Draw(Form("%s.dc.y_fp>>data_hyfp", secondary.c_str()), em_cut);
+   T->Draw(Form("%s.dc.xp_fp>>data_hxpfp", secondary.c_str()), em_cut);
+   T->Draw(Form("%s.dc.yp_fp>>data_hypfp", secondary.c_str()), em_cut);
    
    //Primary arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta), theta: xptar, phi:yptar
-   T->Draw(Form("%s.gtr.y>>data_eytar", primary.c_str()), xbj_cut);
-   T->Draw(Form("%s.gtr.th>>data_exptar", primary.c_str()), xbj_cut);
-   T->Draw(Form("%s.gtr.ph>>data_eyptar", primary.c_str()), xbj_cut); 
-   T->Draw(Form("%s.gtr.dp>>data_edelta", primary.c_str()), xbj_cut);
+   T->Draw(Form("%s.gtr.y>>data_eytar", primary.c_str()), em_cut);
+   T->Draw(Form("%s.gtr.th>>data_exptar", primary.c_str()), em_cut);
+   T->Draw(Form("%s.gtr.ph>>data_eyptar", primary.c_str()), em_cut); 
+   T->Draw(Form("%s.gtr.dp>>data_edelta", primary.c_str()), em_cut);
 
    //Primary arm Focal Plane Quantities
-   T->Draw(Form("%s.dc.x_fp>>data_exfp", primary.c_str()), xbj_cut);
-   T->Draw(Form("%s.dc.y_fp>>data_eyfp", primary.c_str()), xbj_cut);
-   T->Draw(Form("%s.dc.xp_fp>>data_expfp", primary.c_str()), xbj_cut);
-   T->Draw(Form("%s.dc.yp_fp>>data_eypfp", primary.c_str()), xbj_cut);
+   T->Draw(Form("%s.dc.x_fp>>data_exfp", primary.c_str()), em_cut);
+   T->Draw(Form("%s.dc.y_fp>>data_eyfp", primary.c_str()), em_cut);
+   T->Draw(Form("%s.dc.xp_fp>>data_expfp", primary.c_str()), em_cut);
+   T->Draw(Form("%s.dc.yp_fp>>data_eypfp", primary.c_str()), em_cut);
 
    
    // TH2F General TTree::Draw Format:  T->Draw(Form("y:x>>(xbins, xmin, xmax, ybins, ymin, ymax)")   
    
    // Cross-Check correlations
-   //T->Draw(Form("%s.kin.secondary.emiss:%s.kin.secondary.pmiss>>data_emiss_vs_pmiss", secondary.c_str(), secondary.c_str()), xbj_cut);
-   T->Draw(Form("%s.gtr.dp:%s.gtr.ph>>data_edelta_vs_eyptar", primary.c_str(), primary.c_str()), xbj_cut);
-   //T->Draw(Form("%s.kin.secondary.emiss:%s.gtr.th>>data_emiss_vs_exptar", secondary.c_str(), primary.c_str()), xbj_cut);
-   //T->Draw(Form("%s.kin.secondary.emiss:%s.gtr.ph>>data_emiss_vs_eyptar", secondary.c_str(), primary.c_str()), xbj_cut);
+   T->Draw(Form("%s.kin.secondary.emiss:%s.kin.secondary.pmiss>>data_emiss_vs_pmiss", secondary.c_str(), secondary.c_str()), em_cut);
+   T->Draw(Form("%s.gtr.dp:%s.gtr.ph>>data_edelta_vs_eyptar", primary.c_str(), primary.c_str()), em_cut);
+   T->Draw(Form("%s.kin.secondary.emiss:%s.gtr.th>>data_emiss_vs_exptar", secondary.c_str(), primary.c_str()), em_cut);
+   T->Draw(Form("%s.kin.secondary.emiss:%s.gtr.ph>>data_emiss_vs_eyptar", secondary.c_str(), primary.c_str()), em_cut);
    
    //2D Focal Plane Correlations
-   //T->Draw(Form("%s.dc.x_fp:%s.dc.y_fp>>data_hxfp_vs_hyfp", secondary.c_str(), secondary.c_str()), xbj_cut);
-   T->Draw(Form("%s.dc.x_fp:%s.dc.y_fp>>data_exfp_vs_eyfp", primary.c_str(), primary.c_str()), xbj_cut);
+   T->Draw(Form("%s.dc.x_fp:%s.dc.y_fp>>data_hxfp_vs_hyfp", secondary.c_str(), secondary.c_str()), em_cut);
+   T->Draw(Form("%s.dc.x_fp:%s.dc.y_fp>>data_exfp_vs_eyfp", primary.c_str(), primary.c_str()), em_cut);
    
    //2D HMS v. SHMS Acceptance Correlations
-   //T->Draw(Form("%s.gtr.th:%s.gtr.th>>data_hxptar_vs_exptar", secondary.c_str(), primary.c_str()), xbj_cut);
-   //T->Draw(Form("%s.gtr.ph:%s.gtr.ph>>data_hyptar_vs_eyptar", secondary.c_str(), primary.c_str()), xbj_cut);
-   //T->Draw(Form("%s.gtr.dp:%s.gtr.dp>>data_hdelta_vs_edelta", secondary.c_str(), primary.c_str()), xbj_cut);
+   T->Draw(Form("%s.gtr.th:%s.gtr.th>>data_hxptar_vs_exptar", secondary.c_str(), primary.c_str()), em_cut);
+   T->Draw(Form("%s.gtr.ph:%s.gtr.ph>>data_hyptar_vs_eyptar", secondary.c_str(), primary.c_str()), em_cut);
+   T->Draw(Form("%s.gtr.dp:%s.gtr.dp>>data_hdelta_vs_edelta", secondary.c_str(), primary.c_str()), em_cut);
    
    outfile->Write();
    outfile->Close();
