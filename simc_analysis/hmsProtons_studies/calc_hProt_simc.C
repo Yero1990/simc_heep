@@ -57,9 +57,9 @@ void calc_hProt_simc()
   c0->Divide(4,2);
   TCanvas *c1 = new TCanvas("c1", "Calculated/Measured HMS Momentum", 1500, 1000);   
   c1->Divide(4,2);
-  TCanvas *c2 = new TCanvas("c2", "HMS Momentum Perc Dev. From Measured", 1500,1000);
+  TCanvas *c2 = new TCanvas("c2", "HMS Momentum Fractional Dev. From Measured", 1500,1000);
   c2->Divide(4,2);
-  TCanvas *c3 = new TCanvas("c3","Percent Deviation from P_{meas} vs. Kin Group",200,10,500,300);
+  TCanvas *c3 = new TCanvas("c3","Fractional Deviation from P_{meas} vs. Kin Group",200,10,500,300);
   
   Double_t FullWeight;
 
@@ -69,7 +69,7 @@ void calc_hProt_simc()
   //Loop over all kinematic groups
   for(int i = 0; i<8; i++)
     {
-      string filename = Form("../worksim_voli/ep_coin_simc_hProt_kg%d.root", index+1);                                   
+      string filename = Form("../../worksim_voli/hmsProtons/ep_coin_simc_hProt_kg%d.root", index+1);                                   
       TFile *f1 = new TFile(filename.c_str());                                                                           
 
       //Get TTree                                                                                                                     
@@ -111,7 +111,7 @@ void calc_hProt_simc()
 	
       }
       
-      hist_hPDev[index] = new TH1F(Form("hP_Dev_g%d", index+1), "", 80, -4, 4);
+      hist_hPDev[index] = new TH1F(Form("hP_Dev_g%d", index+1), "", 80, -0.05, 0.05);
       hist_Em[index] = new TH1F(Form("h_Em_g%d", index+1), "", 100, -0.2, 0.3);
 
       //-----------LOOP OVER ALL ENTRIES IN TREE-----------------------
@@ -140,7 +140,7 @@ void calc_hProt_simc()
 	if (Em<0.05 && abs(h_delta) < 8.0){
 	hist_hPcalc[index]->Fill(hmsP_calc, FullWeight);      //Fill calculated momentum
 	hist_hPmeas[index]->Fill(hmsP_meas, FullWeight);      //Fill measure momentum
-	hist_hPDev[index]->Fill( (hmsP_calc - hmsP_meas)/ hmsP_meas*100. , FullWeight);   //Fille % Deviation of Calculated from Measured Momentum
+	hist_hPDev[index]->Fill( (hmsP_calc - hmsP_meas)/ hmsP_meas, FullWeight);   //Fill Fractional  Deviation of Calculated from Measured Momentum
 	}
 
 	hist_Em[index]->Fill(Em, FullWeight);
@@ -163,7 +163,7 @@ void calc_hProt_simc()
       c2->cd(index+1);
       hist_hPDev[index]->Draw();
       
-      TF1 *fit = new TF1("fit", "gaus", xmax_val - 1.0*sig_Res, xmax_val + 1.0*sig_Res);
+      TF1 *fit = new TF1("fit", "gaus", xmax_val - 2.0*sig_Res, xmax_val + 2.0*sig_Res);
       hist_hPDev[index]->Fit("fit", "R");
       
       Double_t mu_Res_fit = fit->GetParameter(1);
@@ -192,7 +192,7 @@ void calc_hProt_simc()
 
   gr->SetTitle(" (P_calc - P_meas) / P_{meas.} vs. Kin. Group");
 
-  gr->GetYaxis()->SetTitle("(P_{calc} - P_{meas}) / P_{measured} [% deviation]");
+  gr->GetYaxis()->SetTitle("(P_{calc} - P_{meas}) / P_{measured} [fractional deviation]");
   gr->GetYaxis()->CenterTitle();
   
   gr->GetXaxis()->SetTitle("Kinematic Group");

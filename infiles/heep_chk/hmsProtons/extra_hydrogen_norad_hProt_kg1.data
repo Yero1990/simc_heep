@@ -10,8 +10,8 @@
      targ%fr_pattern  =  1		!  raster pattern: 1=square, 2=circular
      targ%fr1  =  0.2		!  horizontal size OR inner radius(2)
      targ%fr2  =  0.2		!  vertical size OR outer radius(2)
-     targ%xoffset  =  0.0		!  target x-offset (cm): +x = beam right
-     targ%yoffset  =  0.0		!  target y-offset (cm): +y = up
+     targ%xoffset  =  0.036876		!  target x-offset (cm): +x = beam right
+     targ%yoffset  =  -0.078175		!  target y-offset (cm): +y = up
      targ%zoffset  =  0.0		!  target z-offset (cm): +z = downstream
    				!   zreal = znominal + zoffset
 / 
@@ -21,16 +21,16 @@
 ! thus pointing above target and giving a negative shift to particle's xptar)
 
  &E_ARM_OFFSET
-     spec%e%offset%x  =  0.		!  x offset (cm)
-     spec%e%offset%y  =  0.		!  y offset (cm)
+     spec%e%offset%x  =  -0.126		!  x offset (cm)
+     spec%e%offset%y  =  -0.06		!  y offset (cm)
      spec%e%offset%z  =  0.		!  z offset (cm)
      spec%e%offset%xptar  =  0.	!  xptar offset (mr)
      spec%e%offset%yptar  =  0.	!  yptar offset (mr)
 /
 
  &P_ARM_OFFSET
-     spec%p%offset%x  =  0.		!  x offset (cm)
-     spec%p%offset%y  =  0.		!  y offset (cm)
+     spec%p%offset%x  =  0.100433	!  x offset (cm)
+     spec%p%offset%y  =  0.324		!  y offset (cm)
      spec%p%offset%z  =  0.		!  z offset (cm)
      spec%p%offset%xptar  =  0.	!  xptar offset (mr)
      spec%p%offset%yptar  =  0.	!  yptar offset (mr)
@@ -39,7 +39,7 @@
  &SIMULATE
      hard_cuts  =  F         !  (ONE = TRUE) SPedge and Em.max are hard cuts(ntuple)
      using_rad  =  T 	        !  (ONE = TRUE)
-     spect_mode  =  -2	        !  0=e+p arms, -1=p arm, -2=e arm only, 1=none
+     spect_mode  =  0	        !  0=e+p arms, -1=p arm, -2=e arm only, 1=none
      cuts%Em%min  =  0.	        !  (Em.min=Em.max=0.0 gives wide open cuts)
      cuts%Em%max  =  200.	!  Must be wider than cuts in analysis(elastic or e,e'p)
      using_Eloss  =  T	        !  (ONE = TRUE)
