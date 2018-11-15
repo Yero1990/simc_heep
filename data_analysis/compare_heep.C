@@ -1,21 +1,21 @@
 //Script to make comparison between SIMC and Commissioning Data from HallC Spring 2018
 //Compare Target Reconstruction/FOCAL PLANE/ Kinematics Variables
 
-void compare_heep(int runNUM, int evtNUM)
+void compare_heep()
 {
   
   gStyle->SetOptStat(1001111);
   //TString simc_filename =  "weighted_ep_coin_simc_1854.root"; //"ep_coin_simc_1929.root";
   
   //Pre-defined SIMC/data root file names containing histogram object to comapare
-  TString simc_filename =  Form("Weighted_simc_hms_single_%d.root", runNUM);
+  TString simc_filename =  "Wcheck_histos.root";
   //TString simc_filename =  Form("Weighted_simc_hms_single_%d_gfor.root", runNUM);
-  TString data_filename =  Form("delta_scan_data_%d_%d.root", runNUM, evtNUM); 
+  TString data_filename = "Wcheck_data_histos.root"; 
 
   TString simc_path;
   TString data_path;
   
-  simc_path = "../simc_analysis/"+simc_filename;
+  simc_path = "../simc_analysis/shmsElectrons_studies/"+simc_filename;
   data_path = "./"+data_filename;
   
   //Open SIMC/data ROOT files;
@@ -75,6 +75,7 @@ void compare_heep(int runNUM, int evtNUM)
   TH1F *simc_xbj = 0;
   TH1F *simc_th_elec = 0;                                  
   TH1F *simc_kf = 0;  
+  TH1F *simc_emiss = 0;
 
   //Define data histos
   TH1F *data_Q2 =  0;
@@ -85,12 +86,14 @@ void compare_heep(int runNUM, int evtNUM)
   TH1F *data_xbj = 0;
   TH1F *data_th_elec = 0;
   TH1F *data_kf = 0;
-  
+  TH1F *data_emiss = 0;
+
   //---------------------------------------------------------------
 
  //change to simc_file
   simc_file->cd();
 
+  
   //----------Get Target Histograms------------------
   //Get Histogram objects from SIMC rootfile
   simc_file->GetObject("cut_x_tar", simc_xtar);
@@ -111,9 +114,9 @@ void compare_heep(int runNUM, int evtNUM)
   data_file->cd();
 
   //Get Histogram objects from data rootfile
-  data_file->GetObject("data_x_tar", data_xtar);
-  data_file->GetObject("data_y_tar", data_ytar);
-  data_file->GetObject("data_z_tar", data_ztar);
+  data_file->GetObject("cut_x_tar", data_xtar);
+  data_file->GetObject("cut_y_tar", data_ytar);
+  data_file->GetObject("cut_z_tar", data_ztar);
 
   
   //Set data Histo Aesthetics
@@ -155,10 +158,10 @@ void compare_heep(int runNUM, int evtNUM)
   data_file->cd();
 
   //Get Histogram objects from data rootfile
-  data_file->GetObject("data_eytar", data_eytar);
-  data_file->GetObject("data_exptar", data_exptar);
-  data_file->GetObject("data_eyptar", data_eyptar);
-  data_file->GetObject("data_edelta", data_edelta);
+  data_file->GetObject("cut_eytar", data_eytar);
+  data_file->GetObject("cut_exptar", data_exptar);
+  data_file->GetObject("cut_eyptar", data_eyptar);
+  data_file->GetObject("cut_edelta", data_edelta);
   
   
   //Set data Histo Aesthetics
@@ -172,6 +175,8 @@ void compare_heep(int runNUM, int evtNUM)
   data_edelta->SetFillStyle(3004);
   
   //-----------------------------------------------------------------
+
+  
 
   //---------------Get FOCAL PLANE Histograms------------------------
 
@@ -200,10 +205,10 @@ void compare_heep(int runNUM, int evtNUM)
   data_file->cd();
 
   //Get Histogram objects from data rootfile
-  data_file->GetObject("data_exfp", data_exfp);
-  data_file->GetObject("data_eyfp", data_eyfp);
-  data_file->GetObject("data_expfp", data_expfp);
-  data_file->GetObject("data_eypfp", data_eypfp);
+  data_file->GetObject("cut_exfp", data_exfp);
+  data_file->GetObject("cut_eyfp", data_eyfp);
+  data_file->GetObject("cut_expfp", data_expfp);
+  data_file->GetObject("cut_eypfp", data_eypfp);
 
   
   //Set data Histo Aesthetics
@@ -217,7 +222,7 @@ void compare_heep(int runNUM, int evtNUM)
   data_eypfp->SetFillStyle(3004);
 
   //--------------------------------------------------------------
-
+  
   //------------------Get KINEMATICS VARIABLES--------------------
 
    //change to simc_file
@@ -232,9 +237,10 @@ void compare_heep(int runNUM, int evtNUM)
   simc_file->GetObject("cut_xbj", simc_xbj);
   simc_file->GetObject("cut_theta_elec", simc_th_elec);
   simc_file->GetObject("cut_kf", simc_kf);
+  simc_file->GetObject("cut_Emiss", simc_emiss);
 
   
-
+  
   //Set SIMC Histo Aesthetics
   simc_Q2->SetLineColor(kRed);
   simc_Q2->SetLineWidth(3);
@@ -244,26 +250,30 @@ void compare_heep(int runNUM, int evtNUM)
   simc_W->SetLineWidth(3);
   simc_thq->SetLineColor(kRed);
   simc_thq->SetLineWidth(3);
-
+  
   simc_xbj->SetLineColor(kRed);
   simc_xbj->SetLineWidth(3);
   simc_th_elec->SetLineColor(kRed);
   simc_th_elec->SetLineWidth(3);
   simc_kf->SetLineColor(kRed);
   simc_kf->SetLineWidth(3);
+  simc_emiss->SetLineColor(kRed);
+  simc_emiss->SetLineWidth(3);
+
   //change to data_file
   data_file->cd();
   
   //Get Histogram objects from data rootfile
-  data_file->GetObject("data_Q2", data_Q2);
-  data_file->GetObject("data_omega", data_omega);
-  data_file->GetObject("data_W_inv", data_W);
-  data_file->GetObject("data_theta_q", data_thq);
+  data_file->GetObject("cut_Q_2", data_Q2);
+  data_file->GetObject("cut_omega", data_omega);
+  data_file->GetObject("cut_W_inv", data_W);
+  data_file->GetObject("cut_theta_q", data_thq);
 
-
-  data_file->GetObject("data_xbj", data_xbj);
-  data_file->GetObject("data_theta_elec", data_th_elec);
-  data_file->GetObject("data_kf", data_kf);
+  
+  data_file->GetObject("cut_xbj", data_xbj);
+  data_file->GetObject("cut_theta_elec", data_th_elec);
+  data_file->GetObject("cut_kf", data_kf);
+  data_file->GetObject("cut_Emiss", data_emiss);
 
   //Set data Histo Aesthetics
   data_Q2->SetFillColorAlpha(kBlue, 0.35);
@@ -281,8 +291,9 @@ void compare_heep(int runNUM, int evtNUM)
   data_th_elec->SetFillStyle(3004);
   data_kf->SetFillColorAlpha(kBlue, 0.35);
   data_kf->SetFillStyle(3004);
-
-
+  data_emiss->SetFillColorAlpha(kBlue, 0.35);
+  data_emiss->SetFillStyle(3004);
+  
   //Overlay SIMC/data plots (*** VERY IMPORTANT ***: Range and #bins must be same)
 
    //Set Legend
@@ -297,7 +308,7 @@ void compare_heep(int runNUM, int evtNUM)
    auto leg7 = new TLegend(0.1,0.8,0.28,0.9);
    auto leg8 = new TLegend(0.1,0.8,0.28,0.9);
 
-
+  
    //-----------------PLOT Target Reconstructed Variables SIMC/Data comparison-----------------------
 
    //Create A Canvas to store Target Recon. variable comparisons in HADRON ARM
@@ -306,36 +317,36 @@ void compare_heep(int runNUM, int evtNUM)
    c1->Divide(2,2);
 
    c1->cd(1);
-   data_eytar->DrawNormalized();
-   simc_eytar->DrawNormalized("sames");
+   simc_eytar->DrawNormalized();
+   data_eytar->DrawNormalized("sameshist");
    leg5->AddEntry(data_eytar,"Data","f");
    leg5->AddEntry(simc_eytar,"SIMC");
    leg5->Draw();
 
    c1->cd(2);
-   data_exptar->DrawNormalized();
-   simc_exptar->DrawNormalized("sames");
+   simc_exptar->DrawNormalized();
+   data_exptar->DrawNormalized("sameshist");
    leg6->AddEntry(data_exptar,"Data", "f");
    leg6->AddEntry(simc_exptar,"SIMC");
    leg6->Draw();
 
    c1->cd(3);
-   data_eyptar->DrawNormalized();
-   simc_eyptar->DrawNormalized("sames");
+   simc_eyptar->DrawNormalized();
+   data_eyptar->DrawNormalized("sameshist");
    leg7->AddEntry(data_eyptar,"Data", "f");
    leg7->AddEntry(simc_eyptar,"SIMC");
    leg7->Draw();
      
    c1->cd(4);
-   data_edelta->DrawNormalized();
-   simc_edelta->DrawNormalized("sames");
+   simc_edelta->DrawNormalized();
+   data_edelta->DrawNormalized("sameshist");
    leg8->AddEntry(data_edelta,"Data", "f");
    leg8->AddEntry(simc_edelta,"SIMC");
    leg8->Draw();
 
    //------------------------------------------------------------------------------
 
-
+   
    //-----------------PLOT FOCAL PLANE  Variables SIMC/Data comparison-----------------------
 
   //Set Legend
@@ -354,35 +365,36 @@ void compare_heep(int runNUM, int evtNUM)
    c2->Divide(2,2);
 
    c2->cd(1);
-   data_exfp->DrawNormalized();
-   simc_exfp->DrawNormalized("sames");
+   simc_exfp->DrawNormalized();
+   data_exfp->DrawNormalized("sameshist");
    leg13->AddEntry(data_exfp,"Data","f");
    leg13->AddEntry(simc_exfp,"SIMC");
    leg13->Draw();
    
    c2->cd(2);
-   data_eyfp->DrawNormalized();
-   simc_eyfp->DrawNormalized("sames");
+   simc_eyfp->DrawNormalized();
+   data_eyfp->DrawNormalized("sameshist");
    leg14->AddEntry(data_eyfp,"Data", "f");
    leg14->AddEntry(simc_eyfp,"SIMC");
    leg14->Draw();
 
    c2->cd(3);
-   data_expfp->DrawNormalized();
-   simc_expfp->DrawNormalized("sames");
+   simc_expfp->DrawNormalized();
+   data_expfp->DrawNormalized("sameshist");
    leg15->AddEntry(data_expfp,"Data", "f");
    leg15->AddEntry(simc_expfp,"SIMC");
    leg15->Draw();
      
    c2->cd(4);
-   data_eypfp->DrawNormalized();
-   simc_eypfp->DrawNormalized("sames");
+   simc_eypfp->DrawNormalized();
+   data_eypfp->DrawNormalized("sameshist");
    leg16->AddEntry(data_eypfp,"Data", "f");
    leg16->AddEntry(simc_eypfp,"SIMC");
    leg16->Draw();
 
    //----------------------------------------------------------- 
  
+   
    //-----------------PLOT KINEMATICS SIMC/Data comparison---------------
 
 //Set Legend
@@ -407,8 +419,8 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(1);
    data_Q2->GetXaxis()->SetTitle("Q^{2} [GeV^{2}]");
    data_Q2->GetXaxis()->CenterTitle();
-   data_Q2->DrawNormalized();
-   simc_Q2->DrawNormalized("sames");
+   simc_Q2->DrawNormalized();
+   data_Q2->DrawNormalized("sameshist");
    leg19->AddEntry(data_Q2,"Data", "f");
    leg19->AddEntry(simc_Q2,"SIMC");
    leg19->Draw();
@@ -416,8 +428,8 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(2);
    data_omega->GetXaxis()->SetTitle("Energy Transfer, #omega [GeV]");
    data_omega->GetXaxis()->CenterTitle();  
-   data_omega->DrawNormalized();
-   simc_omega->DrawNormalized("sames");
+   simc_omega->DrawNormalized();
+   data_omega->DrawNormalized("sameshist");
    leg20->AddEntry(data_omega,"Data", "f");
    leg20->AddEntry(simc_omega,"SIMC");
    leg20->Draw();
@@ -425,8 +437,8 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(3);
    data_W->GetXaxis()->SetTitle("Invariant Mass, W [GeV]");
    data_W->GetXaxis()->CenterTitle();
-   data_W->DrawNormalized();
-   simc_W->DrawNormalized("sames");
+   simc_W->DrawNormalized();
+   data_W->DrawNormalized("sameshist");
    leg21->AddEntry(data_W,"Data", "f");
    leg21->AddEntry(simc_W,"SIMC");
    leg21->Draw();
@@ -434,15 +446,15 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(4);
    data_thq->GetXaxis()->SetTitle("q-vector Angle, #theta_{q} [deg]");
    data_thq->GetXaxis()->CenterTitle();
-   data_thq->DrawNormalized();
-   simc_thq->DrawNormalized("sames");
+   simc_thq->DrawNormalized();
+   data_thq->DrawNormalized("sameshist");
    leg22->AddEntry(data_thq,"Data", "f");
    leg22->AddEntry(simc_thq,"SIMC");
    leg22->Draw();
 
    c3->cd(5);
-   simc_xbj->DrawNormalized();
-   data_xbj->DrawNormalized("sames");
+   data_xbj->DrawNormalized();
+   simc_xbj->DrawNormalized("sameshist");
    leg23->AddEntry(data_xbj,"Data","f");
    leg23->AddEntry(simc_xbj,"SIMC");
    leg23->Draw();
@@ -450,8 +462,8 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(6);
    data_th_elec->GetXaxis()->SetTitle("Electron Scatt. Angle, #theta_{e} [deg]");
    data_th_elec->GetXaxis()->CenterTitle();
-   data_th_elec->DrawNormalized();
-   simc_th_elec->DrawNormalized("sames");
+   simc_th_elec->DrawNormalized();
+   data_th_elec->DrawNormalized("sameshist");
    leg24->AddEntry(data_th_elec,"Data","f");
    leg24->AddEntry(simc_th_elec,"SIMC");
    leg24->Draw();
@@ -459,10 +471,19 @@ void compare_heep(int runNUM, int evtNUM)
    c3->cd(7);
    data_kf->GetXaxis()->SetTitle("Electron Final Momentum, k_{f} [GeV/c] ");
    data_kf->GetXaxis()->CenterTitle();   
-   data_kf->DrawNormalized();
-   simc_kf->DrawNormalized("sames");
+   simc_kf->DrawNormalized();
+   data_kf->DrawNormalized("sameshist");
    leg25->AddEntry(data_kf,"Data","f");
    leg25->AddEntry(simc_kf,"SIMC");
+   leg25->Draw();
+
+   c3->cd(8);
+   data_emiss->GetXaxis()->SetTitle("Missing Energy, E_{m} [GeV/c] ");
+   data_emiss->GetXaxis()->CenterTitle();   
+   simc_emiss->DrawNormalized("hist");
+   data_emiss->DrawNormalized("sameshist");
+   leg25->AddEntry(data_emiss,"Data","f");
+   leg25->AddEntry(simc_emiss,"SIMC");
    leg25->Draw();
 
  //-----------------PLOT TARGET  Variables SIMC/Data comparison-----------------------
@@ -478,23 +499,25 @@ void compare_heep(int runNUM, int evtNUM)
    c4->Divide(3,1);
 
    c4->cd(1);
-   data_xtar->DrawNormalized();
-   simc_xtar->DrawNormalized("sames");
+   simc_xtar->DrawNormalized();
+   data_xtar->DrawNormalized("sameshist");
    leg28->AddEntry(data_xtar,"Data","f");
    leg28->AddEntry(simc_xtar,"SIMC");
    leg28->Draw();
   
    c4->cd(2);
-   data_ytar->DrawNormalized();
-   simc_ytar->DrawNormalized("sames");
+   simc_ytar->DrawNormalized();
+   data_ytar->DrawNormalized("sameshist");
    leg29->AddEntry(data_ytar,"Data","f");
    leg29->AddEntry(simc_ytar,"SIMC");
    leg29->Draw();
 
    c4->cd(3);
-   data_ztar->DrawNormalized();
-   simc_ztar->DrawNormalized("sames");
+   simc_ztar->DrawNormalized();
+   data_ztar->DrawNormalized("sameshist");
    leg30->AddEntry(data_ztar,"Data","f");
    leg30->AddEntry(simc_ztar,"SIMC");
    leg30->Draw();
+  
+  
 }

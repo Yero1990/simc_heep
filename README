@@ -9,5 +9,5 @@ HOW-TO-RUN SIMC on H(e,e'p)
    **This script will read the input_kinematics.data file and execute
      the code to do the raw unweighted simulation (./run_simc.sh )
      Then, it will open the current.hist file to extract the normfac.
-     Finally, it execute the fmake_tree.C code to make the simc root file
+     Finally, it will execute the fmake_tree.C code to make the simc root file
      containing all the relevant leafs in: /worksim_voli/
