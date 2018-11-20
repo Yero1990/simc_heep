@@ -1,18 +1,18 @@
-#include "../simc_analysis/shmsElectrons_studies/set_heep_histos.h"
+#include "../simc_analysis/D2_heep/set_heep_histos.h"
 
-void analyze_heepData()
+void analyze_heepData(int run)
 {
 
 //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
     
   //Read DATA ROOTfiles
-  TString filename = "../../hallc_replay/ROOTfiles/coin_replay_heep_check_3288_-1.root";                                 
+  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);                                 
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *T = (TTree*)data_file->Get("T");
  
   //Create output root file where histograms will be stored
-  TFile *outROOT = new TFile("Wcheck_data_histos.root", "recreate");
+  TFile *outROOT = new TFile(Form("Wcheck_data_histos_%d.root",run), "recreate");
   
 
   //********* Create 1D Histograms **************

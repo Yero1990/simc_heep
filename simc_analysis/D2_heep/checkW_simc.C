@@ -2,18 +2,18 @@
 
 #include "set_heep_histos.h"
 
-void checkW_simc()
+void checkW_simc(int run)
 {
   //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
     
   //Read SIMC ROOTfiles
-  TString filename = "../../worksim_voli/D2_heep_3288_realisticDC_res350um.root";                                 
+  TString filename = Form("../../worksim_voli/D2_heep_%d.root",run);                                 
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *SNT = (TTree*)data_file->Get("SNT");
  
   //Create output root file where histograms will be stored
-  TFile *outROOT = new TFile("Wcheck_histos.root", "recreate");
+  TFile *outROOT = new TFile(Form("Wcheck_simc_histos_%d.root",run), "recreate");
   
 
   //********* Create 1D Histograms **************
@@ -79,17 +79,49 @@ TH2F *hxptar_vs_exptar = new TH2F("hxptar_vs_exptar", "HMS vs. SHMS, X'_{tar}", 
 TH2F *hyptar_vs_eyptar = new TH2F("hyptar_vs_eyptar", "HMS vs. SHMS, Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, hyptar_nbins, hyptar_xmin, hyptar_xmax);
 TH2F *hdelta_vs_edelta = new TH2F("hdelta_vs_edelta", "HMS vs. SHMS, #delta", edelta_nbins, edelta_xmin, edelta_xmax, hdelta_nbins, hdelta_xmin, hdelta_xmax);
 
-//OPTICS CHECK (W correlations with Focal Plane / Target Quantities)
-TH2F *W_vs_xfp = new TH2F("W_vs_xfp", "W vs X_{fp}", exfp_nbins, exfp_xmin, exfp_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *W_vs_xpfp = new TH2F("W_vs_xpfp", "W vs X'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *W_vs_yfp = new TH2F("W_vs_yfp", "W vs Y_{fp}", eyfp_nbins, eyfp_xmin, eyfp_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *W_vs_ypfp = new TH2F("W_vs_ypfp", "W vs Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, W_nbins, W_xmin, W_xmax);
+//OPTICS CHECK (W correlations with electron arm Focal Plane / Target Quantities)
+TH2F *W_vs_exfp = new TH2F("W_vs_exfp", "W vs eX_{fp}", exfp_nbins, exfp_xmin, exfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_expfp = new TH2F("W_vs_expfp", "W vs eX'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_eyfp = new TH2F("W_vs_eyfp", "W vs eY_{fp}", eyfp_nbins, eyfp_xmin, eyfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_eypfp = new TH2F("W_vs_eypfp", "W vs eY'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, W_nbins, W_xmin, W_xmax);
 
-TH2F *W_vs_ytar = new TH2F("W_vs_ytar", "W vs Y_{tar}", eytar_nbins, eytar_xmin, eytar_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *W_vs_xptar = new TH2F("W_vs_xptar", "W vs X'_{tar}", exptar_nbins, exptar_xmin, exptar_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *W_vs_yptar = new TH2F("W_vs_yptar", "W vs Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *W_vs_delta = new TH2F("W_vs_delta", "W vs delta", edelta_nbins, edelta_xmin, edelta_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_eytar = new TH2F("W_vs_eytar", "W vs eY_{tar}", eytar_nbins, eytar_xmin, eytar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_exptar = new TH2F("W_vs_exptar", "W vs eX'_{tar}", exptar_nbins, exptar_xmin, exptar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_eyptar = new TH2F("W_vs_eyptar", "W vs eY'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_edelta = new TH2F("W_vs_edelta", "W vs edelta", edelta_nbins, edelta_xmin, edelta_xmax, W_nbins, W_xmin, W_xmax);
 
+//OPTICS CHECK (Emiss correlations with electron arm Focal Plane / Target Quantities)                                                                                                             
+ TH2F *Em_vs_exfp = new TH2F("Em_vs_exfp", "Em vs eX_{fp}", exfp_nbins, exfp_xmin, exfp_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                            
+ TH2F *Em_vs_expfp = new TH2F("Em_vs_expfp", "Em vs eX'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                               
+ TH2F *Em_vs_eyfp = new TH2F("Em_vs_eyfp", "Em vs eY_{fp}", eyfp_nbins, eyfp_xmin, eyfp_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                               
+ TH2F *Em_vs_eypfp = new TH2F("Em_vs_eypfp", "Em vs eY'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                               
+                                                                                                                                                                                                                
+ TH2F *Em_vs_eytar = new TH2F("Em_vs_eytar", "Em vs eY_{tar}", eytar_nbins, eytar_xmin, eytar_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                            
+ TH2F *Em_vs_exptar = new TH2F("Em_vs_exptar", "Em vs eX'_{tar}", exptar_nbins, exptar_xmin, exptar_xmax, Em_nbins, Em_xmin, Em_xmax);                                                            
+ TH2F *Em_vs_eyptar = new TH2F("Em_vs_eyptar", "Em vs eY'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                  
+ TH2F *Em_vs_edelta = new TH2F("Em_vs_edelta", "Em vs edelta", edelta_nbins, edelta_xmin, edelta_xmax, Em_nbins, Em_xmin, Em_xmax); 
+
+//OPTICS CHECK (W correlations with hadron arm Focal Plane / Target Quantities)
+TH2F *W_vs_hxfp = new TH2F("W_vs_hxfp", "W vs hX_{fp}", hxfp_nbins, hxfp_xmin, hxfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_hxpfp = new TH2F("W_vs_hxpfp", "W vs hX'_{fp}", hxpfp_nbins, hxpfp_xmin, hxpfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_hyfp = new TH2F("W_vs_hyfp", "W vs hY_{fp}", hyfp_nbins, hyfp_xmin, hyfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_hypfp = new TH2F("W_vs_hypfp", "W vs hY'_{fp}", hypfp_nbins, hypfp_xmin, hypfp_xmax, W_nbins, W_xmin, W_xmax);
+
+TH2F *W_vs_hytar = new TH2F("W_vs_hytar", "W vs hY_{tar}", hytar_nbins, hytar_xmin, hytar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_hxptar = new TH2F("W_vs_hxptar", "W vs hX'_{tar}", hxptar_nbins, hxptar_xmin, hxptar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_hyptar = new TH2F("W_vs_hyptar", "W vs hY'_{tar}", hyptar_nbins, hyptar_xmin, hyptar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *W_vs_hdelta = new TH2F("W_vs_hdelta", "W vs hdelta", hdelta_nbins, hdelta_xmin, hdelta_xmax, W_nbins, W_xmin, W_xmax);
+
+//OPTICS CHECK (Emiss correlations with hadron arm Focal Plane / Target Quantities)                                                                                                             
+ TH2F *Em_vs_hxfp = new TH2F("Em_vs_hxfp", "Em vs hX_{fp}", hxfp_nbins, hxfp_xmin, hxfp_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                            
+ TH2F *Em_vs_hxpfp = new TH2F("Em_vs_hxpfp", "Em vs hX'_{fp}", hxpfp_nbins, hxpfp_xmin, hxpfp_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                               
+ TH2F *Em_vs_hyfp = new TH2F("Em_vs_hyfp", "Em vs hY_{fp}", hyfp_nbins, hyfp_xmin, hyfp_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                               
+ TH2F *Em_vs_hypfp = new TH2F("Em_vs_hypfp", "Em vs hY'_{fp}", hypfp_nbins, hypfp_xmin, hypfp_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                               
+                                                                                                                                                                                                                
+ TH2F *Em_vs_hytar = new TH2F("Em_vs_hytar", "Em vs hY_{tar}", hytar_nbins, hytar_xmin, hytar_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                            
+ TH2F *Em_vs_hxptar = new TH2F("Em_vs_hxptar", "Em vs hX'_{tar}", hxptar_nbins, hxptar_xmin, hxptar_xmax, Em_nbins, Em_xmin, Em_xmax);                                                            
+ TH2F *Em_vs_hyptar = new TH2F("Em_vs_hyptar", "Em vs hY'_{tar}", hyptar_nbins, hyptar_xmin, hyptar_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                  
+ TH2F *Em_vs_hdelta = new TH2F("Em_vs_hdelta", "Em vs hdelta", hdelta_nbins, hdelta_xmin, hdelta_xmax, Em_nbins, Em_xmin, Em_xmax); 
 
 /************Define Histos to APPLY CUTS*********************************/
  
@@ -154,18 +186,27 @@ TH2F *cut_hxptar_vs_exptar = new TH2F("cut_hxptar_vs_exptar", "HMS vs. SHMS, X'_
 TH2F *cut_hyptar_vs_eyptar = new TH2F("cut_hyptar_vs_eyptar", "HMS vs. SHMS, Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, hyptar_nbins, hyptar_xmin, hyptar_xmax);
 TH2F *cut_hdelta_vs_edelta = new TH2F("cut_hdelta_vs_edelta", "HMS vs. SHMS, #delta", edelta_nbins, edelta_xmin, edelta_xmax, hdelta_nbins, hdelta_xmin, hdelta_xmax);
 
-//OPTICS CHECK (W correlations with Focal Plane / Target Quantities)
-TH2F *cut_W_vs_xfp = new TH2F("cut_W_vs_xfp", "cut_W vs X_{fp}", exfp_nbins, exfp_xmin, exfp_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *cut_W_vs_xpfp = new TH2F("cut_W_vs_xpfp", "cut_W vs X'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *cut_W_vs_yfp = new TH2F("cut_W_vs_yfp", "cut_W vs Y_{fp}", eyfp_nbins, eyfp_xmin, eyfp_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *cut_W_vs_ypfp = new TH2F("cut_W_vs_ypfp", "cut_W vs Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, W_nbins, W_xmin, W_xmax);
+//OPTICS CHECK (W correlations with electron Focal Plane / Target Quantities)
+TH2F *cut_W_vs_exfp = new TH2F("cut_W_vs_exfp", "cut_W vs eX_{fp}", exfp_nbins, exfp_xmin, exfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_expfp = new TH2F("cut_W_vs_expfp", "cut_W vs eX'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_eyfp = new TH2F("cut_W_vs_eyfp", "cut_W vs eY_{fp}", eyfp_nbins, eyfp_xmin, eyfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_eypfp = new TH2F("cut_W_vs_eypfp", "cut_W vs eY'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, W_nbins, W_xmin, W_xmax);
 
-TH2F *cut_W_vs_ytar = new TH2F("cut_W_vs_ytar", "cut_W vs Y_{tar}", eytar_nbins, eytar_xmin, eytar_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *cut_W_vs_xptar = new TH2F("cut_W_vs_xptar", "cut_W vs X'_{tar}", exptar_nbins, exptar_xmin, exptar_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *cut_W_vs_yptar = new TH2F("cut_W_vs_yptar", "cut_W vs Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, W_nbins, W_xmin, W_xmax);
-TH2F *cut_W_vs_delta = new TH2F("cut_W_vs_delta", "cut_W vs delta", edelta_nbins, edelta_xmin, edelta_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_eytar = new TH2F("cut_W_vs_eytar", "cut_W vs eY_{tar}", eytar_nbins, eytar_xmin, eytar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_exptar = new TH2F("cut_W_vs_exptar", "cut_W vs eX'_{tar}", exptar_nbins, exptar_xmin, exptar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_eyptar = new TH2F("cut_W_vs_eyptar", "cut_W vs eY'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_edelta = new TH2F("cut_W_vs_edelta", "cut_W vs edelta", edelta_nbins, edelta_xmin, edelta_xmax, W_nbins, W_xmin, W_xmax);
 
+//OPTICS CHECK (W correlations with hadron Focal Plane / Target Quantities)
+TH2F *cut_W_vs_hxfp = new TH2F("cut_W_vs_hxfp", "cut_W vs hX_{fp}", hxfp_nbins, hxfp_xmin, hxfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_hxpfp = new TH2F("cut_W_vs_hxpfp", "cut_W vs hX'_{fp}", hxpfp_nbins, hxpfp_xmin, hxpfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_hyfp = new TH2F("cut_W_vs_hyfp", "cut_W vs hY_{fp}", hyfp_nbins, hyfp_xmin, hyfp_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_hypfp = new TH2F("cut_W_vs_hypfp", "cut_W vs hY'_{fp}", hypfp_nbins, hypfp_xmin, hypfp_xmax, W_nbins, W_xmin, W_xmax);
 
+TH2F *cut_W_vs_hytar = new TH2F("cut_W_vs_hytar", "cut_W vs hY_{tar}", hytar_nbins, hytar_xmin, hytar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_hxptar = new TH2F("cut_W_vs_hxptar", "cut_W vs hX'_{tar}", hxptar_nbins, hxptar_xmin, hxptar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_hyptar = new TH2F("cut_W_vs_hyptar", "cut_W vs hY'_{tar}", hyptar_nbins, hyptar_xmin, hyptar_xmax, W_nbins, W_xmin, W_xmax);
+TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nbins, hdelta_xmin, hdelta_xmax, W_nbins, W_xmin, W_xmax);
 
  
 
@@ -430,17 +471,27 @@ TH2F *cut_W_vs_delta = new TH2F("cut_W_vs_delta", "cut_W vs delta", edelta_nbins
 	  cut_emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
 	  cut_edelta_vs_eyptar->Fill(e_yptar, e_delta, FullWeight);
 	  
-	  //OPTICS CHECK
-	  cut_W_vs_xfp->Fill(e_xfp, W, FullWeight);
-	  cut_W_vs_xpfp->Fill(e_xpfp, W, FullWeight);
-	  cut_W_vs_yfp->Fill(e_yfp, W, FullWeight);
-	  cut_W_vs_ypfp->Fill(e_ypfp, W, FullWeight);
+	  //OPTICS CHECK (W vs. electron arm focal plane)
+	  cut_W_vs_exfp->Fill(e_xfp, W, FullWeight);
+	  cut_W_vs_expfp->Fill(e_xpfp, W, FullWeight);
+	  cut_W_vs_eyfp->Fill(e_yfp, W, FullWeight);
+	  cut_W_vs_eypfp->Fill(e_ypfp, W, FullWeight);
 	  
-	  cut_W_vs_ytar->Fill(e_ytar, W, FullWeight);
-	  cut_W_vs_xptar->Fill(e_xptar, W, FullWeight);
-	  cut_W_vs_yptar->Fill(e_yptar, W, FullWeight);
-	  cut_W_vs_delta->Fill(e_delta, W, FullWeight);
+	  cut_W_vs_eytar->Fill(e_ytar, W, FullWeight);
+	  cut_W_vs_exptar->Fill(e_xptar, W, FullWeight);
+	  cut_W_vs_eyptar->Fill(e_yptar, W, FullWeight);
+	  cut_W_vs_edelta->Fill(e_delta, W, FullWeight);
 
+	  //OPTICS CHECK (W vs. hadron arm focal plane)
+	  cut_W_vs_hxfp->Fill(h_xfp, W, FullWeight);
+	  cut_W_vs_hxpfp->Fill(h_xpfp, W, FullWeight);
+	  cut_W_vs_hyfp->Fill(h_yfp, W, FullWeight);
+	  cut_W_vs_hypfp->Fill(h_ypfp, W, FullWeight);
+	  
+	  cut_W_vs_hytar->Fill(h_ytar, W, FullWeight);
+	  cut_W_vs_hxptar->Fill(h_xptar, W, FullWeight);
+	  cut_W_vs_hyptar->Fill(h_yptar, W, FullWeight);
+	  cut_W_vs_hdelta->Fill(h_delta, W, FullWeight);
 	  
 	}//End CUTS LOOP
       
@@ -508,20 +559,51 @@ TH2F *cut_W_vs_delta = new TH2F("cut_W_vs_delta", "cut_W vs delta", edelta_nbins
       emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
       edelta_vs_eyptar->Fill(e_yptar, e_delta, FullWeight);
      	 
-      //OPTICS CHECK
-      W_vs_xfp->Fill(e_xfp, W, FullWeight);
-      W_vs_xpfp->Fill(e_xpfp, W, FullWeight);
-      W_vs_yfp->Fill(e_yfp, W, FullWeight);
-      W_vs_ypfp->Fill(e_ypfp, W, FullWeight);
+      //OPTICS CHECK (W vs. electron arm focal plane)
+      W_vs_exfp->Fill(e_xfp, W, FullWeight);
+      W_vs_expfp->Fill(e_xpfp, W, FullWeight);
+      W_vs_eyfp->Fill(e_yfp, W, FullWeight);
+      W_vs_eypfp->Fill(e_ypfp, W, FullWeight);
       
-      W_vs_ytar->Fill(e_ytar, W, FullWeight);
-      W_vs_xptar->Fill(e_xptar, W, FullWeight);
-      W_vs_yptar->Fill(e_yptar, W, FullWeight);
-      W_vs_delta->Fill(e_delta, W, FullWeight);
+      W_vs_eytar->Fill(e_ytar, W, FullWeight);
+      W_vs_exptar->Fill(e_xptar, W, FullWeight);
+      W_vs_eyptar->Fill(e_yptar, W, FullWeight);
+      W_vs_edelta->Fill(e_delta, W, FullWeight);
 	  
-    
-
+      //OPTICS CHECK (W vs. hadron arm focal plane)
+      W_vs_hxfp->Fill(h_xfp, W, FullWeight);
+      W_vs_hxpfp->Fill(h_xpfp, W, FullWeight);
+      W_vs_hyfp->Fill(h_yfp, W, FullWeight);
+      W_vs_hypfp->Fill(h_ypfp, W, FullWeight);
       
+      W_vs_hytar->Fill(h_ytar, W, FullWeight);
+      W_vs_hxptar->Fill(h_xptar, W, FullWeight);
+      W_vs_hyptar->Fill(h_yptar, W, FullWeight);
+      W_vs_hdelta->Fill(h_delta, W, FullWeight);
+
+
+      //OPTICS CHECK (Emiss vs. electron arm focal plane)
+      Em_vs_exfp->Fill(e_xfp, Em, FullWeight);
+      Em_vs_expfp->Fill(e_xpfp, Em, FullWeight);
+      Em_vs_eyfp->Fill(e_yfp, Em, FullWeight);
+      Em_vs_eypfp->Fill(e_ypfp, Em, FullWeight);
+      
+      Em_vs_eytar->Fill(e_ytar, Em, FullWeight);
+      Em_vs_exptar->Fill(e_xptar, Em, FullWeight);
+      Em_vs_eyptar->Fill(e_yptar, Em, FullWeight);
+      Em_vs_edelta->Fill(e_delta, Em, FullWeight);
+	  
+      //OPTICS CHECK (Emiss vs. hadron arm focal plane)
+      Em_vs_hxfp->Fill(h_xfp, Em, FullWeight);
+      Em_vs_hxpfp->Fill(h_xpfp, Em, FullWeight);
+      Em_vs_hyfp->Fill(h_yfp, Em, FullWeight);
+      Em_vs_hypfp->Fill(h_ypfp, Em, FullWeight);
+      
+      Em_vs_hytar->Fill(h_ytar, Em, FullWeight);
+      Em_vs_hxptar->Fill(h_xptar, Em, FullWeight);
+      Em_vs_hyptar->Fill(h_yptar, Em, FullWeight);
+      Em_vs_hdelta->Fill(h_delta, Em, FullWeight);
+
   } //end entry loop
 
   

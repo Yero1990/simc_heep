@@ -25,7 +25,7 @@
      spec%e%P  =   8564.0277                   !  e arm central momentum (MeV/c)
      spec%e%theta  =  8.495                 !  e arm angle setting (degrees)
      spec%p%P  =     1884.23029                !  p arm central momentum (MeV/c)
-     spec%p%theta  =     47.605                !  p arm angle setting (degrees)
+     spec%p%theta  =  47.605                !  p arm angle setting (degrees)
 / 
 
  ?=
