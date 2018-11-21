@@ -20,8 +20,7 @@ void fitOptics()
   Double_t Eb = 10.6005;
   Double_t eP0[5] = {8.5640277, 8.5640277, 8.5640277, 8.5640277, 8.5640277};  //central spec. momentum
   Double_t hP0[5] = {2.9221114, 3.46017618, 2.2997660, 1.8827606, 1.8825118};  //central spec. momentum
-
-  Double_t shms_delta_calc;
+  
   
   
   int run_num[5] = {3288, 3371, 3374, 3376, 3377};
@@ -39,7 +38,8 @@ void fitOptics()
   Double_t theta_p;     //proton arm angle (event by event)  
   Double_t shmsP_calc;   //calculated elecron momentum
   Double_t hmsP_calc;    //calculated proton momentum
- 
+  Double_t shms_delta_calc;
+
  //Define TTree variables names
   TString n_xangle = "H.kin.secondary.xangle";        //opening angle between HMS and SHMS
   TString n_theta_e = "P.kin.primary.scat_ang_deg";   //e- scat angle [deg]
@@ -67,9 +67,8 @@ void fitOptics()
 
 
   //-------------CREATE EMPTY HISTOGRAMS---------------------------------------------
-  //(shms_delta_calc - shms_delta_meas) vs. SHMS focal plane                                                                         
-  
 
+  //(shms_delta_calc - shms_delta_meas) vs. SHMS focal plane                                                                         
   TH2F *histeDelta_xfp[5];                                                                            
   TH2F *histeDelta_xpfp[5];                                                                                    
   TH2F *histeDelta_yfp[5];                                                                                                       
@@ -78,17 +77,8 @@ void fitOptics()
   
   //--------------------------------------------------------
 
-  TCanvas *c0 = new TCanvas("c0", "Missing Energy", 1500, 1000);   
-  c0->Divide(4,2);
-  TCanvas *c1 = new TCanvas("c1", "Calculated/Measured SHMS Momentum", 1500, 1000);   
-  c1->Divide(4,2);
-  TCanvas *c2 = new TCanvas("c2", "SHMS Momentum Fract. Dev. From Measured", 1500,1000);
-  c2->Divide(4,2);
-  TCanvas *c3 = new TCanvas("c3","Frac. Deviation from P_{meas} vs. D2 H-elastics",200,10,500,300);
-  
-  TCanvas *c4[5];
 
-  TCanvas *c5[5];
+  TCanvas *delDiff_vs_FP_Canv[5];
 
   
   index = 0;
@@ -134,27 +124,8 @@ void fitOptics()
       T->SetBranchAddress(n_eyfp, &eyfp);
       T->SetBranchAddress(n_eypfp, &eypfp);
       
-      hist[index][0] = new TH1F(Form("calc_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 7, 10); 
-      hist[index][1] = new TH1F(Form("meas_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 7, 10);  
-      
-      hist_ePcalc[index];
-      hist_ePmeas[index];
-      
-      
-      hist[index][2] = new TH1F(Form("pDiff: Run %d",run[irun]), Form("Run %d: SHMS (P_{calc} - P_{meas})/P_{meas}", run[irun]), 100, -0.01, 0.01);
-      hist[index][3] = new TH1F(Form("Emiss: Run %d",run[irun]), Form("Run %d: E_{miss}", run[irun]), 100, -0.2, 0.3);
-
-      hist_ePDiff[index];
-      hist_Emiss[index];
-      
-
 
       if(index==0){                                                                                                                                  
-	histePDev_xfp[index] = new TH2F(Form("ePDiff_vs_xfp: Run %d", run_num[index]), "", 100, -10., 5, 80, -0.01, 0.01);                           
-	histePDev_xpfp[index] = new TH2F(Form("ePDiff_vs_xpfp: Run %d", run_num[index]), "", 100, -0.04, 0.03, 80, -0.01, 0.01);                    
-	histePDev_yfp[index] = new TH2F(Form("ePDiff_vs_yfp: Run %d", run_num[index]), "", 100, -10, 5, 80, -0.01, 0.01);                           
-	histePDev_ypfp[index] = new TH2F(Form("ePDiff_vs_ypfp: Run %d", run_num[index]), "", 100, -0.02, 0.02, 80, -0.01, 0.01);                    
-	
 	//(shms_delta_calc - shms_delta_meas) vs. shms focal plane
 	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run_num[index]), "", 100, -10., 5, 80, -1., 1.);
 	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run_num[index]), "", 100, -0.04, 0.03, 80, -1., 1.);
@@ -163,11 +134,6 @@ void fitOptics()
       }    
       
       if(index==1){                                                                                                                                
-	histePDev_xfp[index] = new TH2F(Form("ePDiff_vs_xfp: Run %d", run_num[index]), "", 100, -30, -5, 80, -0.01, 0.01);          
-	histePDev_xpfp[index] = new TH2F(Form("ePDiff_vs_xpfp: Run %d", run_num[index]), "", 100, -0.07, 0.02, 80, -0.01, 0.01);                    
-	histePDev_yfp[index] = new TH2F(Form("ePDiff_vs_yfp: Run %d", run_num[index]), "", 100, -25, 15, 80, -0.01, 0.01);                          
-	histePDev_ypfp[index] = new TH2F(Form("ePDiff_vs_ypfp: Run %d", run_num[index]), "", 100, -0.04, 0.03, 80, -0.01, 0.01);                    
-	
 	//(shms_delta_calc - shms_delta_meas) vs. shms focal plane                                                                   
 	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run_num[index]), "", 100, -30., -5, 80, -1., 1.);                   
 	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run_num[index]), "", 100, -0.07, 0.02, 80, -1., 1.);   
@@ -176,12 +142,7 @@ void fitOptics()
 
       }                                                                                                                                              
       
-      if(index==2){                                                                                                                                  
-	histePDev_xfp[index] = new TH2F(Form("ePDiff_vs_xfp: Run %d", run_num[index]), "", 100, 5, 15, 80, -0.01, 0.01);                            
-	histePDev_xpfp[index] = new TH2F(Form("ePDiff_vs_xpfp: Run %d", run_num[index]), "", 100, 0., 0.04, 80, -0.01, 0.01);                       
-	histePDev_yfp[index] = new TH2F(Form("ePDiff_vs_yfp: Run %d", run_num[index]), "", 100, -5, 5, 80, -0.01, 0.01);                            
-	histePDev_ypfp[index] = new TH2F(Form("ePDiff_vs_ypfp: Run %d", run_num[index]), "", 100, -0.02, 0.02, 80, -0.01, 0.01);                    
-	
+      if(index==2){                                                                                                                                  	
 	//(shms_delta_calc - shms_delta_meas) vs. shms focal plane                                                                       
 	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run_num[index]), "", 100, 5., 15, 80, -1., 1.);                          
 	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run_num[index]), "", 100, 0., 0.04, 80, -1., 1.);            
@@ -191,11 +152,6 @@ void fitOptics()
       }                                                                                                                                              
       
       if(index==3 || index==4){                                                                                                         
-	histePDev_xfp[index] = new TH2F(Form("ePDiff_vs_xfp: Run %d", run_num[index]), "", 100, 10, 25, 80, -0.01, 0.01);                    
-	histePDev_xpfp[index] = new TH2F(Form("ePDiff_vs_xpfp: Run %d", run_num[index]), "", 100, 0.01, 0.05, 80, -0.01, 0.01);        
-	histePDev_yfp[index] = new TH2F(Form("ePDiff_vs_yfp: Run %d", run_num[index]), "", 100, -10, 5, 80, -0.01, 0.01);                   
-	histePDev_ypfp[index] = new TH2F(Form("ePDiff_vs_ypfp: Run %d", run_num[index]), "", 100, -0.015, 0.015, 80, -0.01, 0.01);               
-	
 	//(shms_delta_calc - shms_delta_meas) vs. shms focal plane                                                                                        
 	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run_num[index]), "", 100, 10., 25, 80, -1., 1.);
 	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run_num[index]), "", 100, 0.01, 0.05, 80, -1., 1.);                            
@@ -203,25 +159,7 @@ void fitOptics()
 	histeDelta_ypfp[index] = new TH2F(Form("eDelta_vs_ypfp: Run %d", run_num[index]), "", 100, -0.015, 0.015, 80, -1., 1.);
 	
       }  
-      
-      
-      HList[index].Add(histeDelta_xfp[index]);
-      HList[index].Add(histeDelta_yfp[index]);
-      HList[index].Add(histeDelta_ypfp[index]);
-      HList[index].Add(histeDelta_xpfp[index]);
-      
-      histePDev_xfp[index]->GetXaxis()->SetTitle("SHMS X_{fp}");
-      histePDev_xfp[index]->GetYaxis()->SetTitle("SHMS [P_{calc} - P_{meas}] / P_{meas}");   
-      
-      histePDev_xpfp[index]->GetXaxis()->SetTitle("SHMS X'_{fp}"); 
-      histePDev_xpfp[index]->GetYaxis()->SetTitle("SHMS [P_{calc} - P_{meas}] / P_{meas}"); 
-      
-      histePDev_yfp[index]->GetXaxis()->SetTitle("SHMS Y_{fp}");                                                        
-      histePDev_yfp[index]->GetYaxis()->SetTitle("SHMS [P_{calc} - P_{meas}] / P_{meas}");                              
-      
-      histePDev_ypfp[index]->GetXaxis()->SetTitle("SHMS Y'_{fp}");                                                         
-      histePDev_ypfp[index]->GetYaxis()->SetTitle("SHMS [P_{calc} - P_{meas}] / P_{meas}");  
-      
+       
       //----set names for delta difference histograms
       histeDelta_xfp[index]->GetXaxis()->SetTitle("SHMS X_{fp}");
       histeDelta_xfp[index]->GetYaxis()->SetTitle("SHMS #delta_{calc} - #delta_{meas.} [%]");                                             
@@ -235,6 +173,12 @@ void fitOptics()
       histeDelta_ypfp[index]->GetXaxis()->SetTitle("SHMS Y'_{fp}");                                                                         
       histeDelta_ypfp[index]->GetYaxis()->SetTitle("SHMS #delta_{calc} - #delta_{meas.} [%]");  
       
+      //Add the histogram objects to the Obj list
+      HList[index].Add(histeDelta_xfp[index]);
+      HList[index].Add(histeDelta_xpfp[index]);
+      HList[index].Add(histeDelta_yfp[index]);
+      HList[index].Add(histeDelta_ypfp[index]);
+
       
       //Define Cuts
       Bool_t hmsPdiff_cut;
@@ -253,112 +197,52 @@ void fitOptics()
         
 	//HMS Particle calculated momentum (Using only the particle angle and beam energy)
 	hmsP_calc = 2.*Mp*Eb*(Eb + Mp)*TMath::Cos(theta_p*TMath::Pi()/180.) / (Mp*Mp + 2.*Mp*Eb + Eb*Eb*TMath::Power(TMath::Sin(theta_p*TMath::Pi()/180.),2)) ;
-	
-	hmsPdiff_cut = 	TMath::Abs(hmsP_calc - hmsP_meas) < 0.02;
-	hmsDelta_cut = TMath::Abs(hdelta)<8.0;
-	shmsDelta_cut = edelta>-10. && edelta<22.;
-
-                                                                                                         
-        //Calculated electron Momentum (Using formula)                                                                                                 
+	   
+	//Calculated electron Momentum (Using formula)                                                                                                 
         shmsP_calc = Eb + Mp - TMath::Sqrt(hmsP_meas*hmsP_meas + Mp*Mp); 
 	
 	//Calculated shms delta
 	shms_delta_calc = (shmsP_calc - eP0[index]) / eP0[index] * 100.;
-	shms_Xfp_cut = 1;
-	if ( xfp_cut[irun]) shms_Xfp_cut = xfp_cut[irun]->IsInside(exfp, (shms_delta_calc - edelta));
 	
-	if(TMath::Abs(shmsP_calc)<100 && TMath::Abs(hmsP_meas)<100. &&  emiss < 0.05 &&  hmsPdiff_cut && hmsDelta_cut && shmsDelta_cut && shms_Xfp_cut)
+
+	//Define cuts
+	hmsPdiff_cut = 	TMath::Abs(hmsP_calc - hmsP_meas) < 0.02;
+	hmsDelta_cut = TMath::Abs(hdelta)<8.0;
+	shmsDelta_cut = edelta>-10. && edelta<22.;
+	shms_Xfp_cut = 1;
+
+                                                                                                         
+  
+	//if ( xfp_cut[irun]) shms_Xfp_cut = xfp_cut[irun]->IsInside(exfp, (shms_delta_calc - edelta));
+	
+	if(emiss < 0.05 &&  hmsPdiff_cut && hmsDelta_cut && shmsDelta_cut && shms_Xfp_cut)
 	  {
 
-	    
-	    //DEGUB
-	    // cout << "KG: " << index + 1 << endl;
-	    //cout << "shmsP_calc - shmsP_meas = " <<  shmsP_calc << " - " << leaf_var[2] << " = " <<  shmsP_calc - leaf_var[2] << endl;
-	    //Fill Histograms
-	    hist[index][0]->Fill(shmsP_calc);  //calculated momentum from formula (function of theta_p and Ebeam)
-	    hist[index][1]->Fill(shmsP_meas);  //measured momentum H.gtr.p
-	    hist[index][2]->Fill((shmsP_calc - shmsP_meas) / shmsP_meas);  //SHMS (Calculated - Measured)/Measured Momentum (fractonal deviation from measured)
-
-	    //cout << "hxfp = " << hxfp << endl;
-	    //cout << "Pfrac = "<< (shmsP_calc - shmsP_meas)/ shmsP_meas << endl;
-
-	    histePDev_xfp[index]->Fill(exfp, (shmsP_calc - shmsP_meas)/ shmsP_meas);
-	    histePDev_xpfp[index]->Fill(expfp, (shmsP_calc - shmsP_meas)/ shmsP_meas);  
-	    histePDev_yfp[index]->Fill(eyfp, (shmsP_calc - shmsP_meas)/ shmsP_meas);
-	    histePDev_ypfp[index]->Fill(eypfp, (shmsP_calc - shmsP_meas)/ shmsP_meas); 
-	  
 	    histeDelta_xfp[index]->Fill(exfp, (shms_delta_calc - edelta));
 	    histeDelta_xpfp[index]->Fill(expfp, (shms_delta_calc - edelta));                                                       
 	    histeDelta_yfp[index]->Fill(eyfp, (shms_delta_calc - edelta));                                                         
-	    histeDelta_ypfp[index]->Fill(eypfp, (shms_delta_calc - edelta)); 
-
-	  
+	    histeDelta_ypfp[index]->Fill(eypfp, (shms_delta_calc - edelta)); 	  
 
 	  }
-	hist[index][3]->Fill(emiss);   //FIlling Missing Energy Histogram
 
       }
       
       //---------END ENTRY LOOP ---------------------------------------
-      //DRaw HIstograms
-      c0->cd(index+1);
-      hist[index][3]->Draw();
       
+      //DRaw HIstograms
 
-      c1->cd(index+1);
-      hist[index][0]->Draw();
-      hist[index][0]->SetLineColor(kRed);
-      hist[index][1]->Draw("sames");
-
-      //Get max bin value/sigma from momentum difference histo to use as fit parameters
-      int bin_max = hist[index][2]->GetMaximumBin();
-      Double_t xmax_val = hist[index][2]->GetXaxis()->GetBinCenter(bin_max); 
-      Double_t sig_Res = hist[index][2]->GetStdDev();
-       
-      c2->cd(index+1);
-      hist[index][2]->Draw();
-
-      c4[index] = new TCanvas(Form("c4, Run %d", run_num[index]), Form("Fract. Momentum vs. SHMS Focal Plane, Run %d", run_num[index]), 1500, 1000);       
-      c4[index]->Divide(2,2);  
-      c4[index]->cd(1);
-      histePDev_xfp[index]->Draw("colz");
-      histePDev_xfp[index]->GetYaxis()->SetRangeUser(-0.01, 0.01);
-      c4[index]->cd(2); 
-      histePDev_xpfp[index]->Draw("colz");
-      c4[index]->cd(3);
-      histePDev_yfp[index]->Draw("colz"); 
-      c4[index]->cd(4);
-      histePDev_ypfp[index]->Draw("colz");   
-      c4[index]->SaveAs(Form("data_2D_ePdiff_vs_SHMS_FocalPlane_%d.pdf", run_num[index]));
-
-
-      c5[index] = new TCanvas(Form("c5, Run %d", run_num[index]), "Delta Diff. vs. SHMS Focal Plane", 1500, 1000);                          
-      c5[index]->Divide(2,2);
-      c5[index]->cd(1);
+      delDiff_vs_FP_Canv[index] = new TCanvas(Form("delDiff_vs_FP_Canv, Run %d", run_num[index]), "Delta Diff. vs. SHMS Focal Plane", 1500, 1000);                          
+      delDiff_vs_FP_Canv[index]->Divide(2,2);
+      delDiff_vs_FP_Canv[index]->cd(1);
       histeDelta_xfp[index]->Draw("colz");
-      c5[index]->cd(2);                                                                                                       
+      delDiff_vs_FP_Canv[index]->cd(2);                                                                                                       
       histeDelta_xpfp[index]->Draw("colz"); 
-      c5[index]->cd(3);                                                                                
+      delDiff_vs_FP_Canv[index]->cd(3);                                                                                
       histeDelta_yfp[index]->Draw("colz");                                                          
-      c5[index]->cd(4);                                                             
+      delDiff_vs_FP_Canv[index]->cd(4);                                                             
       histeDelta_ypfp[index]->Draw("colz");
 
-      c5[index]->SaveAs(Form("data_DeltaDiff_vs_SHMS_FocalPlane_%d.pdf", run_num[index]));   
-
-
-      TF1 *fit = new TF1("fit", "gaus", xmax_val - sig_Res, xmax_val + sig_Res);
-      hist[index][2]->Fit("fit", "R");
-  
-      
-      Double_t mu_Res_fit = fit->GetParameter(1);
-      Double_t sig_Res_fit = fit->GetParameter(2);
-      Double_t mu_Res_err_fit =  fit->GetParError(1);
-
-      data_xRes_arr[index] = index + 1;          //kin group
-      data_yRes_arr[index] = mu_Res_fit;          //mean fit fractional deviation from meas. momentum
-      data_yRes_arr_err[index] =  mu_Res_err_fit;    //error from mean fit
-
-     
+      delDiff_vs_FP_Canv[index]->SaveAs(Form("data_DeltaDiff_vs_SHMS_FocalPlane_%d.pdf", run_num[index]));   
 
 
       
@@ -369,35 +253,6 @@ void fitOptics()
       index++;
 
       } //end loop over runs 
-			     
-			     Double_t ex_data[5] = {0.};
-  
-  TGraphErrors* data_gr = new TGraphErrors(5,data_xRes_arr,data_yRes_arr, ex_data, data_yRes_arr_err);
-  
-  
-  c3->cd();
-
-  data_gr->SetTitle(" (P_{calc} - P_{meas}) / P_{meas.} vs. Kin. Group");
-
-  data_gr->GetYaxis()->SetTitle("(P_{calc} - P_{meas}) / P_{measured} [fractional deviation]");
-  data_gr->GetYaxis()->CenterTitle();
-  
-  data_gr->GetXaxis()->SetTitle("Kinematic Group");
-  data_gr->GetXaxis()->CenterTitle();
-
-  data_gr->SetMarkerStyle(21);
-  data_gr->SetMarkerColor(kBlack);
-  data_gr->SetMarkerSize(0.5);
-  data_gr->Draw("AP");
-  
-  c0->SaveAs("data_Missing_Energy.pdf");
-  c1->SaveAs("data_SHMS_Calc_MeasP.pdf");
-  c2->SaveAs("data_Momentum_Diff.pdf");
-  c3->SaveAs("data_Residual_Graph.pdf");
-
- 
-
-
-
+			       
 			     
 }
