@@ -1,0 +1,29 @@
+********************************************
+ Check SHMS Momentum Using H(e,e'p) Elastics
+********************************************
+
+Purpose: 
+Check if SHMS momentum (-polarity) is set correctly, and verify there are no
+correlations between the (calculated - measured)/measured  momentum vs. SHMS focal plane
+A total of five elastics taken during Deuteron Electro-Disintegration are used in these studies.
+
+Approach:
+For both SIMC and DATA, determine the SHMS calculated momentum (using electron momentum formula), P_calc(Eb, hmsP_meas), assuming 
+the beam energy and measured HMS momentum are well known. (See ../checkHMS directory, where the HMS proton momentum was verified to be OK )
+Then determine the fractional deviation of measured momentum both from SIMC/DATA by using the formula:
+
+dP =  [P_calc - P_meas] / P_meas, |  where P_calc = Eb + Mp - Ep,  Ep = sqrt(Mp^2 + hmsP_meas^2).  P_calc ~ E_calc for electrons (elec mass is small)
+                                  |  and P_meas is obtained from delta (both in SIMC and DATA).  delta_calc = (P_calc - P_cent) / P_cent, delta_meas = (P_meas - P_cent) / P_cent   
+
+(NOTE that P_calc and P_meas are esentially the same as delta_calc and delta_meas. For optics studies, usually, delta is preferred.)
+
+** The dP will be a distribution centered near zero, which can then be fitted, to determine the mean, and its error. (Assuming there are no distortions correlations with  respect to focal plane variables)
+                                                                                                                     
+Similarly to the HMS case, since the calculated momentum has no dependence on delta, by taking the difference [P_calculated - P_meas.]/P_meas, one 
+is able to gauge by how much is the measured momentum off from the calculated momentum, due to delta. For SIMC, this difference was found to be
+typically < 0.1 %, which is very small as expected. For data, however, it was found to be > 0.1% for some elastics. In this case, it was not possible to apply
+a momentum correction in the SHMS, as the dP distribution was distorted in the data, due to correlations of delta with focal plane quantities. Therefore, it is necessary
+to remove these correlations first, then check whether the dP agress with SIMC to < 0.1 %. If after the optimizing the SHMS optics matrix (removing correlations), it still 
+does not agree, then we can do the same procedure as HMS, and apply a correction.
+
+The SHMS optics studies for D2 H(e,e'p) elastics is done in the /SHMS_Optics directory

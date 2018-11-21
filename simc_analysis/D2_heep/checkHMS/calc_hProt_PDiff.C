@@ -21,7 +21,7 @@ void calc_hProt_PDiff()
   //Define some constants
   Double_t Mp = 0.938272;  //proton mass
   Double_t Eb = 10.6005;
-  Double_t hP0[5] = {2.92331, 3.4626, 2.30076, 1.88423029, 1.88423029};  //central spec. momentum
+  Double_t hP0[5] = {2.9221114, 3.46017618, 2.2997660, 1.8827606, 1.8825118};  //central spec. momentum
 
   //Define some variables to be determined inside the entry loop
   Double_t hmsP_calc;   //calculated HMS momentum
@@ -73,7 +73,7 @@ void calc_hProt_PDiff()
   Double_t yRes_arr_err[5];
 
   //Define Canvas to Draw
-  TCanvas *c0_simc = new TCanvas("c0_simc", "MIssing Enrgy", 1500, 1000);   
+  TCanvas *c0_simc = new TCanvas("c0_simc", "MIssing Enrgy", 1500, 100);   
   c0_simc->Divide(3,2);
   TCanvas *c1_simc = new TCanvas("c1_simc", "Calculated/Measured HMS Momentum", 1500, 1000);   
   c1_simc->Divide(3,2);
@@ -195,7 +195,7 @@ void calc_hProt_PDiff()
       hist_hPmeas[index]->Draw("sameshist");
 
 
-      c4_simc[index] = new TCanvas(Form("c4_simc, Run %d", run_num[index]), "Fract. Momentum vs. HMS Focal Plane", 1500, 1000);       
+      c4_simc[index] = new TCanvas(Form("c4_simc, Run %d", run_num[index]), "Fract. Momentum vs. HMS Focal Plane", 1900, 1400);       
       c4_simc[index]->Divide(2,2);  
       c4_simc[index]->cd(1);
       hist_hPDev_xfp[index]->Draw("colz");
@@ -295,10 +295,14 @@ void calc_hProt_PDiff()
 
   //-------------CREATE EMPTY HISTOGRAMS---------------------------------------------
   
-  //Create empty histogram arrays with the appropiate names based on the leaf you want to Fill
-  TH1F *hist[5][5];
-
-  TH2F *histhPDev_xfp[5];   //Momentum fraction correlations with HMS focal plane
+  
+  TH1F *histData_hPcalc[5];
+  TH1F *histData_hPmeas[5];
+  TH1F *histData_hPDev[5];
+  TH1F *histData_Em[5];
+  
+  //Momentum fraction correlations with HMS focal plane
+  TH2F *histhPDev_xfp[5];   
   TH2F *histhPDev_xpfp[5];  
   TH2F *histhPDev_yfp[5]; 
   TH2F *histhPDev_ypfp[5]; 
@@ -346,14 +350,17 @@ void calc_hProt_PDiff()
 	T->SetBranchAddress(n_hyfp, &hyfp);
 	T->SetBranchAddress(n_hypfp, &hypfp);
 
-	hist[index][0] = new TH1F(Form("calc_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4); 
-	hist[index][1] = new TH1F(Form("meas_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4);  
-      
-    
- 
-	hist[index][2] = new TH1F(Form("pDiff: Run %d",run[irun]), Form("Run %d: HMS (P_{calc} - P_{meas})/P_{meas}", run[irun]), 100, -0.05, 0.05);
-	hist[index][3] = new TH1F(Form("Emiss: Run %d",run[irun]), Form("Run %d: E_{miss}", run[irun]), 100, -0.2, 0.3);
+	//hist[index][0] = new TH1F(Form("calc_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4); 
+	histData_hPcalc[index] =  new TH1F(Form("calc_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4);
 
+	//hist[index][1] = new TH1F(Form("meas_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4);  
+	histData_hPmeas[index] = new TH1F(Form("meas_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4);
+ 
+	//hist[index][2] = new TH1F(Form("pDiff: Run %d",run[irun]), Form("Run %d: HMS (P_{calc} - P_{meas})/P_{meas}", run[irun]), 100, -0.05, 0.05);
+	histData_hPDev[index] = new TH1F(Form("pDiff: Run %d",run[irun]), Form("Run %d: HMS (P_{calc} - P_{meas})/P_{meas}", run[irun]), 100, -0.05, 0.05);
+
+	//hist[index][3] = new TH1F(Form("Emiss: Run %d",run[irun]), Form("Run %d: E_{miss}", run[irun]), 100, -0.2, 0.3);
+	histData_Em[index] = new TH1F(Form("Emiss: Run %d",run[irun]), Form("Run %d: E_{miss}", run[irun]), 100, -0.2, 0.3);
 
 	histhPDev_xfp[index] = new TH2F(Form("hPDiff_vs_xfp: Run %d", run_num[index]), "", 100, -40, 40, 80, -0.05, 0.05);
 	histhPDev_xpfp[index] = new TH2F(Form("hPDiff_vs_xpfp: Run %d", run_num[index]), "", 100, -0.06, 0.06, 80, -0.05, 0.05); 
@@ -399,9 +406,9 @@ void calc_hProt_PDiff()
 	    //cout << "hmsP_calc - hms_Pmeas = " <<  hmsP_calc << " - " << leaf_var[2] << " = " <<  hmsP_calc - leaf_var[2] << endl;
 
 	    //Fill Histograms
-	    hist[index][0]->Fill(hmsP_calc);  //calculated momentum from formula (function of htheta_p and Ebeam)
-	    hist[index][1]->Fill(hms_Pmeas);  //measured momentum H.gtr.p
-	    hist[index][2]->Fill((hmsP_calc - hms_Pmeas) / hms_Pmeas);  //HMS (Calculated - Measured)/Measured Momentum (fractonal deviation from measured)
+	    histData_hPcalc[index]->Fill(hmsP_calc);  //calculated momentum from formula (function of htheta_p and Ebeam)
+	    histData_hPmeas[index]->Fill(hms_Pmeas);  //measured momentum H.gtr.p
+	    histData_hPDev[index]->Fill((hmsP_calc - hms_Pmeas) / hms_Pmeas);  //HMS (Calculated - Measured)/Measured Momentum (fractonal deviation from measured)
 
 	    //cout << "hxfp = " << hxfp << endl;
 	    //cout << "Pfrac = "<< (hmsP_calc - hms_Pmeas)/ hms_Pmeas << endl;
@@ -413,28 +420,28 @@ void calc_hProt_PDiff()
 
 
 	  }
-	hist[index][3]->Fill(emiss);   //FIlling Missing Energy Histogram
+	histData_Em[index]->Fill(emiss);   //FIlling Missing Energy Histogram
 
       }
       
       //---------END ENTRY LOOP ---------------------------------------
       //DRaw HIstograms
       c0->cd(index+1);
-      hist[index][3]->Draw();
+      histData_Em[index]->Draw();
       
 
       c1->cd(index+1);
-      hist[index][0]->Draw();
-      hist[index][0]->SetLineColor(kRed);
-      hist[index][1]->Draw("sames");
+      histData_hPcalc[index]->Draw();
+      histData_hPcalc[index] ->SetLineColor(kRed);
+      histData_hPmeas[index]->Draw("sames");
 
       //Get max bin value/sigma from momentum difference histo to use as fit parameters
-      int bin_max = hist[index][2]->GetMaximumBin();
-      Double_t xmax_val = hist[index][2]->GetXaxis()->GetBinCenter(bin_max); 
-      Double_t sig_Res = hist[index][2]->GetStdDev();
+      int bin_max = histData_hPDev[index]->GetMaximumBin();
+      Double_t xmax_val = histData_hPDev[index]->GetXaxis()->GetBinCenter(bin_max); 
+      Double_t sig_Res = histData_hPDev[index]->GetStdDev();
        
       c2->cd(index+1);
-      hist[index][2]->Draw();
+      histData_hPDev[index]->Draw();
 
       c4[index] = new TCanvas(Form("c4, Run %d", run_num[index]), Form("Fract. Momentum vs. HMS Focal Plane, Run %d", run_num[index]), 1500, 1000);       
       c4[index]->Divide(2,2);  
@@ -446,13 +453,13 @@ void calc_hProt_PDiff()
       histhPDev_yfp[index]->Draw("colz"); 
       c4[index]->cd(4);
       histhPDev_ypfp[index]->Draw("colz");   
-      c4[index]->SaveAs(Form("data_2D_hPdiff_vs_HMS_FocalPlane_%d.pdf", run_num[index]));
+      c4[index]->SaveAs(Form("data_hPdiff_vs_HMS_FocalPlane_%d.pdf", run_num[index]));
 
 
 
 
       TF1 *fit = new TF1("fit", "gaus", xmax_val - sig_Res, xmax_val + sig_Res);
-      hist[index][2]->Fit("fit", "R");
+      histData_hPDev[index]->Fit("fit", "R");
   
       
       Double_t mu_Res_fit = fit->GetParameter(1);
@@ -491,7 +498,7 @@ void calc_hProt_PDiff()
   c0->SaveAs("data_Missing_Energy.pdf");
   c1->SaveAs("data_HMS_Calc_MeasP.pdf");
   c2->SaveAs("data_Momentum_Diff.pdf");
-  c3->SaveAs("data_Residual_Graph.pdf");
+  c3->SaveAs("data_Pdiff_Graph.pdf");
 
 
 
@@ -508,11 +515,18 @@ void calc_hProt_PDiff()
   yRes_diff[4] = data_yRes_arr[4] - yRes_arr[4];
  
   Double_t yRes_diff_err[5]; 
-  yRes_diff_err[0] = TMath::Sqrt(data_yRes_arr[0]*data_yRes_arr[0] + yRes_arr[0]*yRes_arr[0]);
-  yRes_diff_err[1] = TMath::Sqrt(data_yRes_arr[1]*data_yRes_arr[1] + yRes_arr[1]*yRes_arr[1]);
-  yRes_diff_err[2] = TMath::Sqrt(data_yRes_arr[2]*data_yRes_arr[2] + yRes_arr[2]*yRes_arr[2]);
-  yRes_diff_err[3] = TMath::Sqrt(data_yRes_arr[3]*data_yRes_arr[3] + yRes_arr[3]*yRes_arr[3]);
-  yRes_diff_err[4] = TMath::Sqrt(data_yRes_arr[4]*data_yRes_arr[4] + yRes_arr[4]*yRes_arr[4]);
+  yRes_diff_err[0] = TMath::Sqrt(data_yRes_arr_err[0]*data_yRes_arr_err[0] + yRes_arr_err[0]*yRes_arr_err[0]);
+  yRes_diff_err[1] = TMath::Sqrt(data_yRes_arr_err[1]*data_yRes_arr_err[1] + yRes_arr_err[1]*yRes_arr_err[1]);
+  yRes_diff_err[2] = TMath::Sqrt(data_yRes_arr_err[2]*data_yRes_arr_err[2] + yRes_arr_err[2]*yRes_arr_err[2]);
+  yRes_diff_err[3] = TMath::Sqrt(data_yRes_arr_err[3]*data_yRes_arr_err[3] + yRes_arr_err[3]*yRes_arr_err[3]);
+  yRes_diff_err[4] = TMath::Sqrt(data_yRes_arr_err[4]*data_yRes_arr_err[4] + yRes_arr_err[4]*yRes_arr_err[4]);
+
+  cout << "**(DATA -  SIMC)***" << endl;
+  cout << "Run 3288: " << yRes_diff[0] << endl;
+  cout << "Run 3371: " << yRes_diff[1] << endl;
+  cout << "Run 3374: " << yRes_diff[2] << endl;
+  cout << "Run 3376: " << yRes_diff[3] << endl;
+  cout << "Run 3377: " << yRes_diff[4] << endl;
 
 
   TGraphErrors* gr_compare = new TGraphErrors(5,data_xRes_arr,yRes_diff, ex_data, yRes_diff_err);

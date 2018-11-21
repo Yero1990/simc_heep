@@ -4,38 +4,12 @@
 ! 'TF' stands for 'this field'
 ! ONE equals TRUE unless specified otherwise
  
-
- &BEAM_AND_TARGET_INFO
-     gen%xwid  =  0.008868		!  beam width - one sigma (cm)  (89microns)
-     gen%ywid  =  0.004235		!  beam width - one sigma (cm)  (42microns)
-     targ%fr_pattern  =  1		!  raster pattern: 1=square, 2=circular
-     targ%fr1  =  0.2		!  horizontal size OR inner radius(2)
-     targ%fr2  =  0.2		!  vertical size OR outer radius(2)
-     targ%xoffset  =  0.0		!  target x-offset (cm): +x = beam right
-     targ%yoffset  =  0.0		!  target y-offset (cm): +y = up
-     targ%zoffset  =  0.0		!  target z-offset (cm): +z = downstream
-   				!   zreal = znominal + zoffset
-/ 
 !These are offsets applied before the call to the single arm montecarlos.
 ! Offsets are in spectrometer coordinate system.  Positive xptar offset
 ! means spectrometer is positioned at large xptar (i.e. below target, and
 ! thus pointing above target and giving a negative shift to particle's xptar)
 
- &E_ARM_OFFSET
-     spec%e%offset%x  =  0.		!  x offset (cm)
-     spec%e%offset%y  =  0.		!  y offset (cm)
-     spec%e%offset%z  =  0.		!  z offset (cm)
-     spec%e%offset%xptar  =  0.	!  xptar offset (mr)
-     spec%e%offset%yptar  =  0.	!  yptar offset (mr)
-/
-
- &P_ARM_OFFSET
-     spec%p%offset%x  =  0.083189		!  x offset (cm)
-     spec%p%offset%y  =  0.286047		!  y offset (cm)
-     spec%p%offset%z  =  0.		!  z offset (cm)
-     spec%p%offset%xptar  =  0.	!  xptar offset (mr)
-     spec%p%offset%yptar  =  0.	!  yptar offset (mr)
-/ 
+ 
 
  &SIMULATE
      hard_cuts  =  F         !  (ONE = TRUE) SPedge and Em.max are hard cuts(ntuple)

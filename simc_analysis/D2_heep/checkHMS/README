@@ -9,7 +9,7 @@ A total of five elastics taken during Deuteron Electro-Disintegration are used i
 
 
 Approach:
-For both SIMC and DATA, determine the HMS calculated momentum, P_calc(Eb, theta_p), assuming 
+For both SIMC and DATA, determine the HMS calculated momentum (using proton momentum formula), P_calc(Eb, theta_p), assuming 
 the beam energy and angle are well known. Then determine the fractional deviation of
 measured momentum both from SIMC/DATA by using the formula:
 

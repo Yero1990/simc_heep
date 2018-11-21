@@ -6,7 +6,9 @@ void checkW_simc(int run)
 {
   //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
-    
+
+ 
+
   //Read SIMC ROOTfiles
   TString filename = Form("../../worksim_voli/D2_heep_%d.root",run);                                 
   TFile *data_file = new TFile(filename, "READ"); 
