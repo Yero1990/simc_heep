@@ -22,3 +22,19 @@ Code: fitOptics.C
 Description: This code calculates the (delta_calc - delta_meas) vs. focal plane times and
 other relevant quatities. The idea is to apply the TGraphical cuts on an event by event basis,
 and then write the code to fit the matrix inside the event loop.  
+
+
+
+Optics matrix format:
+                                                                 
+0.277714223    -0.046726452    0.0303003269     0.667153399 00000
+
+                                          0    1      0    0     0 
+The five digits to the right represent:  xfp, x'fp,  yfp, y'fp, xtar
+
+The 0: means the term is raied to the zero power
+The 1: means the term is raied to the 1st  power
+and so on . . .
+
+So the delta can be expressed as: 
+delta =  xfp^0 + xpfp^1 +yfp^0 + ypfp^0 + xtar^0
