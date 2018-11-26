@@ -169,17 +169,17 @@ Double_t eypfp_nbins = nbins;
 
 
 //Run 3288
-//Double_t exfp_xmin = -15.;
-//Double_t exfp_xmax = 10.;
+Double_t exfp_xmin = -15.;
+Double_t exfp_xmax = 10.;
 
-//Double_t eyfp_xmin = -10.;
-//Double_t eyfp_xmax = 10.;
+Double_t eyfp_xmin = -10.;
+Double_t eyfp_xmax = 10.;
 
-//Double_t expfp_xmin = -0.04;
-//Double_t expfp_xmax = 0.04;
+Double_t expfp_xmin = -0.04;
+Double_t expfp_xmax = 0.04;
 
-//Double_t eypfp_xmin = -0.03;
-//Double_t eypfp_xmax = 0.03;
+Double_t eypfp_xmin = -0.03;
+Double_t eypfp_xmax = 0.03;
 
 
 
@@ -210,17 +210,17 @@ Double_t eypfp_nbins = nbins;
 //Double_t eypfp_xmax = 0.02;
 
 //Run: 3376/3377
-Double_t exfp_xmin = 10.;
-Double_t exfp_xmax = 25.;
+//Double_t exfp_xmin = 10.;
+//Double_t exfp_xmax = 25.;
 
-Double_t eyfp_xmin = -10.;
-Double_t eyfp_xmax = 5.;
+//Double_t eyfp_xmin = -10.;
+//Double_t eyfp_xmax = 5.;
 
-Double_t expfp_xmin = 0.01;
-Double_t expfp_xmax = 0.05;
+//Double_t expfp_xmin = 0.01;
+//Double_t expfp_xmax = 0.05;
 
-Double_t eypfp_xmin = -0.01;
-Double_t eypfp_xmax = 0.01;
+//Double_t eypfp_xmin = -0.01;
+//Double_t eypfp_xmax = 0.01;
 
 #endif
 
