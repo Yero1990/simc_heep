@@ -19,6 +19,8 @@ void calc_pElec_PDiff()
   gROOT->SetBatch(kTRUE);
   gStyle->SetOptFit();
 
+  //Create an object array to store histograms 
+  TObjArray HList[5]; 
   
 
   //Define some constants
@@ -125,6 +127,9 @@ void calc_pElec_PDiff()
   //Loop over all kinematic groups
   for(int i = 0; i<5; i++)
     {
+      
+      //      if(i==0 || i==2 || i==4) continue;
+
       string filename = Form("../../../worksim_voli/D2_heep_%d.root", run_num[i]);                                   
       TFile *f1 = new TFile(filename.c_str());                                                                           
 
@@ -520,7 +525,9 @@ void calc_pElec_PDiff()
   int run[5] = {3288, 3371, 3374, 3376, 3377};
   //Loop over runs
     for(int irun=0; irun<5; irun++)
-      {                                                                                     
+      {                                 
+	//	if(irun==0 || irun==2 || irun==4) continue; 
+                                                    
 	//Open TFile
 	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[irun]);
 	TFile *f1 = new TFile(filename.c_str());

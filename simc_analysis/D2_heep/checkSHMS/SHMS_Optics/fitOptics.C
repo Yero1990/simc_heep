@@ -27,14 +27,16 @@ void fitOptics()
   vector<int> xtarexpon;
 
   TString currentline;
-  int num_recon_terms = 0;
+  int num_recon_terms = 0;   //5 reconstructed terms
   
   //Open sample data cointaining the structure of the terms (1000, 01000, 00100, etc.)
   ifstream infile("sample_optics.dat");
   
-  int nfit_max=500000;
-  int nfit = 0;
+  int nfit_max=50000;      //maximum number of events in fit per run
+  int nfit_max_total = 250000;
+  
  
+  //int nfit_total = 0;
   //read in the infile to get the number of terms we will extract for fitting
   while( currentline.ReadLine(infile,kFALSE)){
     
@@ -56,13 +58,15 @@ void fitOptics()
     ypfpexpon.push_back(expontemp[3]);
     xtarexpon.push_back(expontemp[4]);
     cout<<"Terms: "<<expontemp[0]<<expontemp[1]<<expontemp[2]<<expontemp[3]<<expontemp[4]<<endl;
-    
+    //    cout << "xfpexpon_vec = " << display(xfpexpon) << endl;
     num_recon_terms++;
   }
   
+                                                                                   
+
   cout<<"recon terms: "<<num_recon_terms<<endl;
   TMatrixD Ay(num_recon_terms,num_recon_terms);
-  TMatrixD lambda(num_recon_terms,nfit_max);
+  TMatrixD lambda(num_recon_terms,nfit_max_total);
   TVectorD b_delta(num_recon_terms);
   TMatrixD By(num_recon_terms,num_recon_terms);
   TMatrixD lambda2(num_recon_terms,nfit_max);
@@ -71,7 +75,7 @@ void fitOptics()
   TMatrixD lambda3(num_recon_terms,nfit_max);
   TVectorD b_ytar(num_recon_terms);
  
- 
+  
   
   //Define some constants
   Double_t Mp = 0.938272;  //proton mass
@@ -81,7 +85,7 @@ void fitOptics()
   
   
   
-  int run_num[5] = {3288, 3371, 3374, 3376, 3377};
+  int run[5] = {3288, 3371, 3374, 3376, 3377};
   
   int index = 0;
  
@@ -135,29 +139,52 @@ void fitOptics()
   TH2F *histeDelta_yfp[5];                                                                                                       
   TH2F *histeDelta_ypfp[5];  
   
-  
+  //(shms_delta_calc - shms_delta_meas) vs. SHMS focal plane, with Graphical CUts                                                                                                                   
+  TH2F *histeDelta_xfp_cut[5];                                                                               
+  TH2F *histeDelta_xpfp_cut[5];                                                                                                                                    
+  TH2F *histeDelta_yfp_cut[5];
+  TH2F *histeDelta_ypfp_cut[5];  
   //--------------------------------------------------------
   
   
   TCanvas *delDiff_vs_FP_Canv[5];
-  
+  TCanvas *delDiff_vs_FPCut_Canv[5];
   
   index = 0;
-  int run[5] = {3288, 3371, 3374, 3376, 3377};
+ 
+
+
+  int nfit;
+  //Reset counter over all events over all runs
+  int nfit_total = 0; 
+
+
   //Loop over runs
   for(int irun=0; irun<5; irun++)
     {              
+
+      
+      //      cout << "**** Run ***** : " << run[irun] << endl;
+      //cout << ">>>> Resset Counter: " << endl;
+      //nfit = 0;
+      
       //Initialize histo object array
       HList[irun](0);
       
       
       //----------SET THE Focal Plane Graphical CUTS per Run ---------------
-
+      
       //Read in the cuts file produced by set_cut.C
-      TString cutfilename=Form("SHMS_heepData_histos_%d_cut.root",run[irun]);
+      TString cutfilename=Form("delta_uncorr/SHMS_heepData_histos_%d_cut.root",run[irun]);
       TFile fCut_file(cutfilename);
       
       xfp_cut[irun] = (TCutG*)gROOT->FindObject(Form("eDelta_vs_xfp_cut: Run %d",run[irun]));
+      xpfp_cut[irun] = (TCutG*)gROOT->FindObject(Form("eDelta_vs_xpfp_cut: Run %d",run[irun]));                                
+      yfp_cut[irun] = (TCutG*)gROOT->FindObject(Form("eDelta_vs_yfp_cut: Run %d",run[irun]));                                                  
+      ypfp_cut[irun] = (TCutG*)gROOT->FindObject(Form("eDelta_vs_ypfp_cut: Run %d",run[irun]));  
+                                                                
+
+
       //if (xfp_cut[irun]) {
       //Int_t npt = xfp_cut[irun]->GetN();
       //cout << " xfp cut = " << run[irun] << " npts = " << npt << endl;
@@ -169,7 +196,7 @@ void fitOptics()
 	
 
       //Open Data File
-      string filename = Form("../../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[irun]);
+      string filename = Form("../../../../../hallc_replay/ROOTfiles/D2_heep/delta_uncorr/coin_replay_heep_check_%d_-1.root",run[irun]);
       TFile *f1 = new TFile(filename.c_str());
       
       //Get TTree
@@ -192,37 +219,59 @@ void fitOptics()
 
       if(index==0){                                                                                                                                  
 	//(shms_delta_calc - shms_delta_meas) vs. shms focal plane
-	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run_num[index]), "", 100, -10., 5, 80, -1., 1.);
-	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run_num[index]), "", 100, -0.04, 0.03, 80, -1., 1.);
-	histeDelta_yfp[index] = new TH2F(Form("eDelta_vs_yfp: Run %d", run_num[index]), "", 100, -10., 5, 80, -1., 1.);
-	histeDelta_ypfp[index] = new TH2F(Form("eDelta_vs_ypfp: Run %d", run_num[index]), "", 100, -0.02, 0.02, 80, -1., 1.);
+	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run[index]), "", 100, -10., 5, 80, -1., 1.);
+	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run[index]), "", 100, -0.04, 0.03, 80, -1., 1.);
+	histeDelta_yfp[index] = new TH2F(Form("eDelta_vs_yfp: Run %d", run[index]), "", 100, -10., 5, 80, -1., 1.);
+	histeDelta_ypfp[index] = new TH2F(Form("eDelta_vs_ypfp: Run %d", run[index]), "", 100, -0.02, 0.02, 80, -1., 1.);
+	
+	histeDelta_xfp_cut[index] = new TH2F(Form("eDelta_vs_xfp_cut: Run %d", run[index]), "", 100, -10., 5, 80, -1., 1.);  
+        histeDelta_xpfp_cut[index] = new TH2F(Form("eDelta_vs_xpfp_cut: Run %d", run[index]), "", 100, -0.04, 0.03, 80, -1., 1.);           
+        histeDelta_yfp_cut[index] = new TH2F(Form("eDelta_vs_yfp_cut: Run %d", run[index]), "", 100, -10., 5, 80, -1., 1.);                                
+        histeDelta_ypfp_cut[index] = new TH2F(Form("eDelta_vs_ypfp_cut: Run %d", run[index]), "", 100, -0.02, 0.02, 80, -1., 1.);    
+
       }    
       
       if(index==1){                                                                                                                                
 	//(shms_delta_calc - shms_delta_meas) vs. shms focal plane                                                                   
-	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run_num[index]), "", 100, -30., -5, 80, -1., 1.);                   
-	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run_num[index]), "", 100, -0.07, 0.02, 80, -1., 1.);   
-	histeDelta_yfp[index] = new TH2F(Form("eDelta_vs_yfp: Run %d", run_num[index]), "", 100, -25., 15, 80, -1., 1.);            
-	histeDelta_ypfp[index] = new TH2F(Form("eDelta_vs_ypfp: Run %d", run_num[index]), "", 100, -0.04, 0.03, 80, -1., 1.); 
+	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run[index]), "", 100, -30., -5, 80, -1., 1.);                   
+	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run[index]), "", 100, -0.07, 0.02, 80, -1., 1.);   
+	histeDelta_yfp[index] = new TH2F(Form("eDelta_vs_yfp: Run %d", run[index]), "", 100, -25., 15, 80, -1., 1.);            
+	histeDelta_ypfp[index] = new TH2F(Form("eDelta_vs_ypfp: Run %d", run[index]), "", 100, -0.04, 0.03, 80, -1., 1.); 
+
+
+        histeDelta_xfp_cut[index] = new TH2F(Form("eDelta_vs_xfp_cut: Run %d", run[index]), "", 100, -30., -5, 80, -1., 1.);                
+        histeDelta_xpfp_cut[index] = new TH2F(Form("eDelta_vs_xpfp_cut: Run %d", run[index]), "", 100, -0.07, 0.02, 80, -1., 1.);                                
+        histeDelta_yfp_cut[index] = new TH2F(Form("eDelta_vs_yfp_cut: Run %d", run[index]), "", 100, -25., 15, 80, -1., 1.);                                                          
+        histeDelta_ypfp_cut[index] = new TH2F(Form("eDelta_vs_ypfp_cut: Run %d", run[index]), "", 100, -0.04, 0.03, 80, -1., 1.); 
 
       }                                                                                                                                              
+
       
       if(index==2){                                                                                                                                  	
 	//(shms_delta_calc - shms_delta_meas) vs. shms focal plane                                                                       
-	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run_num[index]), "", 100, 5., 15, 80, -1., 1.);                          
-	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run_num[index]), "", 100, 0., 0.04, 80, -1., 1.);            
-	histeDelta_yfp[index] = new TH2F(Form("eDelta_vs_yfp: Run %d", run_num[index]), "", 100, -5., 5, 80, -1., 1.);                    
-	histeDelta_ypfp[index] = new TH2F(Form("eDelta_vs_ypfp: Run %d", run_num[index]), "", 100, -0.02, 0.02, 80, -1., 1.);
+	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run[index]), "", 100, 5., 15, 80, -1., 1.);                          
+	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run[index]), "", 100, 0., 0.04, 80, -1., 1.);            
+	histeDelta_yfp[index] = new TH2F(Form("eDelta_vs_yfp: Run %d", run[index]), "", 100, -5., 5, 80, -1., 1.);                    
+	histeDelta_ypfp[index] = new TH2F(Form("eDelta_vs_ypfp: Run %d", run[index]), "", 100, -0.02, 0.02, 80, -1., 1.);
 	
+	histeDelta_xfp_cut[index] = new TH2F(Form("eDelta_vs_xfp_cut: Run %d", run[index]), "", 100, 5., 15, 80, -1., 1.); 
+        histeDelta_xpfp_cut[index] = new TH2F(Form("eDelta_vs_xpfp_cut: Run %d", run[index]), "", 100, 0., 0.04, 80, -1., 1.);                                               
+        histeDelta_yfp_cut[index] = new TH2F(Form("eDelta_vs_yfp_cut: Run %d", run[index]), "", 100, -5., 5, 80, -1., 1.);                                                   
+        histeDelta_ypfp_cut[index] = new TH2F(Form("eDelta_vs_ypfp_cut: Run %d", run[index]), "", 100, -0.02, 0.02, 80, -1., 1.); 
       }                                                                                                                                              
       
       if(index==3 || index==4){                                                                                                         
 	//(shms_delta_calc - shms_delta_meas) vs. shms focal plane                                                                                        
-	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run_num[index]), "", 100, 10., 25, 80, -1., 1.);
-	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run_num[index]), "", 100, 0.01, 0.05, 80, -1., 1.);                            
-	histeDelta_yfp[index] = new TH2F(Form("eDelta_vs_yfp: Run %d", run_num[index]), "", 100, -10., 5, 80, -1., 1.);                                  
-	histeDelta_ypfp[index] = new TH2F(Form("eDelta_vs_ypfp: Run %d", run_num[index]), "", 100, -0.015, 0.015, 80, -1., 1.);
-	
+	histeDelta_xfp[index] = new TH2F(Form("eDelta_vs_xfp: Run %d", run[index]), "", 100, 10., 25, 80, -1., 1.);
+	histeDelta_xpfp[index] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run[index]), "", 100, 0.01, 0.05, 80, -1., 1.);                            
+	histeDelta_yfp[index] = new TH2F(Form("eDelta_vs_yfp: Run %d", run[index]), "", 100, -10., 5, 80, -1., 1.);                                  
+	histeDelta_ypfp[index] = new TH2F(Form("eDelta_vs_ypfp: Run %d", run[index]), "", 100, -0.015, 0.015, 80, -1., 1.);
+
+
+        histeDelta_xfp_cut[index] = new TH2F(Form("eDelta_vs_xfp_cut: Run %d", run[index]), "", 100, 10., 25, 80, -1., 1.); 
+        histeDelta_xpfp_cut[index] = new TH2F(Form("eDelta_vs_xpfp_cut: Run %d", run[index]), "", 100, 0.01, 0.05, 80, -1., 1.);  
+        histeDelta_yfp_cut[index] = new TH2F(Form("eDelta_vs_yfp_cut: Run %d", run[index]), "", 100, -10., 5, 80, -1., 1.);   
+        histeDelta_ypfp_cut[index] = new TH2F(Form("eDelta_vs_ypfp_cut: Run %d", run[index]), "", 100, -0.015, 0.015, 80, -1., 1.); 	
       }  
        
       //----set names for delta difference histograms
@@ -236,24 +285,54 @@ void fitOptics()
       histeDelta_yfp[index]->GetYaxis()->SetTitle("SHMS #delta_{calc} - #delta_{meas.} [%]");                                                 
       
       histeDelta_ypfp[index]->GetXaxis()->SetTitle("SHMS Y'_{fp}");                                                                         
-      histeDelta_ypfp[index]->GetYaxis()->SetTitle("SHMS #delta_{calc} - #delta_{meas.} [%]");  
-      
+      histeDelta_ypfp[index]->GetYaxis()->SetTitle("SHMS #delta_{calc} - #delta_{meas.} [%]"); 
+
+      histeDelta_xfp_cut[index]->GetXaxis()->SetTitle("SHMS X_{fp}");                 
+      histeDelta_xfp_cut[index]->GetYaxis()->SetTitle("SHMS #delta_{calc} - #delta_{meas.} [%]");                                                                         
+                                                                                                                                                                                              
+      histeDelta_xpfp_cut[index]->GetXaxis()->SetTitle("SHMS X'_{fp}");                                                                                      
+      histeDelta_xpfp_cut[index]->GetYaxis()->SetTitle("SHMS #delta_{calc} - #delta_{meas.} [%]");                                               
+                                                                                                                                                                                                  
+      histeDelta_yfp_cut[index]->GetXaxis()->SetTitle("SHMS Y_{fp}");                                                                                                              
+      histeDelta_yfp_cut[index]->GetYaxis()->SetTitle("SHMS #delta_{calc} - #delta_{meas.} [%]");                                  
+                                                                                                                                  
+      histeDelta_ypfp_cut[index]->GetXaxis()->SetTitle("SHMS Y'_{fp}");                                                                                                                    
+      histeDelta_ypfp_cut[index]->GetYaxis()->SetTitle("SHMS #delta_{calc} - #delta_{meas.} [%]");         
+
       //Add the histogram objects to the Obj list
       HList[index].Add(histeDelta_xfp[index]);
       HList[index].Add(histeDelta_xpfp[index]);
       HList[index].Add(histeDelta_yfp[index]);
       HList[index].Add(histeDelta_ypfp[index]);
 
+      HList[index].Add(histeDelta_xfp_cut[index]);
+      HList[index].Add(histeDelta_xpfp_cut[index]);  
+      HList[index].Add(histeDelta_yfp_cut[index]);                                                    
+      HList[index].Add(histeDelta_ypfp_cut[index]); 
+
       
       //Define Cuts
       Bool_t hmsPdiff_cut;
       Bool_t hmsDelta_cut;
       Bool_t shmsDelta_cut;
-      Bool_t shms_Xfp_cut;
       
+      //Graphical Polygon CUts
+      Bool_t shms_Xfp_cut;
+      Bool_t shms_Xpfp_cut;
+      Bool_t shms_Yfp_cut;
+      Bool_t shms_Ypfp_cut;
+
+      cout << "**** Run ***** : " << run[index] << endl;                                                                 
+      cout << ">>>> Resset Counter: " << endl;                                                                                                                                   
+      nfit = 0; 
+
+ 
+      cout << "Starting LOOP: >>>>>>>> NFIT = " << nfit << endl;
+
       //-----------LOOP OVER ALL ENTRIES IN TREE-----------------------
       //Loop over all entries
       for(int i=0; i<T->GetEntries(); i++){
+	
 	
 	T->GetEntry(i);
 	
@@ -275,49 +354,97 @@ void fitOptics()
 	hmsDelta_cut = TMath::Abs(hdelta)<8.0;
 	shmsDelta_cut = edelta>-10. && edelta<22.;
 	shms_Xfp_cut = 0;
-
+	shms_Xpfp_cut = 0;
+	shms_Yfp_cut = 0;
+	shms_Ypfp_cut = 0;
                                                                                                          
   
-	if (xfp_cut[irun]) {
-	
-	  shms_Xfp_cut = xfp_cut[irun]->IsInside(exfp, (shms_delta_calc - edelta));
-	  cout << shms_Xfp_cut << endl;
+	if (xfp_cut[irun]) { shms_Xfp_cut = xfp_cut[irun]->IsInside(exfp, (shms_delta_calc - edelta)); }
+	if (xpfp_cut[irun]) { shms_Xpfp_cut = xpfp_cut[irun]->IsInside(expfp, (shms_delta_calc - edelta)); }     
+        if (yfp_cut[irun]) { shms_Yfp_cut = yfp_cut[irun]->IsInside(eyfp, (shms_delta_calc - edelta)); }                                    
+        if (ypfp_cut[irun]) { shms_Ypfp_cut = ypfp_cut[irun]->IsInside(eypfp, (shms_delta_calc - edelta)); }   
+                                                                
 
-	}
 	
-	if(emiss < 0.05 &&  hmsPdiff_cut && hmsDelta_cut && shmsDelta_cut && shms_Xfp_cut)
+	//Apply kinematic cuts
+	if(emiss < 0.05 &&  hmsPdiff_cut && hmsDelta_cut && shmsDelta_cut)
 	  {
-	    //
-		Double_t etemp;
-		for( int icoeff_fit=0; icoeff_fit<num_recon_terms; icoeff_fit++ ){
-		  etemp= 
-		    pow( exfp / 100.0, xfpexpon[icoeff_fit] ) * 
-		    pow( eyfp / 100.0, yfpexpon[icoeff_fit] ) * 
-		    pow( expfp, xpfpexpon[icoeff_fit] ) * 
-		    pow( eypfp, ypfpexpon[icoeff_fit] ) ;
-		  if (nfit<nfit_max){
-		    lambda[icoeff_fit][nfit] = etemp;
-		    b_delta[icoeff_fit] += (shms_delta_calc - edelta) * etemp/100.;
+	    
+	    //Apply Graphical Cuts on SHMS Focal Plane
+	    if(shms_Xfp_cut && shms_Xpfp_cut && shms_Yfp_cut && shms_Ypfp_cut){
+	      
+	    
+	            
+	      //Fill Histograms deltaDiff vs. SHMS Focal Plane (with Graphical Cuts)
+	      histeDelta_xfp_cut[index]->Fill(exfp, (shms_delta_calc - edelta));         
+	      histeDelta_xpfp_cut[index]->Fill(expfp, (shms_delta_calc - edelta));     
+	      histeDelta_yfp_cut[index]->Fill(eyfp, (shms_delta_calc - edelta));                                                        
+	      histeDelta_ypfp_cut[index]->Fill(eypfp, (shms_delta_calc - edelta));  
+
+	      
+	      while(nfit<nfit_max && nfit_total<nfit_max_total)
+		{
+
+
+		  Double_t etemp;
+		  for( int icoeff_fit=0; icoeff_fit<num_recon_terms; icoeff_fit++ ){
+		    etemp= 
+		      pow( exfp / 100.0, xfpexpon[icoeff_fit] ) * 
+		      pow( eyfp / 100.0, yfpexpon[icoeff_fit] ) * 
+		      pow( expfp, xpfpexpon[icoeff_fit] ) * 
+		      pow( eypfp, ypfpexpon[icoeff_fit] ) ;
+		    
+		      
+		      //cout << "Run :" << run[irun] << "nfit: " << nfit << " nfit_total: " << nfit_total << endl;
+		      lambda[icoeff_fit][nfit_total] = etemp;
+		      b_delta[icoeff_fit] += (shms_delta_calc - edelta) * etemp/100.;
+		    
+		    
+		  }// end loop over icoeff_fit (xfp, x'fp, yfp, y'fp, xtar)
+		  
+		  
+		  nfit++;    //increment event per run 
+		  cout << "# events per run = " << nfit << endl;
+		  
+		  nfit_total++;  //INCREMENTS number of events over all runs
+		  cout << "total # evts = " << nfit_total << endl;
+		  
+		  if(nfit==nfit_max){
+		    cout << "Reached the max number of evts " << endl;
+		    
+		    
 		  }
-		}
-		  if (nfit<nfit_max)  nfit++;
-	    //
+		    
+		   
+		    
+		  
+		}//end while loop
+	    
+		
+	      
+	    } //end graphical cut
+	    
+	    
+       
+	  
+	    
+	    //Fill deltaDiff vs. SHMS focal plane (no Graphical Cuts)
 	    histeDelta_xfp[index]->Fill(exfp, (shms_delta_calc - edelta));
 	    histeDelta_xpfp[index]->Fill(expfp, (shms_delta_calc - edelta));                                                       
 	    histeDelta_yfp[index]->Fill(eyfp, (shms_delta_calc - edelta));                                                         
 	    histeDelta_ypfp[index]->Fill(eypfp, (shms_delta_calc - edelta)); 	  
-
-	  }
-
-      }
-      
+	    
+	  } //end kinematics cuts
+	
+      } //end entry loop
+	
       //---------END ENTRY LOOP ---------------------------------------
      
-      /*
+	  
 
       //DRaw HIstograms
 
-      delDiff_vs_FP_Canv[index] = new TCanvas(Form("delDiff_vs_FP_Canv, Run %d", run_num[index]), "Delta Diff. vs. SHMS Focal Plane", 1500, 1000);                          
+      delDiff_vs_FP_Canv[index] = new TCanvas(Form("delDiff_vs_FP_Canv, Run %d", run[index]), "Delta Diff. vs. SHMS Focal Plane", 1500, 1000);                          
       delDiff_vs_FP_Canv[index]->Divide(2,2);
       delDiff_vs_FP_Canv[index]->cd(1);
       histeDelta_xfp[index]->Draw("colz");
@@ -328,31 +455,52 @@ void fitOptics()
       delDiff_vs_FP_Canv[index]->cd(4);                                                             
       histeDelta_ypfp[index]->Draw("colz");
 
-      delDiff_vs_FP_Canv[index]->SaveAs(Form("data_DeltaDiff_vs_SHMS_FocalPlane_%d.pdf", run_num[index]));   
+      delDiff_vs_FP_Canv[index]->SaveAs(Form("data_DeltaDiff_vs_SHMS_FocalPlane_%d.pdf", run[index]));
 
+      delDiff_vs_FPCut_Canv[index] = new TCanvas(Form("delDiff_vs_FPCut_Canv, Run %d", run[index]), "Delta Diff. vs. SHMS Focal Plane", 1500, 1000);                      
+      delDiff_vs_FPCut_Canv[index]->Divide(2,2);                                                                                                                         
+      delDiff_vs_FPCut_Canv[index]->cd(1);                                                                                                                               
+      histeDelta_xfp_cut[index]->Draw("colz");                                                                                                               
+      delDiff_vs_FPCut_Canv[index]->cd(2);                                               
+      histeDelta_xpfp_cut[index]->Draw("colz");                                                                                                                        
+      delDiff_vs_FPCut_Canv[index]->cd(3);                                                                                                                                     
+      histeDelta_yfp_cut[index]->Draw("colz");                                                                                                             
+      delDiff_vs_FPCut_Canv[index]->cd(4);                                                                                                                                                                  
+      histeDelta_ypfp_cut[index]->Draw("colz");                                                                                                                                                                                                                                                                                                                                                                     
+      delDiff_vs_FPCut_Canv[index]->SaveAs(Form("data_DeltaDiff_vs_SHMS_FocalPlane_CUTS_%d.pdf", run[index]));                                                  
+      
 
       
       //Write Histograms to a ROOTfile
       TFile *outROOT = new TFile(Form("SHMS_heepData_histos_%d.root", run[irun]), "recreate");
       HList[index].Write();
       outROOT->Close();
+      
+     
+	
       index++;
 			       
-			       
-    if (nfit!=0){
-      for(int i=0; i<num_recon_terms; i++){
-	for(int j=0; j<num_recon_terms; j++){
-	  Ay[i][j] = 0.0;
+    } //end run loop
+
+      
+  
+  if (nfit!=0){
+    for(int i=0; i<num_recon_terms; i++){
+      for(int j=0; j<num_recon_terms; j++){
+	Ay[i][j] = 0.0;
+      }
+    }
+    
+    //Get Ay to be a square 5x5 matrix 
+    for( int ifit=0; ifit<nfit_total; ifit++){
+      if( ifit % 100000 == 0 ) cout << ifit << endl;
+      for( int ipar=0; ipar<num_recon_terms; ipar++){
+	for( int jpar=0; jpar<num_recon_terms; jpar++){
+	  Ay[ipar][jpar] += lambda[ipar][ifit] * lambda[jpar][ifit];
 	}
       }
-      for( int ifit=0; ifit<nfit; ifit++){
-	if( ifit % 100000 == 0 ) cout << ifit << endl;
-	for( int ipar=0; ipar<num_recon_terms; ipar++){
-	  for( int jpar=0; jpar<num_recon_terms; jpar++){
-	    Ay[ipar][jpar] += lambda[ipar][ifit] * lambda[jpar][ifit];
-	  }
-	}
-      }
+    }
+    
       TDecompSVD Ay_svd(Ay);
       bool ok;
       ok = Ay_svd.Solve( b_delta );
@@ -383,11 +531,9 @@ void fitOptics()
 	fCorr << xtarexpon[icoeff_fit]; 
 	fCorr << endl;
 
-      }
-    }
+      } //end loop to write matrix to file
+
+    } //end nfit!=0 requirement
     
-
-      */
-
-    }//end run loop
-}
+	
+      }

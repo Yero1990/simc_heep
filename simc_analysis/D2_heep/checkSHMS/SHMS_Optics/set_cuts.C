@@ -90,7 +90,7 @@ void set_cuts(int run,Int_t flag=0) {
 	histView_Cut->cd(flag+1);
 	gPad->SetGridx();
 	gPad->SetGridy();
-	gPad->SetLogz();    
+	//gPad->SetLogz();    
 	
 	fInput->cd();
 	
