@@ -33,7 +33,7 @@ void set_cuts(int run,Int_t flag=0) {
   gStyle->SetPadLeftMargin(0.14);
   
   //Read input ROOTfile containing Histogram Objects
-  TString ifilename = Form("SHMS_heepData_histos_%d.root", run);
+  TString ifilename = Form("data_uncorr/SHMS_heepDATA_histos_%d.root", run);
   TFile *fInput;
   fInput = new TFile(ifilename);
 
@@ -77,7 +77,7 @@ void set_cuts(int run,Int_t flag=0) {
   
   //Set Name of ROOTfile containing polygon Cuts
   TString outCutFile;
-  outCutFile=Form("SHMS_heepData_histos_%d_cut.root", run);
+  outCutFile=Form("SHMS_heepDATA_histos_%d_cut.root", run);
 
   //------------------ Flag 1 ----> Set the Polygon Cut ----------------------
 

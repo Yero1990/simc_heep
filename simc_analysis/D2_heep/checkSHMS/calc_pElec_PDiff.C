@@ -125,9 +125,9 @@ void calc_pElec_PDiff()
   //  int irun = 0;
 
   
-
+ 
   //Loop over all kinematic groups
-  for(int irun = 0; irun<=0; irun++)
+  for(int irun = 0; irun<5; irun++)
     {
       
       //Initialize histo object array
@@ -139,7 +139,7 @@ void calc_pElec_PDiff()
       //Get TTree                                                                                                                     
       TTree *T = (TTree*)f1->Get("SNT");   
       
-      /*-------DEUT SIMC---------------------*/
+      //-------DEUT SIMC---------------------/
       //Set Branch Address for some SIMC variables
       T->SetBranchAddress("Normfac", &Normfac);
       T->SetBranchAddress("h_delta", &h_delta);                                                     
@@ -458,7 +458,7 @@ void calc_pElec_PDiff()
   c2_simc->SaveAs("simc_Momentum_Diff.pdf");
   c3_simc->SaveAs("simc_Pdiff_Graph.pdf");
 
-
+ 
   //---------------------DATA----------------------------
   
   
@@ -549,8 +549,9 @@ void calc_pElec_PDiff()
 
   //irun = 0;
   int run[5] = {3288, 3371, 3374, 3376, 3377};
+  cout << "Entering Run Loop " << endl;
   //Loop over runs
-    for(int irun=0; irun<=0; irun++)
+    for(int irun=0; irun<5; irun++)
       {                                 
                             
 	//Initialize histo object array
@@ -558,7 +559,7 @@ void calc_pElec_PDiff()
 
                         
 	//Open TFile
-	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[irun]);
+	string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_uncorr/coin_replay_heep_check_%d_-1.root",run[irun]);
 	TFile *f1 = new TFile(filename.c_str());
 	
 	//Get TTree
