@@ -12,3 +12,16 @@ SHMS Electrons Studies
 **It is assumed for now, that any shift in W is caused only by the spectrometer
   momentum setting. Since the angle and beam energy were obtained from camera 
   and beam energy studies respectively.
+
+-----------------
+---Directories---
+-----------------
+checkHMS : Contains code to check the HMS momentum by verifying there
+are no correlations in (Pcalc - Pmeas) / Pmeas vs. HMS Focal Plane Quantities.
+
+checkSHMS : Contains code to check SHMS momentum, assuming the HMS momentum 
+is well understood. The correlations between (delta_calc - delta_meas) vs.
+SHMS Focal Plane Quantities are investigated.
+
+pCorr/pUnCorr : Containes SIMC root files before and after correcting for
+the SHMS central momentum. (After the SHMS delta has been optimized)

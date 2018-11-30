@@ -7,7 +7,7 @@ void analyze_heepData(int run)
   //gROOT->SetBatch(kTRUE);
     
   //Read DATA ROOTfiles
-  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);                                 
+  TString filename =Form("../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pUnCorr/coin_replay_heep_check_%d_-1.root",run);                                 
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *T = (TTree*)data_file->Get("T");
  
@@ -120,6 +120,8 @@ void analyze_heepData(int run)
   TH2F *Em_vs_hxptar = new TH2F("Em_vs_hxptar", "Em vs hX'_{tar}", hxptar_nbins, hxptar_xmin, hxptar_xmax, Em_nbins, Em_xmin, Em_xmax);
   TH2F *Em_vs_hyptar = new TH2F("Em_vs_hyptar", "Em vs hY'_{tar}", hyptar_nbins, hyptar_xmin, hyptar_xmax, Em_nbins, Em_xmin, Em_xmax);
   TH2F *Em_vs_hdelta = new TH2F("Em_vs_hdelta", "Em vs hdelta", hdelta_nbins, hdelta_xmin, hdelta_xmax, Em_nbins, Em_xmin, Em_xmax);
+ 
+  TH2F *dP_vs_reacty = new TH2F("dP_vs_reacty", "dP vs hreacsty", 100, -0.5, 0.5, 100 , -0.5, 0.5);
 
 
   /************Define Histos to APPLY CUTS*********************************/

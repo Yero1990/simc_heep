@@ -9,7 +9,7 @@
 
 
 #include "TMath.h"
-void fitOptics()
+void fitOptics_v2()
 {
   
   gROOT->SetBatch(kTRUE);
@@ -113,6 +113,7 @@ void fitOptics()
   TString n_emiss = "H.kin.secondary.emiss";
   TString n_edelta = "P.gtr.dp";
   TString n_hdelta = "H.gtr.dp";
+  TString n_W = "P.kin.primary.W";
   //SHMS focal plane quantities
   TString n_exfp = "P.dc.x_fp";
   TString n_expfp = "P.dc.xp_fp"; 
@@ -120,6 +121,7 @@ void fitOptics()
   TString n_eypfp = "P.dc.yp_fp"; 
 
   //Define TTree variables
+  Double_t W;
   Double_t xangle;
   Double_t theta_e;  
   Double_t shmsP_meas;
@@ -127,9 +129,23 @@ void fitOptics()
   Double_t emiss;
   Double_t edelta;
   Double_t hdelta;
-
   Double_t exfp, expfp, eyfp, eypfp;
 
+  //Define Kinematics Calculated/Measured Variables to Cross Check
+  Double_t shms_Pmeas_corr; //corrected SHMS momentum
+  Double_t edelta_corr; //corrected delta
+
+  Double_t Em_calc;
+  Double_t Em_meas;
+  Double_t Em_meas_corr;
+  Double_t shmsP_meas_corr;
+
+  Double_t W_calc;
+  Double_t W_meas;
+  Double_t W_meas_corr;
+
+  Double_t Q2_calc;
+  Double_t Q2_meas_corr;
 
   //-------------CREATE EMPTY HISTOGRAMS---------------------------------------------
 
@@ -158,6 +174,7 @@ void fitOptics()
   //Reset counter over all events over all runs
   int nfit_total = 0; 
 
+  Double_t Em_cut_arr[5] = {0.01, 0.03, 0., 0., 0.};
 
   //Loop over runs
   for(int irun=0; irun<5; irun++)
@@ -180,7 +197,7 @@ void fitOptics()
                                                                 
 
       //Open Data File
-      string filename = Form("../../../../../hallc_replay/ROOTfiles/D2_heep/delta_uncorr/coin_replay_heep_check_%d_-1.root",run[irun]);
+      string filename = Form("../../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[irun]);
       TFile *f1 = new TFile(filename.c_str());
       
       //Get TTree
@@ -193,6 +210,7 @@ void fitOptics()
       T->SetBranchAddress(n_shmsP_meas, &shmsP_meas);
       T->SetBranchAddress(n_hmsP_meas, &hmsP_meas);                                                
       T->SetBranchAddress(n_emiss, &emiss);
+      T->SetBranchAddress(n_W, &W);
       T->SetBranchAddress(n_edelta, &edelta);
       T->SetBranchAddress(n_hdelta, &hdelta);
       T->SetBranchAddress(n_exfp, &exfp);
@@ -350,7 +368,7 @@ void fitOptics()
 
 	
 	//Apply kinematic cuts
-	if(emiss < 0.05 &&  hmsPdiff_cut && hmsDelta_cut && shmsDelta_cut)
+	if(emiss < Em_cut_arr[irun] &&  hmsPdiff_cut && hmsDelta_cut && shmsDelta_cut)
 	  {
 	    
 	    //Apply Graphical Cuts on SHMS Focal Plane
@@ -440,7 +458,7 @@ void fitOptics()
 
       
       //Write Histograms to a ROOTfile
-      TFile *outROOT = new TFile(Form("SHMS_heepData_histos_%d.root", run[irun]), "recreate");
+      TFile *outROOT = new TFile(Form("SHMS_heepDATA_histos_%d.root", run[irun]), "recreate");
       HList[irun].Write();
       outROOT->Close();
       
@@ -515,8 +533,9 @@ void fitOptics()
     } //end nfit!=0 requirement
       
 
-  //------------------------PLOT FIT vs, Focal--------------------------------------------
-  
+  //------------------------PLOT FIT vs Focal Plane Quantities--------------------------------------------
+  //----------Use the fit values to correct the correlations observed.
+
   //Create an object array to store histograms
   TObjArray fitHList[5];
   
@@ -532,13 +551,29 @@ void fitOptics()
   TH2F *histeDelta_xpfp_corr[5];                                                                                    
   TH2F *histeDelta_yfp_corr[5];                                                                                                       
   TH2F *histeDelta_ypfp_corr[5];  
+
+  //Kinematics
+  TH1F *histEm_calc[5];
+  TH1F *histEm_meas[5];
+  TH1F *histEm_meas_corr[5];
+  
+  TH1F *histW_calc[5];
+  TH1F *histW_meas[5];
+  TH1F *histW_meas_corr[5];
   
   //Canvas to store Fits
   TCanvas *fitCanv[5];
 
   //Canvas to Store Corrected delta vs. focal plane
   TCanvas *eDelCorr_v_FP_Canv[5];
+
+  //Canvas to store Emiss
+  TCanvas *Em_Canv[5];
   
+  //Canvas to store W
+  TCanvas *W_Canv[5];
+
+
 
   //Crete Fit function (to be calculated event by event)
   Double_t fitFunc[5];
@@ -562,7 +597,7 @@ void fitOptics()
 
 
       //Open Data File
-      string filename = Form("../../../../../hallc_replay/ROOTfiles/D2_heep/delta_uncorr/coin_replay_heep_check_%d_-1.root",run[irun]);
+      string filename = Form("../../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[irun]);
       TFile *f1 = new TFile(filename.c_str());
       
       //Get TTree
@@ -575,6 +610,7 @@ void fitOptics()
       T->SetBranchAddress(n_shmsP_meas, &shmsP_meas);
       T->SetBranchAddress(n_hmsP_meas, &hmsP_meas);                                                
       T->SetBranchAddress(n_emiss, &emiss);
+      T->SetBranchAddress(n_W, &W);
       T->SetBranchAddress(n_edelta, &edelta);
       T->SetBranchAddress(n_hdelta, &hdelta);
       T->SetBranchAddress(n_exfp, &exfp);
@@ -582,7 +618,14 @@ void fitOptics()
       T->SetBranchAddress(n_eyfp, &eyfp);
       T->SetBranchAddress(n_eypfp, &eypfp);
       
-      
+      histEm_calc[irun] = new TH1F(Form("Em_calc_Run%d",run[irun]), Form("Emiss_calc_Run%d", run[irun]), 100, -0.05, 0.5);
+      histEm_meas[irun] = new TH1F(Form("Em_meas_Run%d",run[irun]), Form("Emiss_meas_Run%d", run[irun]), 100, -0.05, 0.5);
+      histEm_meas_corr[irun] = new TH1F(Form("Em_meas_corr_Run%d",run[irun]), Form("Emiss_meas_corr_Run%d", run[irun]), 100, -0.05, 0.5);
+
+      histW_calc[irun] = new TH1F(Form("W_calc_Run%d",run[irun]), Form("W_calc_Run%d", run[irun]), 100, 0.5, 1.3);
+      histW_meas[irun] = new TH1F(Form("W_meas_Run%d",run[irun]), Form("W_meas_Run%d", run[irun]), 100, 0.5, 1.3);
+      histW_meas_corr[irun] = new TH1F(Form("W_meas_corr_Run%d",run[irun]), Form("W_meas_corrRun%d", run[irun]), 100, 0.5, 1.3);
+
        if(irun==0){                                                                                                                                  
 	//Fit  vs. shms focal plane
 	hist_fit_xfp[irun] = new TH2F(Form("Fit_vs_xfp: Run %d", run[irun]), "", 100, -10, 5, 80, -0.005, 0.005);
@@ -679,19 +722,20 @@ void fitOptics()
       fitHList[irun].Add(histeDelta_xpfp_corr[irun]);
       fitHList[irun].Add(histeDelta_yfp_corr[irun]);
       fitHList[irun].Add(histeDelta_ypfp_corr[irun]);
-
       
+      fitHList[irun].Add(histEm_calc[irun]);
+      fitHList[irun].Add(histEm_meas[irun]);
+      fitHList[irun].Add(histEm_meas_corr[irun]);
+
+      fitHList[irun].Add(histW_calc[irun]);
+      fitHList[irun].Add(histW_meas[irun]);
+      fitHList[irun].Add(histW_meas_corr[irun]);
 
       //Define Cuts
       Bool_t hmsPdiff_cut;
       Bool_t hmsDelta_cut;
       Bool_t shmsDelta_cut;
-           
-      //Graphical Polygon CUts
-      Bool_t shms_Xfp_cut;
-      Bool_t shms_Xpfp_cut;
-      Bool_t shms_Yfp_cut;
-      Bool_t shms_Ypfp_cut;
+
 
 
     //-----------LOOP OVER ALL ENTRIES IN TREE-----------------------
@@ -717,28 +761,21 @@ void fitOptics()
 	hmsPdiff_cut = 	TMath::Abs(hmsP_calc - hmsP_meas) < 0.02;
 	hmsDelta_cut = TMath::Abs(hdelta)<8.0;
 	shmsDelta_cut = edelta>-10. && edelta<22.;
-	//Define Graphical Cuts
-	//if (xfp_cut[irun]) { shms_Xfp_cut = xfp_cut[irun]->IsInside(exfp, (shms_delta_calc - edelta)); }
-	//if (xpfp_cut[irun]) { shms_Xpfp_cut = xpfp_cut[irun]->IsInside(expfp, (shms_delta_calc - edelta)); }     
-        //if (yfp_cut[irun]) { shms_Yfp_cut = yfp_cut[irun]->IsInside(eyfp, (shms_delta_calc - edelta)); }                                    
-        //if (ypfp_cut[irun]) { shms_Ypfp_cut = ypfp_cut[irun]->IsInside(eypfp, (shms_delta_calc - edelta)); }   
-                                                                
-      
+                                     
 
 	//Apply Kinematic CUts 
 	if(hmsPdiff_cut && hmsDelta_cut && shmsDelta_cut)
 	  {
-	    
-	    //Apply Graphical Cuts
-	    //if(shms_Xfp_cut && shms_Xpfp_cut && shms_Yfp_cut && shms_Ypfp_cut)
-	      //  {
+
 		//convert to m;
 		Double_t exfp_m = exfp / 100.;
 		Double_t eyfp_m = eyfp / 100.;
 		
 		//Calculate Fit Function
-		fitFunc[irun] = D[0] + D[1]*exfp_m + D[2]*expfp + D[3]*eyfp_m + D[4]*eypfp + D[5]*exfp_m*expfp + D[6]*exfp_m*eyfp_m + D[7]*exfp_m*eypfp + D[8]*expfp*eyfp_m + D[9]*expfp*eypfp + D[10]*eyfp_m*eypfp;
+		fitFunc[irun] = D[0] + D[1]*exfp_m + D[2]*expfp + D[3]*eyfp_m + D[4]*eypfp + D[5]*exfp_m*expfp + D[6]*exfp_m*eyfp_m + D[7]*exfp_m*eypfp + D[8]*expfp*eyfp_m + D[9]*expfp*eypfp + D[10]*eyfp_m*eypfp +
+		  D[11]*exfp_m*exfp_m + D[12]*expfp*expfp + D[13]*eyfp_m*eyfp_m + D[14]*eypfp*eypfp;   // <----Quadratic Fit Terms
 		
+		cout << "fitFunc = " << fitFunc[irun] << endl;
 		
 		//Fill Histograms Fit Functions
 		hist_fit_xfp[irun]->Fill(exfp, fitFunc[irun]);
@@ -746,16 +783,36 @@ void fitOptics()
 		hist_fit_yfp[irun]->Fill(eyfp, fitFunc[irun]);
 		hist_fit_ypfp[irun]->Fill(eypfp, fitFunc[irun]);
 
-		//} //End Graphical Cut
-	    
-
-		
 		//Apply Corrections to (delta_calc - delta_meas) vs. SHMS Focal Plane
 		histeDelta_xfp_corr[irun]->Fill(exfp, (shms_delta_calc - edelta) - (fitFunc[irun]*100.));   //convert fitFunc to %, to subtrack from delta
 		histeDelta_xpfp_corr[irun]->Fill(expfp, (shms_delta_calc - edelta) - (fitFunc[irun]*100.));
 		histeDelta_yfp_corr[irun]->Fill(eyfp, (shms_delta_calc - edelta) - (fitFunc[irun]*100.));
 		histeDelta_ypfp_corr[irun]->Fill(eypfp, (shms_delta_calc - edelta) - (fitFunc[irun]*100.));
 
+		//corrected shms measured delta
+		edelta_corr = 	edelta - fitFunc[irun]*100.;  //corrected measured delta units of percent
+		shms_Pmeas_corr =  eP0[irun] * (edelta_corr/100.  +  1.);  //corrected measured momentum
+
+		//Define Kinematics Variables (The HMS delta has been checked out,  so hmsPmeas ~ hmsPcalc)
+		Em_meas = emiss;  //from ttree variables (UnCorrected)
+		Em_calc = (Eb - shmsP_calc) + Mp - TMath::Sqrt(hmsP_meas*hmsP_meas + Mp*Mp);   //Calculated Missing Energy
+		Em_meas_corr = (Eb - shmsP_meas_corr) + Mp - TMath::Sqrt(hmsP_meas*hmsP_meas + Mp*Mp);   //Corrected Measured Missing Energy
+		
+		Q2_calc = 4.*Eb*shmsP_calc*TMath::Power( TMath::Sin(theta_e/2.*TMath::Pi()/180.),2 );
+		Q2_meas_corr = 4.*Eb*shms_Pmeas_corr*TMath::Power( TMath::Sin(theta_e/2.*TMath::Pi()/180.),2 );
+
+		W_meas = W;
+		W_calc = TMath::Sqrt( Mp*Mp + 2.*Mp*(Eb - shmsP_calc) - Q2_calc  );
+		W_meas_corr = TMath::Sqrt( Mp*Mp + 2.*Mp*(Eb - shms_Pmeas_corr) - Q2_meas_corr );
+		
+		//Fill Emiss and W
+		histEm_calc[irun]->Fill(Em_calc);
+		histEm_meas[irun]->Fill(Em_meas);
+		histEm_meas_corr[irun]->Fill(Em_meas_corr);
+		
+		histW_calc[irun]->Fill(W_calc);
+		histW_meas[irun]->Fill(W_meas);
+		histW_meas_corr[irun]->Fill(W_meas_corr);
 
 	  } //end Kinematics cut
 
@@ -775,8 +832,41 @@ void fitOptics()
       hist_fit_ypfp[irun]->Draw("colz");
       fitCanv[irun]->SaveAs(Form("Fit_vs_FP_Run%d.pdf", run[irun]));
 
-      //eDelCorr_v_FP_Canv[irun] = ;
+      //Draw Emiss
+      Em_Canv[irun] = new TCanvas(Form("Em_Run%d", run[irun]), Form("Emiss, Run %d ", run[irun]), 1500, 1500);
+      histEm_calc[irun]->SetLineColor(kBlue);
+      histEm_calc[irun]->Draw();
+ 
+      histEm_meas[irun]->SetLineColor(kBlack);
+      histEm_meas[irun]->Draw("sames");
 
+      histEm_meas_corr[irun]->SetLineColor(kRed);
+      histEm_meas_corr[irun]->Draw("sames");
+      Em_Canv[irun]->SaveAs(Form("Emiss_Run%d.pdf", run[irun]));
+      //Draw W
+      W_Canv[irun] = new TCanvas(Form("W_Run%d", run[irun]), Form("W, Run %d ", run[irun]), 1500, 1500);
+      histW_calc[irun]->SetLineColor(kBlue);
+      histW_calc[irun]->Draw();
+ 
+      histW_meas[irun]->SetLineColor(kBlack);
+      histW_meas[irun]->Draw("sames");
+
+      histW_meas_corr[irun]->SetLineColor(kRed);
+      histW_meas_corr[irun]->Draw("sames");
+      W_Canv[irun]->SaveAs(Form("W_Run%d.pdf", run[irun]));
+
+      //Draw deltaDiff vs FP Corrected
+      eDelCorr_v_FP_Canv[irun] =  new TCanvas(Form("eDel_FPCorr_Run%d", run[irun]), Form("eDel_FPCorr, Run %d ", run[irun]), 1500, 1500);
+      eDelCorr_v_FP_Canv[irun]->Divide(2,2);
+      eDelCorr_v_FP_Canv[irun]->cd(1);
+      histeDelta_xfp_corr[irun]->Draw("colz");
+      eDelCorr_v_FP_Canv[irun]->cd(2);
+      histeDelta_xpfp_corr[irun]->Draw("colz");
+      eDelCorr_v_FP_Canv[irun]->cd(3);
+      histeDelta_yfp_corr[irun]->Draw("colz");
+      eDelCorr_v_FP_Canv[irun]->cd(4);
+      histeDelta_ypfp_corr[irun]->Draw("colz");
+      eDelCorr_v_FP_Canv[irun]->SaveAs(Form("eDelta_vs_FPCorrected_Run%d.pdf", run[irun]));
       //Write Histograms to a ROOTfile
       TFile *outROOT = new TFile(Form("SHMS_heepData_FIT_%d.root", run[irun]), "recreate");
       fitHList[irun].Write();

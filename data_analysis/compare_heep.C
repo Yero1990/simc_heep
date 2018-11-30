@@ -3,7 +3,8 @@
 
 void compare_heep(int run)
 {
-  
+
+  gROOT->SetBatch(kTRUE);  
   gStyle->SetOptStat(1001111);
   //TString simc_filename =  "weighted_ep_coin_simc_1854.root"; //"ep_coin_simc_1929.root";
   
@@ -15,8 +16,8 @@ void compare_heep(int run)
   TString simc_path;
   TString data_path;
   
-  simc_path = "../simc_analysis/D2_heep/"+simc_filename;
-  data_path = "./"+data_filename;
+  simc_path = "../simc_analysis/D2_heep/pUnCorr/"+simc_filename;
+  data_path = "./" + data_filename;
   
   //Open SIMC/data ROOT files;
   TFile *simc_file = new TFile(simc_path);
@@ -40,12 +41,22 @@ void compare_heep(int run)
   TH1F *simc_exptar =  0;
   TH1F *simc_eyptar =  0;
   TH1F *simc_edelta =  0;
-  
+
+  TH1F *simc_hytar =  0;
+  TH1F *simc_hxptar =  0;
+  TH1F *simc_hyptar =  0;
+  TH1F *simc_hdelta =  0;
+
   //Define data histos
   TH1F *data_eytar = 0;
   TH1F *data_exptar =  0;
   TH1F *data_eyptar =  0;
   TH1F *data_edelta =  0;
+
+  TH1F *data_hytar = 0;
+  TH1F *data_hxptar =  0;
+  TH1F *data_hyptar =  0;
+  TH1F *data_hdelta =  0;
 
   //-----------------------------------------------------------
  
@@ -57,12 +68,21 @@ void compare_heep(int run)
   TH1F *simc_expfp =  0;
   TH1F *simc_eypfp =  0;
 
+  TH1F *simc_hxfp =  0;
+  TH1F *simc_hyfp =  0;
+  TH1F *simc_hxpfp =  0;
+  TH1F *simc_hypfp =  0;
   
   //Define data histos
   TH1F *data_exfp =  0;
   TH1F *data_eyfp =  0;
   TH1F *data_expfp =  0;
   TH1F *data_eypfp =  0;
+
+  TH1F *data_hxfp =  0;
+  TH1F *data_hyfp =  0;
+  TH1F *data_hxpfp =  0;
+  TH1F *data_hypfp =  0;
 
   //--------------------------------------------------------------
 
@@ -103,11 +123,11 @@ void compare_heep(int run)
 
   //Set SIMC Histo Aesthetics
   simc_xtar->SetLineColor(kRed);
-  simc_xtar->SetLineWidth(3);
+  simc_xtar->SetLineWidth(2);
   simc_ytar->SetLineColor(kRed);
-  simc_ytar->SetLineWidth(3);
+  simc_ytar->SetLineWidth(2);
   simc_ztar->SetLineColor(kRed);
-  simc_ztar->SetLineWidth(3);
+  simc_ztar->SetLineWidth(2);
 
   
   //change to data_file
@@ -142,18 +162,30 @@ void compare_heep(int run)
   simc_file->GetObject("cut_eyptar", simc_eyptar);
   simc_file->GetObject("cut_edelta", simc_edelta);
 
+  simc_file->GetObject("cut_hytar", simc_hytar);
+  simc_file->GetObject("cut_hxptar", simc_hxptar);
+  simc_file->GetObject("cut_hyptar", simc_hyptar);
+  simc_file->GetObject("cut_hdelta", simc_hdelta);
 
   //Set SIMC Histo Aesthetics
   simc_eytar->SetLineColor(kRed);
-  simc_eytar->SetLineWidth(3);
+  simc_eytar->SetLineWidth(2);
   simc_exptar->SetLineColor(kRed);
-  simc_exptar->SetLineWidth(3);
+  simc_exptar->SetLineWidth(2);
   simc_eyptar->SetLineColor(kRed);
-  simc_eyptar->SetLineWidth(3);
+  simc_eyptar->SetLineWidth(2);
   simc_edelta->SetLineColor(kRed);
-  simc_edelta->SetLineWidth(3);
+  simc_edelta->SetLineWidth(2);
   
-  
+  simc_hytar->SetLineColor(kRed);
+  simc_hytar->SetLineWidth(2);
+  simc_hxptar->SetLineColor(kRed);
+  simc_hxptar->SetLineWidth(2);
+  simc_hyptar->SetLineColor(kRed);
+  simc_hyptar->SetLineWidth(2);
+  simc_hdelta->SetLineColor(kRed);
+  simc_hdelta->SetLineWidth(2);
+
   //change to data_file
   data_file->cd();
 
@@ -163,7 +195,11 @@ void compare_heep(int run)
   data_file->GetObject("cut_eyptar", data_eyptar);
   data_file->GetObject("cut_edelta", data_edelta);
   
-  
+  data_file->GetObject("cut_hytar", data_hytar);
+  data_file->GetObject("cut_hxptar", data_hxptar);
+  data_file->GetObject("cut_hyptar", data_hyptar);
+  data_file->GetObject("cut_hdelta", data_hdelta);
+
   //Set data Histo Aesthetics
   data_eytar->SetFillColorAlpha(kBlue, 0.35);
   data_eytar->SetFillStyle(3004);
@@ -173,7 +209,16 @@ void compare_heep(int run)
   data_eyptar->SetFillStyle(3004);
   data_edelta->SetFillColorAlpha(kBlue, 0.35);
   data_edelta->SetFillStyle(3004);
-  
+
+  data_hytar->SetFillColorAlpha(kBlue, 0.35);
+  data_hytar->SetFillStyle(3004);
+  data_hxptar->SetFillColorAlpha(kBlue, 0.35);
+  data_hxptar->SetFillStyle(3004);
+  data_hyptar->SetFillColorAlpha(kBlue, 0.35);
+  data_hyptar->SetFillStyle(3004);
+  data_hdelta->SetFillColorAlpha(kBlue, 0.35);
+  data_hdelta->SetFillStyle(3004);
+
   //-----------------------------------------------------------------
 
   
@@ -189,18 +234,28 @@ void compare_heep(int run)
   simc_file->GetObject("cut_expfp", simc_expfp);
   simc_file->GetObject("cut_eypfp", simc_eypfp);
 
-
+  simc_file->GetObject("cut_hxfp", simc_hxfp);
+  simc_file->GetObject("cut_hyfp", simc_hyfp);
+  simc_file->GetObject("cut_hxpfp", simc_hxpfp);
+  simc_file->GetObject("cut_hypfp", simc_hypfp);
   //Set SIMC Histo Aesthetics
   simc_exfp->SetLineColor(kRed);
-  simc_exfp->SetLineWidth(3);
+  simc_exfp->SetLineWidth(2);
   simc_eyfp->SetLineColor(kRed);
-  simc_eyfp->SetLineWidth(3);
+  simc_eyfp->SetLineWidth(2);
   simc_expfp->SetLineColor(kRed);
-  simc_expfp->SetLineWidth(3);
+  simc_expfp->SetLineWidth(2);
   simc_eypfp->SetLineColor(kRed);
-  simc_eypfp->SetLineWidth(3);
+  simc_eypfp->SetLineWidth(2);
   
-  
+  simc_hxfp->SetLineColor(kRed);
+  simc_hxfp->SetLineWidth(2);
+  simc_hyfp->SetLineColor(kRed);
+  simc_hyfp->SetLineWidth(2);
+  simc_hxpfp->SetLineColor(kRed);
+  simc_hxpfp->SetLineWidth(2);
+  simc_hypfp->SetLineColor(kRed);
+  simc_hypfp->SetLineWidth(2);
   //change to data_file
   data_file->cd();
 
@@ -210,7 +265,10 @@ void compare_heep(int run)
   data_file->GetObject("cut_expfp", data_expfp);
   data_file->GetObject("cut_eypfp", data_eypfp);
 
-  
+  data_file->GetObject("cut_hxfp", data_hxfp);
+  data_file->GetObject("cut_hyfp", data_hyfp);
+  data_file->GetObject("cut_hxpfp", data_hxpfp);
+  data_file->GetObject("cut_hypfp", data_hypfp);
   //Set data Histo Aesthetics
   data_exfp->SetFillColorAlpha(kBlue, 0.35);
   data_exfp->SetFillStyle(3004);
@@ -220,6 +278,15 @@ void compare_heep(int run)
   data_expfp->SetFillStyle(3004);
   data_eypfp->SetFillColorAlpha(kBlue, 0.35);
   data_eypfp->SetFillStyle(3004);
+
+  data_hxfp->SetFillColorAlpha(kBlue, 0.35);
+  data_hxfp->SetFillStyle(3004);
+  data_hyfp->SetFillColorAlpha(kBlue, 0.35);
+  data_hyfp->SetFillStyle(3004);
+  data_hxpfp->SetFillColorAlpha(kBlue, 0.35);
+  data_hxpfp->SetFillStyle(3004);
+  data_hypfp->SetFillColorAlpha(kBlue, 0.35);
+  data_hypfp->SetFillStyle(3004);
 
   //--------------------------------------------------------------
   
@@ -237,28 +304,28 @@ void compare_heep(int run)
   simc_file->GetObject("cut_xbj", simc_xbj);
   simc_file->GetObject("cut_theta_elec", simc_th_elec);
   simc_file->GetObject("cut_kf", simc_kf);
-  simc_file->GetObject("cut_Emiss", simc_emiss);
+  simc_file->GetObject("Emiss", simc_emiss);
 
   
   
   //Set SIMC Histo Aesthetics
   simc_Q2->SetLineColor(kRed);
-  simc_Q2->SetLineWidth(3);
+  simc_Q2->SetLineWidth(2);
   simc_omega->SetLineColor(kRed);
-  simc_omega->SetLineWidth(3);
+  simc_omega->SetLineWidth(2);
   simc_W->SetLineColor(kRed);
-  simc_W->SetLineWidth(3);
+  simc_W->SetLineWidth(2);
   simc_thq->SetLineColor(kRed);
-  simc_thq->SetLineWidth(3);
+  simc_thq->SetLineWidth(2);
   
   simc_xbj->SetLineColor(kRed);
-  simc_xbj->SetLineWidth(3);
+  simc_xbj->SetLineWidth(2);
   simc_th_elec->SetLineColor(kRed);
-  simc_th_elec->SetLineWidth(3);
+  simc_th_elec->SetLineWidth(2);
   simc_kf->SetLineColor(kRed);
-  simc_kf->SetLineWidth(3);
+  simc_kf->SetLineWidth(2);
   simc_emiss->SetLineColor(kRed);
-  simc_emiss->SetLineWidth(3);
+  simc_emiss->SetLineWidth(2);
 
   //change to data_file
   data_file->cd();
@@ -273,7 +340,7 @@ void compare_heep(int run)
   data_file->GetObject("cut_xbj", data_xbj);
   data_file->GetObject("cut_theta_elec", data_th_elec);
   data_file->GetObject("cut_kf", data_kf);
-  data_file->GetObject("cut_Emiss", data_emiss);
+  data_file->GetObject("Emiss", data_emiss);
 
   //Set data Histo Aesthetics
   data_Q2->SetFillColorAlpha(kBlue, 0.35);
@@ -344,6 +411,8 @@ void compare_heep(int run)
    leg8->AddEntry(simc_edelta,"SIMC");
    leg8->Draw();
 
+   c1->SaveAs(Form("eArm_TargRecon_%d.pdf", run));
+
    //------------------------------------------------------------------------------
 
    
@@ -391,6 +460,8 @@ void compare_heep(int run)
    leg16->AddEntry(data_eypfp,"Data", "f");
    leg16->AddEntry(simc_eypfp,"SIMC");
    leg16->Draw();
+
+   c2->SaveAs(Form("eArm_FocalPlane_%d.pdf", run));                                                                                   
 
    //----------------------------------------------------------- 
  
@@ -453,8 +524,8 @@ void compare_heep(int run)
    leg22->Draw();
 
    c3->cd(5);
-   data_xbj->DrawNormalized();
-   simc_xbj->DrawNormalized("sameshist");
+   simc_xbj->DrawNormalized();
+   data_xbj->DrawNormalized("sameshist");
    leg23->AddEntry(data_xbj,"Data","f");
    leg23->AddEntry(simc_xbj,"SIMC");
    leg23->Draw();
@@ -485,6 +556,9 @@ void compare_heep(int run)
    leg25->AddEntry(data_emiss,"Data","f");
    leg25->AddEntry(simc_emiss,"SIMC");
    leg25->Draw();
+
+   c3->SaveAs(Form("eArm_Kinematics_%d.pdf", run));                                                                   
+
 
  //-----------------PLOT TARGET  Variables SIMC/Data comparison-----------------------
 
@@ -519,5 +593,101 @@ void compare_heep(int run)
    leg30->AddEntry(simc_ztar,"SIMC");
    leg30->Draw();
   
+   c4->SaveAs(Form("eArm_TargVar_%d.pdf", run));                                                                                              
+
+
+   //--------PLOT HADRON ARM QUANTITIES--------
+
+
+   
+   //-----------------PLOT Target Reconstructed Variables SIMC/Data comparison-----------------------
+ 
+   //Set Legend
+   auto htr_l1 = new TLegend(0.1,0.8,0.28,0.9);
+   auto htr_l2 = new TLegend(0.1,0.8,0.28,0.9);
+   auto htr_l3 = new TLegend(0.1,0.8,0.28,0.9);
+   auto htr_l4 = new TLegend(0.1,0.8,0.28,0.9);
+   
+   //Create A Canvas to store Target Recon. variable comparisons in HADRON ARM
+   
+   TCanvas *htr = new TCanvas("htr", "Hadron Arm: Target Reconstruction", 2000, 1000);
+   htr->Divide(2,2);
+
+   htr->cd(1);
+   simc_hytar->DrawNormalized();
+   data_hytar->DrawNormalized("sameshist");
+   htr_l1->AddEntry(data_hytar,"Data","f");
+   htr_l1->AddEntry(simc_hytar,"SIMC");
+   htr_l1->Draw();
+
+   htr->cd(2);
+   simc_hxptar->DrawNormalized();
+   data_hxptar->DrawNormalized("sameshist");
+   htr_l2->AddEntry(data_hxptar,"Data", "f");
+   htr_l2->AddEntry(simc_hxptar,"SIMC");
+   htr_l2->Draw();
+
+   htr->cd(3);
+   simc_hyptar->DrawNormalized();
+   data_hyptar->DrawNormalized("sameshist");
+   htr_l3->AddEntry(data_hyptar,"Data", "f");
+   htr_l3->AddEntry(simc_hyptar,"SIMC");
+   htr_l3->Draw();
+     
+   htr->cd(4);
+   simc_hdelta->DrawNormalized();
+   data_hdelta->DrawNormalized("sameshist");
+   htr_l4->AddEntry(data_hdelta,"Data", "f");
+   htr_l4->AddEntry(simc_hdelta,"SIMC");
+   htr_l4->Draw();
+
+   htr->SaveAs(Form("hArm_TargRecon_%d.pdf", run));
+
+   //------------------------------------------------------------------------------
+
+   
+   //-----------------PLOT FOCAL PLANE  Variables SIMC/Data comparison-----------------------
+
+   //Set Legend
+   auto hfp_l1 = new TLegend(0.1,0.8,0.28,0.9);
+   auto hfp_l2 = new TLegend(0.1,0.8,0.28,0.9);
+   auto hfp_l3 = new TLegend(0.1,0.8,0.28,0.9);
+   auto hfp_l4 = new TLegend(0.1,0.8,0.28,0.9);
+
+   TCanvas *hfp = new TCanvas("hfp", "Hadron Arm: Focal Plane", 2000, 1000);
+   hfp->Divide(2,2);
+
+   hfp->cd(1);
+   simc_hxfp->DrawNormalized();
+   data_hxfp->DrawNormalized("sameshist");
+   hfp_l1->AddEntry(data_hxfp,"Data","f");
+   hfp_l1->AddEntry(simc_hxfp,"SIMC");
+   hfp_l1->Draw();
+   
+   hfp->cd(2);
+   simc_hyfp->DrawNormalized();
+   data_hyfp->DrawNormalized("sameshist");
+   hfp_l2->AddEntry(data_hyfp,"Data", "f");
+   hfp_l2->AddEntry(simc_hyfp,"SIMC");
+   hfp_l2->Draw();
+
+   hfp->cd(3);
+   simc_hxpfp->DrawNormalized();
+   data_hxpfp->DrawNormalized("sameshist");
+   hfp_l3->AddEntry(data_hxpfp,"Data", "f");
+   hfp_l3->AddEntry(simc_hxpfp,"SIMC");
+   hfp_l3->Draw();
+     
+   hfp->cd(4);
+   simc_hypfp->DrawNormalized();
+   data_hypfp->DrawNormalized("sameshist");
+   hfp_l4->AddEntry(data_hypfp,"Data", "f");
+   hfp_l4->AddEntry(simc_hypfp,"SIMC");
+   hfp_l4->Draw();
+
+   hfp->SaveAs(Form("hArm_FocalPlane_%d.pdf", run));                                                                                   
+
+   //----------------------------------------------------------- 
+ 
   
 }

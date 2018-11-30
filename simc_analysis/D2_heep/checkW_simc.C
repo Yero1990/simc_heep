@@ -6,11 +6,40 @@ void checkW_simc(int run)
 {
   //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
-
  
 
+  Double_t charge_factor;       //Units: mC   :: beam_current(uA) * time (hrs) * 3600. / 1000.  3600--> hrs to sec,  1000--> uC to mC
+  Double_t e_trkEff;
+  Double_t h_trkEff;           
+  Double_t c_LT = 1.;
+ 
+  if(run==3288){
+    charge_factor = 147.648;   //BCM4A
+    e_trkEff =  0.9856;       //shms e- trk eff
+    h_trkEff = 0.9864;        //hms had trk eff
+  }
+  if(run==3371){
+    charge_factor = 50.193;   //BCM4A (in mC)
+    e_trkEff =  0.9842;       //shms e- trk eff
+    h_trkEff = 0.9862;        //hms had trk eff
+  }
+  if(run==3374){
+    charge_factor = 50.705;   //BCM4A (in mC)
+    e_trkEff =  0.9833;       //shms e- trk eff
+    h_trkEff = 0.9883;        //hms had trk eff
+  }
+  if(run==3376){
+    charge_factor = 2.361;   //BCM4A (in mC)
+    e_trkEff =  0.9800;       //shms e- trk eff
+    h_trkEff = 0.987;        //hms had trk eff
+  }
+  if(run==3377){
+    charge_factor = 40.074;   //BCM4A (in mC)
+    e_trkEff =  0.9814;       //shms e- trk eff
+    h_trkEff = 0.9885;        //hms had trk eff
+  }
   //Read SIMC ROOTfiles
-  TString filename = Form("../../worksim_voli/D2_heep_%d.root",run);                                 
+  TString filename = Form("../../worksim_voli/D2_pCorr/D2_heep_%d.root",run);                                 
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *SNT = (TTree*)data_file->Get("SNT");
  
@@ -22,6 +51,7 @@ void checkW_simc(int run)
  
 //Kinematics Quantities
 TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
+TH1F *Emiss_v2 = new TH1F("Emissv2","missing energy v2", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV   
 TH1F *pm = new TH1F("pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
 TH1F *Q_2 = new TH1F("Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
 TH1F *omega = new TH1F("omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
@@ -282,6 +312,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   Float_t  h_Thf;
   Float_t  Ein_v;
   
+
   //Define SIMC TTree Variables
   SNT->SetBranchAddress("Normfac", &Normfac);
   SNT->SetBranchAddress("h_delta", &h_delta);
@@ -355,6 +386,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   
   
   //Define Additional Kinematic Variables
+  Double_t Eb = 10.6005;  //GeV Beam Energy
   Double_t W2;             //Invarianrt Mass Squared
   Double_t X;              //B-jorken X
   Double_t Pf;             //Final Proton Momentum 
@@ -363,14 +395,11 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   Double_t Ep;             //proton final energy
   Double_t Ee;             //electron final energy
   Double_t th_q;         //Angle between q-vector and beamline (+z axis --lab)
-  
+  Double_t Em_v2;
 
   //Determine Full Weight Quantities (Assume one for heep check)
   Double_t FullWeight;
-  Double_t charge_factor = 1.;       //Units: mC   :: beam_current(uA) * time (hrs) * 3600. / 1000.  3600--> hrs to sec,  1000--> uC to mC
-  Double_t e_trkEff = 1.;
-  Double_t h_trkEff = 1.;           
-  Double_t c_LT = 1.;
+
 
 
   //Define Boolean for Kin. Cuts
@@ -394,20 +423,34 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     //-----Define Additional Kinematic Variables--------
     Ein = Ein / 1000.;
     W2 = W*W;
+    ki = sqrt(Eb*Eb - me*me);                                                                                                
+    kf = Q2 / (4.*ki*pow(sin(theta_e/2.), 2)); 
+    Pf = sqrt(pow(nu+MP,2) - MP*MP);                                                                 
+    Ep = sqrt(MP*MP + Pf*Pf);                                                                                           
     X = Q2 / (2.*MP*nu);
-    Pf = sqrt(pow(nu+MP,2) - MP*MP);
-    Ep = sqrt(MP*MP + Pf*Pf);
-    ki = sqrt(Ein*Ein - me*me);
-    kf = Q2 / (4.*ki*pow(sin(theta_e/2.), 2));
+    Pf = sqrt(pow((Eb-kf)+MP,2) - MP*MP);
     Ee = sqrt(me*me + kf*kf);
     th_q = acos( (ki - kf*cos(theta_e))/q ); //th_q = theta_pq + theta_p;
-
+    //  Em_v2 = nu + MP - Ep;
+    //cout << "Ein = " << Ein << endl;
+    
+  
     //Define cuts
     c_Em = Em < 0.03;
     
     //Full Weight
     FullWeight = (Normfac*Weight*charge_factor*e_trkEff*h_trkEff*c_LT)/nentries;
-    
+
+    cout << "Full Weight = " << FullWeight << endl;
+    cout << "Normfac = " << Normfac << endl;
+    cout << "Weight = " << Weight << endl;
+    cout << "Charge Factor = " << charge_factor << endl;
+    cout << "e_trkEff = " << e_trkEff << endl;
+    cout << "h_trkEff = " << h_trkEff << endl;
+    cout << "CLT = " << c_LT << endl;
+    cout << "nentries = " << nentries << endl;
+
+
     //APPLY CUTS: BEGIN CUTS LOOP
       if (c_Em)
 	{
@@ -501,6 +544,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       
       //Kinematics
       Emiss->Fill(Em, FullWeight);
+      Emiss_v2->Fill(Em_v2, FullWeight);
       pm->Fill(Pm, FullWeight);
       Q_2->Fill(Q2, FullWeight);
       omega->Fill(nu, FullWeight);

@@ -33,7 +33,7 @@ void set_cuts(int run,Int_t flag=0) {
   gStyle->SetPadLeftMargin(0.14);
   
   //Read input ROOTfile containing Histogram Objects
-  TString ifilename = Form("data_uncorr/SHMS_heepDATA_histos_%d.root", run);
+  TString ifilename = Form("SHMS_heepDATA_histos_%d.root", run);
   TFile *fInput;
   fInput = new TFile(ifilename);
 

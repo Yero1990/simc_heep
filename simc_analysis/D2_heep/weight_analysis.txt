@@ -1,0 +1,44 @@
+3288:
+Full Weight = 3.52151
+Normfac = 2.46044e+06
+Weight = 0.000997091
+Charge Factor = 147.648
+e_trkEff = 0.9856
+h_trkEff = 0.9864
+CLT = 1
+
+3371:
+Full Weight = 0.16384
+Normfac = 2.46044e+06
+Weight = 0.000136683
+Charge Factor = 50.193
+e_trkEff = 0.9842
+h_trkEff = 0.9862
+CLT = 1
+
+3374:
+Full Weight = 5.45121
+Normfac = 2.46044e+06
+Weight = 0.00449629
+Charge Factor = 50.705
+e_trkEff = 0.9833
+h_trkEff = 0.9883
+CLT = 1
+
+3376:
+Full Weight = 0.607599
+Normfac = 2.46044e+06
+Weight = 0.0108135
+Charge Factor = 2.361
+e_trkEff = 0.98
+h_trkEff = 0.987
+CLT = 1
+
+3377:
+Full Weight = 21.9075
+Normfac = 2.46044e+06
+Weight = 0.0229032
+Charge Factor = 40.074
+e_trkEff = 0.9814
+h_trkEff = 0.9885
+CLT = 1

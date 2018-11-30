@@ -17,7 +17,8 @@ dP =  [P_calc - P_meas] / P_meas, |  where P_calc = Eb + Mp - Ep,  Ep = sqrt(Mp^
 
 (NOTE that P_calc and P_meas are esentially the same as delta_calc and delta_meas. For optics studies, usually, delta is preferred.)
 
-** The dP will be a distribution centered near zero, which can then be fitted, to determine the mean, and its error. (Assuming there are no distortions correlations with  respect to focal plane variables)
+** The dP will be a distribution centered near zero, which can then be fitted, to determine the mean, and its error. (Assuming there are no distortions correlations with  
+respect to focal plane variables)
                                                                                                                      
 Similarly to the HMS case, since the calculated momentum has no dependence on delta, by taking the difference [P_calculated - P_meas.]/P_meas, one 
 is able to gauge by how much is the measured momentum off from the calculated momentum, due to delta. For SIMC, this difference was found to be
@@ -27,3 +28,5 @@ to remove these correlations first, then check whether the dP agress with SIMC t
 does not agree, then we can do the same procedure as HMS, and apply a correction.
 
 The SHMS optics studies for D2 H(e,e'p) elastics is done in the /SHMS_Optics directory
+The delta optimization if done here as well, where the matrix delta coefficients are
+determined, and put in the matrix files for SHMS.

@@ -16,7 +16,8 @@ void calc_hProt_PDiff()
   gROOT->SetBatch(kTRUE);
   gStyle->SetOptFit();
 
-  
+  TObjArray data_HList[5]; 
+
 
   //Define some constants
   Double_t Mp = 0.938272;  //proton mass
@@ -93,8 +94,11 @@ void calc_hProt_PDiff()
   int index = 0;
 
   //Loop over all kinematic groups
-  for(int i = 0; i<5; i++)
+  for(int i = 1; i<5; i++)
     {
+
+
+
       string filename = Form("../../../worksim_voli/D2_heep_%d.root", run_num[i]);                                   
       TFile *f1 = new TFile(filename.c_str());                                                                           
 
@@ -149,7 +153,7 @@ void calc_hProt_PDiff()
 
       //-----------LOOP OVER ALL ENTRIES IN TREE-----------------------
       //Loop over all entries
-      for(int i=0; i<T->GetEntries(); i++){
+      for(int i=0; i<50000; i++){
 	
 	T->GetEntry(i);
 	
@@ -290,6 +294,7 @@ void calc_hProt_PDiff()
   Double_t emiss;
   Double_t hdelta;
 
+  Double_t hreact_y;
   Double_t hxfp, hxpfp, hyfp, hypfp;
 
 
@@ -306,6 +311,8 @@ void calc_hProt_PDiff()
   TH2F *histhPDev_xpfp[5];  
   TH2F *histhPDev_yfp[5]; 
   TH2F *histhPDev_ypfp[5]; 
+ 
+  TH2F *histhPDev_reacty[5]; 
 
   Double_t data_xRes_arr[5];
   Double_t data_yRes_arr[5];
@@ -329,7 +336,11 @@ void calc_hProt_PDiff()
   int run[5] = {3288, 3371, 3374, 3376, 3377};
   //Loop over runs
     for(int irun=0; irun<5; irun++)
-      {                                                                                     
+      {          
+
+	data_HList[irun](0);
+
+                                                                           
 	//Open TFile
 	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[irun]);
 	TFile *f1 = new TFile(filename.c_str());
@@ -350,6 +361,8 @@ void calc_hProt_PDiff()
 	T->SetBranchAddress(n_hyfp, &hyfp);
 	T->SetBranchAddress(n_hypfp, &hypfp);
 
+	T->SetBranchAddress("H.react.y", &hreact_y);
+
 	//hist[index][0] = new TH1F(Form("calc_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4); 
 	histData_hPcalc[index] =  new TH1F(Form("calc_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4);
 
@@ -366,7 +379,14 @@ void calc_hProt_PDiff()
 	histhPDev_xpfp[index] = new TH2F(Form("hPDiff_vs_xpfp: Run %d", run_num[index]), "", 100, -0.06, 0.06, 80, -0.05, 0.05); 
 	histhPDev_yfp[index] = new TH2F(Form("hPDiff_vs_yfp: Run %d", run_num[index]), "", 100, -10, 30, 80, -0.05, 0.05);        
 	histhPDev_ypfp[index] = new TH2F(Form("hPDiff_vs_ypfp: Run %d", run_num[index]), "", 100, -0.02, 0.04, 80, -0.05, 0.05);  
+
+
+	histhPDev_reacty[index] = new TH2F(Form("hPDiff_vs_hreacty: Run %d", run_num[index]), "", 100, -.5, .5, 80, -0.05, 0.05);
 	
+
+	data_HList[irun].Add(histhPDev_reacty[index]);
+
+
 	histhPDev_xfp[index]->GetXaxis()->SetTitle("HMS X_{fp}");
 	histhPDev_xfp[index]->GetYaxis()->SetTitle("HMS [P_{calc} - P_{meas}] / P_{meas}");   
 	
@@ -385,7 +405,7 @@ void calc_hProt_PDiff()
       
       //-----------LOOP OVER ALL ENTRIES IN TREE-----------------------
       //Loop over all entries
-      for(int i=0; i<T->GetEntries(); i++){
+      for(int i=0; i<50000; i++){
 
 	T->GetEntry(i);
 
@@ -418,6 +438,7 @@ void calc_hProt_PDiff()
 	    histhPDev_yfp[index]->Fill(hyfp, (hmsP_calc - hms_Pmeas)/ hms_Pmeas);
 	    histhPDev_ypfp[index]->Fill(hypfp, (hmsP_calc - hms_Pmeas)/ hms_Pmeas); 
 
+	    histhPDev_reacty[index]->Fill(hreact_y, (hmsP_calc - hms_Pmeas)/ hms_Pmeas);
 
 	  }
 	histData_Em[index]->Fill(emiss);   //FIlling Missing Energy Histogram
@@ -470,7 +491,11 @@ void calc_hProt_PDiff()
       data_yRes_arr[index] = mu_Res_fit;          //mean fit fractional deviation from meas. momentum
       data_yRes_arr_err[index] =  mu_Res_err_fit;    //error from mean fit
 
-     
+       //Write Histograms to a ROOTfile
+      TFile *data_outROOT = new TFile(Form("HMS_heepDATA_histos_%d.root", run_num[index]), "recreate");
+      data_HList[irun].Write();
+      data_outROOT->Close();
+
       index++;
 
     } //end loop over runs 

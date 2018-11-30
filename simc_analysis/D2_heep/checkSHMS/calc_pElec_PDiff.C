@@ -28,7 +28,10 @@ void calc_pElec_PDiff()
   //Define some constants
   Double_t Mp = 0.938272;  //proton mass
   Double_t Eb = 10.6005;
-  Double_t eP0[5] = {8.5640277, 8.5640277, 8.5640277, 8.5640277, 8.5640277};  //central spec. momentum
+  //Double_t eP0[5] = {8.5640277, 8.5640277, 8.5640277, 8.5640277, 8.5640277};  //central spec. momentum (UnCorrected SHMS Central Momentum)
+
+  Double_t eP0[5] = {8.554008, 8.562092, 8.559258, 8.560713, 8.560338};  //central spec. momentum (Corrected SHMS Central Momentum --After delta optimization)
+
   Double_t hP0[5] = {2.9221114, 3.46017618, 2.2997660, 1.8827606, 1.8825118};  //central spec. momentum
 
   //Define some variables to be determined inside the entry loop
@@ -133,7 +136,9 @@ void calc_pElec_PDiff()
       //Initialize histo object array
       simc_HList[irun](0);
 
-      string filename = Form("../../../worksim_voli/D2_heep_%d.root", run_num[irun]);                                   
+      //string filename = Form("../../../worksim_voli/D2_pUnCorr/D2_heep_%d.root", run_num[irun]);                                   
+      string filename = Form("../../../worksim_voli/D2_pCorr/D2_heep_%d.root", run_num[irun]);                                   
+
       TFile *f1 = new TFile(filename.c_str());                                                                           
 
       //Get TTree                                                                                                                     
@@ -314,15 +319,8 @@ void calc_pElec_PDiff()
         simc_shmsDelta_cut = e_delta > -10. && e_delta < 22.;                                                                         
         simc_hmsPDiff_cut = TMath::Abs((hmsP_calc - hmsP_meas) ) < 0.02;
 
-	//DEBUG
-	//cout << "theta_p = " << theta_p << endl;
-	//cout << "numerator = " <<  2.*Mp*Eb*(Eb + Mp)*TMath::Cos(theta_p) << endl;
-	//cout << "denominator = " << Mp*Mp + 2.*Mp*Eb + Eb*Eb*TMath::Power(TMath::Sin(theta_p),2) << endl;
-	//cout << "shmsP_calc - shmsP_meas = " << shmsP_calc << " - " << shmsP_meas << " = " << shmsP_calc - shmsP_meas  << endl;
-
-	
 	//Fill Histograms
-	if (Em<0.05 && simc_hmsDelta_cut && simc_shmsDelta_cut && simc_hmsPDiff_cut){
+	if (Em<0.02 && simc_hmsDelta_cut && simc_shmsDelta_cut && simc_hmsPDiff_cut){
 	hist_ePcalc[irun]->Fill(shmsP_calc, FullWeight);      //Fill calculated momentum
 	hist_ePmeas[irun]->Fill(shmsP_meas, FullWeight);      //Fill measure momentum
 	hist_ePDev[irun]->Fill( (shmsP_calc - shmsP_meas)/ shmsP_meas, FullWeight);   //Fill Fractional  Deviation of Calculated from Measured Momentum
@@ -461,12 +459,14 @@ void calc_pElec_PDiff()
  
   //---------------------DATA----------------------------
   
+  //Em cut array
+  Double_t Em_cut_arr[5] = {0.01, 0.03, 0., 0., 0.};
   
  //Define some variables to be determined inside the entry loop
   Double_t htheta_p;     //proton arm angle (event by event)
 
   //Define TTree variables
-  TString n_xangle = "H.kin.secondary.xangle";
+  TString n_xangle = "H.kin.secondary.xangle";        //opening angle between HMS and SHMS
   TString n_theta_e = "P.kin.primary.scat_ang_deg";   //e- scat angle [deg]
   TString n_shmsP_meas = "P.gtr.p";
   TString n_hmsP_meas = "H.gtr.p";                                                                                                  
@@ -559,7 +559,10 @@ void calc_pElec_PDiff()
 
                         
 	//Open TFile
-	string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_uncorr/coin_replay_heep_check_%d_-1.root",run[irun]);
+	//string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_uncorr/coin_replay_heep_check_%d_-1.root",run[irun]);
+	string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pCorr/coin_replay_heep_check_%d_-1.root",run[irun]);
+	//string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pUnCorr/coin_replay_heep_check_%d_-1.root",run[irun]);
+
 	TFile *f1 = new TFile(filename.c_str());
 	
 	//Get TTree
@@ -584,16 +587,9 @@ void calc_pElec_PDiff()
 	T->SetBranchAddress(n_hyfp, &hyfp);
 	T->SetBranchAddress(n_hypfp, &hypfp);
 	
-	//hist[irun][0] = new TH1F(Form("calc_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 7, 10); 
 	histData_hPcalc[irun] = new TH1F(Form("calc_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 7, 10); 
-
-	//hist[irun][1] = new TH1F(Form("meas_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 7, 10);  
 	histData_hPmeas[irun] = new TH1F(Form("meas_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 7, 10); ;
-    
-	//hist[irun][2] = new TH1F(Form("pDiff: Run %d",run[irun]), Form("Run %d: SHMS (P_{calc} - P_{meas})/P_{meas}", run[irun]), 100, -0.01, 0.01);
-	histData_hPDev[irun] = new TH1F(Form("pDiff: Run %d",run[irun]), Form("Run %d: SHMS (P_{calc} - P_{meas})/P_{meas}", run[irun]), 100, -0.01, 0.01);
-
-	//hist[irun][3] = new TH1F(Form("Emiss: Run %d",run[irun]), Form("Run %d: E_{miss}", run[irun]), 100, -0.2, 0.3);
+    	histData_hPDev[irun] = new TH1F(Form("pDiff: Run %d",run[irun]), Form("Run %d: SHMS (P_{calc} - P_{meas})/P_{meas}", run[irun]), 100, -0.01, 0.01);
 	histData_Em[irun] = new TH1F(Form("Emiss: Run %d",run[irun]), Form("Run %d: E_{miss}", run[irun]), 100, -0.2, 0.3);
 	  
 	//HMS hPDiff vs. HMS focal planes 
@@ -726,23 +722,17 @@ void calc_pElec_PDiff()
 	
 
 	//Define some cuts                                                                                                           
-        data_hmsDelta_cut = TMath::Abs(hdelta)<8.0;                                                                                                                                         
+        data_hmsDelta_cut = TMath::Abs(hdelta)<8.0;         
         data_shmsDelta_cut = edelta>-10. && edelta<22.;                                                                      
         data_hmsPdiff_cut = TMath::Abs( (hmsP_calc - hms_Pmeas) ) < 0.02;
 	
-	if(emiss < 0.05 &&  data_hmsDelta_cut && data_shmsDelta_cut &&  data_hmsPdiff_cut)
+	if(emiss < 0.03 &&  data_hmsDelta_cut && data_shmsDelta_cut &&  data_hmsPdiff_cut)
 	  {
 
 
 	    //Fill Histograms
-	    
-	    //hist[irun][0]->Fill(shmsP_calc);  //calculated momentum from formula (function of htheta_p and Ebeam)
 	    histData_hPcalc[irun]->Fill(shmsP_calc);
-
-	    //hist[irun][1]->Fill(shms_Pmeas);  //measured momentum H.gtr.p
 	    histData_hPmeas[irun]->Fill(shms_Pmeas);
-
-	    //hist[irun][2]->Fill((shmsP_calc - shms_Pmeas) / shms_Pmeas);  //SHMS (Calculated - Measured)/Measured Momentum (fractonal deviation from measured)
 	    histData_hPDev[irun]->Fill((shmsP_calc - shms_Pmeas) / shms_Pmeas);
 
 	    histhPDev_hxfp[irun]->Fill(hxfp, (hmsP_calc - hms_Pmeas)/ hms_Pmeas);
@@ -770,30 +760,21 @@ void calc_pElec_PDiff()
       //---------END ENTRY LOOP ---------------------------------------
       //DRaw HIstograms
       c0->cd(irun+1);
-      //hist[irun][3]->Draw();
       histData_Em[irun]->Draw();
       
       c1->cd(irun+1);
-      //hist[irun][0]->Draw();
       histData_hPcalc[irun]->Draw();
-      //hist[irun][0]->SetLineColor(kRed);
       histData_hPcalc[irun]->SetLineColor(kRed);
-      //hist[irun][1]->Draw("sames");
       histData_hPmeas[irun]->Draw("sames");
 
-
-      //Get max bin value/sigma from momentum difference histo to use as fit parameters
-      //int bin_max = hist[irun][2]->GetMaximumBin();
-      //Double_t xmax_val = hist[irun][2]->GetXaxis()->GetBinCenter(bin_max); 
-      //Double_t sig_Res = hist[irun][2]->GetStdDev();
       
       int bin_max = histData_hPDev[irun]->GetMaximumBin();
       Double_t xmax_val = histData_hPDev[irun]->GetXaxis()->GetBinCenter(bin_max); 
       Double_t sig_Res = histData_hPDev[irun]->GetStdDev();
       
       c2->cd(irun+1);
-      //hist[irun][2]->Draw();
       histData_hPDev[irun]->Draw();
+
       c4[irun] = new TCanvas(Form("c4, Run %d", run_num[irun]), Form("Fract. Momentum vs. SHMS Focal Plane, Run %d", run_num[irun]), 1500, 1000);       
       c4[irun]->Divide(2,2);  
       c4[irun]->cd(1);
@@ -836,7 +817,6 @@ void calc_pElec_PDiff()
 
 
       TF1 *fit = new TF1("fit", "gaus", xmax_val - sig_Res, xmax_val + sig_Res);
-      //hist[irun][2]->Fit("fit", "R");
       histData_hPDev[irun]->Fit("fit","R");
       
       Double_t mu_Res_fit = fit->GetParameter(1);
