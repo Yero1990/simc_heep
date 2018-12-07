@@ -1,0 +1,29 @@
+**************************
+Study Observed Delta Shift  --December 04, 2018
+**************************
+
+A shift in delta between SIMC and data was observed. The same
+shift was observed for calculated momentum (Eb, theta_p)
+
+From the pCalc_mean value:   data = 2.914,   simc = 2.923,  diff = 9e-3 (9 MeV)
+
+From the derivatives,  dth_p =  dP / (dP / dth_p ).  For dP = 9e-3 GeV
+the variation in proton angle is: dth_p = -0.00122141 radians
+
+STEPTS TAKEN:
+
+** Apply yptar offset in hms_flags.param  (shifter yptar, but NOT delta, as delta does NOT depend on it)
+
+** Comparing Pcalc_data and Pcalc_simc, now they agree, as data shifted towards simc  
+
+** Comparing (Pcalc_data - Pmeas_data)/Pmeas_data, now is further from SIMC, given that only Pcalc_data
+   changed,  so the HMS momentum must be corrected for.
+
+
+To determine the momentum correection factor, look at the plot: DATA_SIMC_hmsP_Diff.pdf
+This plot shows (DATA - SIMC), which tells us by how much data deviates from simc in fraction.
+For example, if (DATA - SIMC) = 0.0031, then DATA calc momentum is 0.31 % larger than it should be, so to compensate, DATA measured momentum should also increase
+So, P_corr = P - 0.0031*P = P*(1 + 0.0031) = P*1.0031
+
+After correcting for the HMS momentum, hYptar and hDelta have better agreement between DATA/SIMC. As a result, data Emiss(hmsP, Eb, E') seems to have shifted 'left' too much. Since the
+HMS is understood now, the shift must be coming from either the beam energy or electron momentum. The problem is that shifting electron momentum, E', will shift W as well, which currently looks OK. Therefore, the shift in E' will need to be compensated with a shift in electron angle, yptar. A derivative dW/dth_e and dW/dE' must be used.

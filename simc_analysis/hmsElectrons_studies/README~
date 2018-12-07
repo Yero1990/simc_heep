@@ -1,0 +1,11 @@
+***********************
+HMS Electrons Studies
+***********************
+
+Brief: This directory contains SIMC macros/plots/root_files relevant to
+the H(e,e'p) studies done on HMS with electrons. The Dec/Spring 2018
+Hall C H-elastics data has beem summarized in a kinematic files, and the
+W peak position determined from a fit. 
+
+The elastics from HMS electrons kinematics file was also simulated in this
+repository. The simulation was with NO rad_corr or energy_loss corrections. 
