@@ -9,7 +9,7 @@
 
 
 #include "TMath.h"
-void fitOptics_v2()
+void fitOptics()
 {
   
   gROOT->SetBatch(kTRUE);
@@ -80,9 +80,12 @@ void fitOptics_v2()
   //Define some constants
   Double_t Mp = 0.938272;  //proton mass
   Double_t Eb = 10.6005;
-  Double_t eP0[5] = {8.5640277, 8.5640277, 8.5640277, 8.5640277, 8.5640277};  //central spec. momentum
-  Double_t hP0[5] = {2.9221114, 3.46017618, 2.2997660, 1.8827606, 1.8825118};  //central spec. momentum
-  
+  //Double_t eP0[5] = {8.5640277, 8.5640277, 8.5640277, 8.5640277, 8.5640277};  //central spec. momentum
+  //Double_t hP0[5] = {2.9221114, 3.46017618, 2.2997660, 1.8827606, 1.8825118};  //central spec. momentum
+    
+  Double_t eP0[5] = {8.525027, 8.525232, 8.528170, 8.529253, 8.528954};   //central spec momentum (Used for Emiss Correction)
+  Double_t hP0[5] = {2.931170, 3.4709027, 2.3068953, 1.8885972, 1.8883477};    //central spec momentum (Momentum COrrection after hYptar Offset --3288 for now ONLY) 
+
   
   
   int run[5] = {3288, 3371, 3374, 3376, 3377};
@@ -187,7 +190,7 @@ void fitOptics_v2()
       //----------SET THE Focal Plane Graphical CUTS per Run ---------------
       
       //Read in the cuts file produced by set_cut.C
-      TString cutfilename=Form("data_uncorr/SHMS_heepDATA_histos_%d_cut.root",run[irun]);
+      TString cutfilename=Form("delta_ReOptimize/SHMS_heepDATA_histos_%d_cut.root",run[irun]);
       TFile fCut_file(cutfilename);
       
       xfp_cut[irun] = (TCutG*)gROOT->FindObject(Form("eDelta_vs_xfp_cut: Run %d",run[irun]));
@@ -368,7 +371,7 @@ void fitOptics_v2()
 
 	
 	//Apply kinematic cuts
-	if(emiss < Em_cut_arr[irun] &&  hmsPdiff_cut && hmsDelta_cut && shmsDelta_cut)
+	if(emiss < 0.05 &&  hmsPdiff_cut && hmsDelta_cut && shmsDelta_cut)
 	  {
 	    
 	    //Apply Graphical Cuts on SHMS Focal Plane
@@ -775,7 +778,7 @@ void fitOptics_v2()
 		fitFunc[irun] = D[0] + D[1]*exfp_m + D[2]*expfp + D[3]*eyfp_m + D[4]*eypfp + D[5]*exfp_m*expfp + D[6]*exfp_m*eyfp_m + D[7]*exfp_m*eypfp + D[8]*expfp*eyfp_m + D[9]*expfp*eypfp + D[10]*eyfp_m*eypfp +
 		  D[11]*exfp_m*exfp_m + D[12]*expfp*expfp + D[13]*eyfp_m*eyfp_m + D[14]*eypfp*eypfp;   // <----Quadratic Fit Terms
 		
-		cout << "fitFunc = " << fitFunc[irun] << endl;
+		//cout << "fitFunc = " << fitFunc[irun] << endl;
 		
 		//Fill Histograms Fit Functions
 		hist_fit_xfp[irun]->Fill(exfp, fitFunc[irun]);

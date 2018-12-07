@@ -14,7 +14,7 @@ void checkW_simc(int run)
   Double_t c_LT = 1.;
  
   if(run==3288){
-    charge_factor = 147.648;   //BCM4A
+    charge_factor =147.648;   //BCM4A
     e_trkEff =  0.9856;       //shms e- trk eff
     h_trkEff = 0.9864;        //hms had trk eff
   }
@@ -39,7 +39,11 @@ void checkW_simc(int run)
     h_trkEff = 0.9885;        //hms had trk eff
   }
   //Read SIMC ROOTfiles
-  TString filename = Form("../../worksim_voli/D2_pCorr/D2_heep_%d.root",run);                                 
+  //TString filename = Form("../../worksim_voli/D2_pCorr/D2_heep_%d.root",run);                                 
+  //   TString filename = Form("../../worksim_voli/D2_heep_%d_noOffset.root",run);                                 
+  TString filename = Form("../../worksim_voli/D2_heep_%d.root",run);                                 
+
+
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *SNT = (TTree*)data_file->Get("SNT");
  
@@ -65,6 +69,8 @@ TH1F *xbj = new TH1F("xbj", "x-Bjorken", xbj_nbins, xbj_xmin, xbj_xmax);
 TH1F *P_f = new TH1F("P_f", "Final Proton Momentum", Pf_nbins, Pf_xmin, Pf_xmax);
 TH1F *k_f = new TH1F("kf", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
 TH1F *theta_q = new TH1F("theta_q", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+TH1F *thet_pq = new TH1F("theta_pq", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
+TH1F *thet_pq_v2 = new TH1F("theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 
 
 //Target Reconstruction Variables
@@ -172,6 +178,8 @@ TH1F *cut_xbj = new TH1F("cut_xbj", "x-Bjorken", xbj_nbins, xbj_xmin, xbj_xmax);
 TH1F *cut_P_f = new TH1F("cut_P_f", "Final Proton Momentum", Pf_nbins, Pf_xmin, Pf_xmax);
 TH1F *cut_k_f = new TH1F("cut_kf", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
 TH1F *cut_theta_q = new TH1F("cut_theta_q", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+TH1F *cut_thet_pq = new TH1F("cut_theta_pq", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
+TH1F *cut_thet_pq_v2 = new TH1F("cut_theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 
 
 //Target Reconstruction Variables
@@ -395,7 +403,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   Double_t Ep;             //proton final energy
   Double_t Ee;             //electron final energy
   Double_t th_q;         //Angle between q-vector and beamline (+z axis --lab)
-  Double_t Em_v2;
+  Double_t th_pq;          //version 2 of theta_pq
 
   //Determine Full Weight Quantities (Assume one for heep check)
   Double_t FullWeight;
@@ -411,7 +419,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 
   Long64_t nentries = SNT->GetEntries();
   
-  cout << "nentries = " << nentries << endl;
+  //cout << "nentries = " << nentries << endl;
   
   
 
@@ -423,24 +431,23 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     //-----Define Additional Kinematic Variables--------
     Ein = Ein / 1000.;
     W2 = W*W;
-    ki = sqrt(Eb*Eb - me*me);                                                                                                
+    ki = sqrt(Ein*Ein - me*me);                                                                                                
     kf = Q2 / (4.*ki*pow(sin(theta_e/2.), 2)); 
     Pf = sqrt(pow(nu+MP,2) - MP*MP);                                                                 
     Ep = sqrt(MP*MP + Pf*Pf);                                                                                           
     X = Q2 / (2.*MP*nu);
-    Pf = sqrt(pow((Eb-kf)+MP,2) - MP*MP);
     Ee = sqrt(me*me + kf*kf);
-    th_q = acos( (ki - kf*cos(theta_e))/q ); //th_q = theta_pq + theta_p;
-    //  Em_v2 = nu + MP - Ep;
-    //cout << "Ein = " << Ein << endl;
+    th_q = acos( (ki - kf*cos(theta_e))/q ); //th_q = theta_p + theta_pq;
     
+    th_pq =  th_q - theta_p;
+ 
   
     //Define cuts
     c_Em = Em < 0.03;
-    
+    if(run==3371){c_Em = Em < 0.02;}
     //Full Weight
     FullWeight = (Normfac*Weight*charge_factor*e_trkEff*h_trkEff*c_LT)/nentries;
-
+    /*
     cout << "Full Weight = " << FullWeight << endl;
     cout << "Normfac = " << Normfac << endl;
     cout << "Weight = " << Weight << endl;
@@ -449,7 +456,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     cout << "h_trkEff = " << h_trkEff << endl;
     cout << "CLT = " << c_LT << endl;
     cout << "nentries = " << nentries << endl;
-
+    */
 
     //APPLY CUTS: BEGIN CUTS LOOP
       if (c_Em)
@@ -470,7 +477,10 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 	  cut_P_f->Fill(Pf, FullWeight);
 	  cut_k_f->Fill(kf, FullWeight);
 	  cut_theta_q->Fill(th_q/dtr, FullWeight);
-		  
+	  
+	  cut_thet_pq->Fill(theta_pq/dtr, FullWeight);
+	  cut_thet_pq_v2->Fill(th_pq/dtr, FullWeight);
+
 	  //Reconstructed Target Quantities (Lab Frame)
 	  cut_x_tar->Fill(tar_x, FullWeight);
 	  cut_y_tar->Fill(tar_y, FullWeight);
@@ -544,7 +554,6 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       
       //Kinematics
       Emiss->Fill(Em, FullWeight);
-      Emiss_v2->Fill(Em_v2, FullWeight);
       pm->Fill(Pm, FullWeight);
       Q_2->Fill(Q2, FullWeight);
       omega->Fill(nu, FullWeight);
@@ -559,7 +568,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       P_f->Fill(Pf, FullWeight);
       k_f->Fill(kf, FullWeight);
       theta_q->Fill(th_q/dtr, FullWeight);
-
+      thet_pq->Fill(theta_pq/dtr, FullWeight);
+      thet_pq_v2->Fill(th_pq/dtr, FullWeight);
       
       //Reconstructed Target Quantities (Lab Frame)
       x_tar->Fill(tar_x, FullWeight);

@@ -22,9 +22,9 @@
      dEbeam  =  0.05                                   !  beam energy variation (%)
      electron_arm  =  5                                !  1=hms,2=sos,3=hrsr,4=hrsl,5=shms
      hadron_arm  =  1                                  !  1=hms,2=sos,3=hrsr,4=hrsl,5=shms
-     spec%e%P  =   8559.258                   !  e arm central momentum (MeV/c)
+     spec%e%P  =   8526.643                   !  e arm central momentum (MeV/c)
      spec%e%theta  =  9.928                 !  e arm angle setting (degrees)
-     spec%p%P  =     2299.7660                !  p arm central momentum (MeV/c)
+     spec%p%P  =     2306.8953                !  p arm central momentum (MeV/c)
      spec%p%theta  =     42.9                !  p arm angle setting (degrees)
 / 
 

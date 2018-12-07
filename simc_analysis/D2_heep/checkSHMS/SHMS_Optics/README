@@ -56,9 +56,13 @@ used, then, the file would look like:
 0.00000000       0.00000000     0.00000000        0.84346399 01000
 0.00000000       0.00000000     0.00000000       -0.27153399 00100
 0.00000000       0.00000000     0.00000000       1.367153399 00010
+0.00000000       0.00000000     0.00000000       0.347153399 11000  ---> cross term xfp * xpfp
+0.00000000       0.00000000     0.00000000      -0.715003399 20000   ---> second order terms (xfp)^2 
+
 
 delta = D0 + D1*xfp + D2*xpfp + D3*yfp + D4*ypfp,   where D0 = 0.667153399, and so on . . .
 
 There may even be cross terms, like 11000, which represents ----> Coefficient * xfp * xpfp, for example, since the focal plane variables
 can be correlated within themselves. 
+
 

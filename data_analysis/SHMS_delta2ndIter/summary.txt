@@ -1,0 +1,28 @@
+***************************
+SHMS Delta Re-Optimization
+***************************
+
+A momentum correction was found from optimization, as the 00000 term in the matrix.
+In the befor / after directories are the SIMC/DATA comparisons without / with this
+momentum correction applied both to data and simc.
+
+The correction was: E'corr = E'* 0.999548 for all heep runs  (This really did not work, so it was taken out.)
+
+**Next, the eYptar correction was determined to be +1e-4 by educated guess from looking at the eYptar DATA/SIMC comparisons. The
+difficulty here was that, a shift observed in W could have come from eYptar of delta. So taking a derivative dW/dth_e would not work, 
+since it assumes the other two variable (delta and beam energy) are constant. One has to first trust the delta, by making sure SIMC/data agrees.
+
+
+Table of dW variations observed, after eYptar was fixed. (This assumes the variations are only coming from shms delta)
+
+dW = W_simc - W_data
+dE' = -E' / Eb * dW
+E'corr =  E' + dE' = E' (1 - dW / Eb), where Eb = 10.6005
+
+Run     E'          W_simc    W_data    dW           corr_factor    E'corr
+3288    8.525027    0.9435    0.9379    5.6e-3       0.999472
+3371    8.525232    0.9427    0.9441   -1.4e-3       1.000132
+3374    8.528170    0.9428    0.9409    1.9e-3       0.999821
+3376	8.529253    0.9419    0.9418    1.0e-4       0.999991
+3377	8.528954    0.9422    0.9415    7.0e-4       0.999934
+ 

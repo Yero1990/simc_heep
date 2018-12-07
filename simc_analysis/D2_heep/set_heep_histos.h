@@ -15,7 +15,7 @@ static const Double_t dtr = pi/180.;
 static const Double_t MP = 0.938272; //GeV
 static const Double_t MD = 1.87561; //GeV
 static const Double_t MN = 0.939566; //GeV
-static const Double_t me = 0.000510998;
+static const Double_t me = 0.00051099;
 
 //Units in GeV, degrees
 
@@ -49,8 +49,8 @@ Double_t om_nbins = nbins;
 
 //W_inv
 Double_t W_nbins = nbins;
-Double_t W_xmin = 0.7;
-Double_t W_xmax = 1.2;
+Double_t W_xmin = 0.85;
+Double_t W_xmax = 1.05;
 
 //theta_elec
 Double_t the_nbins = nbins;
@@ -87,6 +87,11 @@ Double_t kf_nbins = nbins;
 Double_t thq_nbins = nbins;
 //Double_t thq_xmin = 30.;
 //Double_t thq_xmax = 50.;
+
+//th_pq
+Double_t thpq_nbins = nbins;
+Double_t thpq_xmin = -1.;
+Double_t thpq_xmax = 1.;
 
 
 
@@ -150,8 +155,8 @@ Double_t exptar_xmin = -0.1;
 Double_t exptar_xmax = 0.1;
 
 Double_t eyptar_nbins = nbins;
-Double_t eyptar_xmin = -0.1;
-Double_t eyptar_xmax = 0.1;
+Double_t eyptar_xmin = -0.03;
+Double_t eyptar_xmax = 0.03;
 
 
 Double_t edelta_nbins = nbins;
@@ -164,7 +169,7 @@ Double_t expfp_nbins = nbins;
 Double_t eypfp_nbins = nbins;
 
 
-/*
+
 //Run 3288
 Double_t exfp_xmin = -15.;
 Double_t exfp_xmax = 10.;
@@ -178,7 +183,7 @@ Double_t expfp_xmax = 0.04;
 Double_t eypfp_xmin = -0.03;
 Double_t eypfp_xmax = 0.03;
 
-Double_t edelta_xmin = -15.;
+Double_t edelta_xmin = -6.;
 Double_t edelta_xmax = 3.;
 
 Double_t Q2_xmin = 2.5;
@@ -195,7 +200,7 @@ Double_t kf_xmax = 9;
 
 Double_t thq_xmin = 32.;
 Double_t thq_xmax = 42.;
-*/
+
 
 /*
 //Run 3371
@@ -211,7 +216,7 @@ Double_t expfp_xmax = 0.02;
 Double_t eypfp_xmin = -0.04;
 Double_t eypfp_xmax = 0.03;
 
-Double_t edelta_xmin = -15.;
+Double_t edelta_xmin = -12.;
 Double_t edelta_xmax = -3.;
 
 Double_t kf_xmin = 7;
@@ -244,8 +249,8 @@ Double_t expfp_xmax = 0.04;
 Double_t eypfp_xmin = -0.02;
 Double_t eypfp_xmax = 0.02;
 
-Double_t edelta_xmin = 0.;
-Double_t edelta_xmax = 10.;
+Double_t edelta_xmin = 3.;
+Double_t edelta_xmax = 9.;
 
 Double_t kf_xmin = 8;
 Double_t kf_xmax = 9.5;
@@ -263,7 +268,7 @@ Double_t thq_xmin = 38.;
 Double_t thq_xmax = 45.5;
 */
 
-
+/*
 //Run: 3376/3377
 Double_t exfp_xmin = 10.;
 Double_t exfp_xmax = 25.;
@@ -277,8 +282,8 @@ Double_t expfp_xmax = 0.05;
 Double_t eypfp_xmin = -0.01;
 Double_t eypfp_xmax = 0.01;
 
-Double_t edelta_xmin = 0.;
-Double_t edelta_xmax = 14.;
+Double_t edelta_xmin = 8.;
+Double_t edelta_xmax = 13.;
 
 Double_t kf_xmin = 9;
 Double_t kf_xmax = 9.7;
@@ -294,7 +299,7 @@ Double_t the_xmax = 10.;
 
 Double_t thq_xmin = 44.;
 Double_t thq_xmax = 52.;
-
+*/
 
 #endif
 

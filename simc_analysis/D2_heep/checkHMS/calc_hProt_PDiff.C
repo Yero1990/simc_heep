@@ -17,13 +17,15 @@ void calc_hProt_PDiff()
   gStyle->SetOptFit();
 
   TObjArray data_HList[5]; 
+  TObjArray simc_HList[5]; 
 
 
   //Define some constants
   Double_t Mp = 0.938272;  //proton mass
   Double_t Eb = 10.6005;
-  Double_t hP0[5] = {2.9221114, 3.46017618, 2.2997660, 1.8827606, 1.8825118};  //central spec. momentum
-
+  //Double_t hP0[5] = {2.922111, 3.46017618, 2.2997660, 1.8827606, 1.8825118};  //central spec. momentum (no momentum Corr. after hYptar Offset)
+  Double_t hP0[5] = {2.931170, 3.4709027, 2.3068953, 1.8885972, 1.8883477};    //central spec momentum (Momentum COrrection after hYptar Offset) 
+ 
   //Define some variables to be determined inside the entry loop
   Double_t hmsP_calc;   //calculated HMS momentum
   Double_t hmsP_meas;   //measured HMS momentum 
@@ -74,7 +76,7 @@ void calc_hProt_PDiff()
   Double_t yRes_arr_err[5];
 
   //Define Canvas to Draw
-  TCanvas *c0_simc = new TCanvas("c0_simc", "MIssing Enrgy", 1500, 100);   
+  TCanvas *c0_simc = new TCanvas("c0_simc", "MIssing Enrgy", 1500, 1000);   
   c0_simc->Divide(3,2);
   TCanvas *c1_simc = new TCanvas("c1_simc", "Calculated/Measured HMS Momentum", 1500, 1000);   
   c1_simc->Divide(3,2);
@@ -94,12 +96,15 @@ void calc_hProt_PDiff()
   int index = 0;
 
   //Loop over all kinematic groups
-  for(int i = 1; i<5; i++)
+  for(int i = 0; i<5; i++)
     {
 
+      simc_HList[i](0);
 
 
+      //string filename = Form("../../../worksim_voli/D2_pCorr/D2_heep_%d.root", run_num[i]);                                   
       string filename = Form("../../../worksim_voli/D2_heep_%d.root", run_num[i]);                                   
+
       TFile *f1 = new TFile(filename.c_str());                                                                           
 
       //Get TTree                                                                                                                     
@@ -126,10 +131,10 @@ void calc_hProt_PDiff()
       T->SetBranchAddress("theta_e", &theta_e);
       T->SetBranchAddress("theta_p", &theta_p);
       
-      hist_hPcalc[index] = new TH1F(Form("hP_calc_Run%d", run_num[index]), "",  100, 1.2, 4);                    
-      hist_hPmeas[index] = new TH1F(Form("hP_meas_Run%d", run_num[index]), "",  100, 1.2, 4);
+      hist_hPcalc[index] = new TH1F(Form("hP_calc_Run%d", run_num[index]), "",  100, 1.5, 4);                    
+      hist_hPmeas[index] = new TH1F(Form("hP_meas_Run%d", run_num[index]), "",  100, 1.5, 4);
       
-      hist_hPDev[index] = new TH1F(Form("hP_Dev_Run%d", run_num[index]), "", 80, -0.05, 0.05);
+      hist_hPDev[index] = new TH1F(Form("hP_Dev_Run%d", run_num[index]), "", 100, -0.05, 0.05);
       hist_Em[index] = new TH1F(Form("h_Em_Run%d", run_num[index]), "", 100, -0.2, 0.3);
 
       hist_hPDev_xfp[index] = new TH2F(Form("hPDiff_vs_xfp: Run %d", run_num[index]), "", 100, -40, 40, 80, -0.05, 0.05);
@@ -148,12 +153,23 @@ void calc_hProt_PDiff()
                   
       hist_hPDev_ypfp[index]->GetXaxis()->SetTitle("HMS Y'_{fp}");                                                         
       hist_hPDev_ypfp[index]->GetYaxis()->SetTitle("HMS [P_{calc} - P_{meas}] / P_{meas}");          
+	
+
+      simc_HList[i].Add(hist_hPcalc[index]);
+      simc_HList[i].Add(hist_hPmeas[index]);
+      simc_HList[i].Add(hist_hPDev[index]);
+      simc_HList[i].Add(hist_Em[index]);
+
+      simc_HList[i].Add(hist_hPDev_xfp[index]);
+      simc_HList[i].Add(hist_hPDev_xpfp[index]);
+      simc_HList[i].Add(hist_hPDev_yfp[index]);
+      simc_HList[i].Add(hist_hPDev_ypfp[index]);
 
 
 
       //-----------LOOP OVER ALL ENTRIES IN TREE-----------------------
       //Loop over all entries
-      for(int i=0; i<50000; i++){
+      for(int i=0; i<T->GetEntries(); i++){
 	
 	T->GetEntry(i);
 	
@@ -234,6 +250,11 @@ void calc_hProt_PDiff()
       yRes_arr_err[index] = mu_Res_err_fit;
            
       cout << "yRes_arr = " << yRes_arr[index] << endl;
+
+      //Write Histograms to a ROOTfile
+      TFile *simc_outROOT = new TFile(Form("HMS_heepSIMC_histos_%d.root", run_num[index]), "recreate");
+      simc_HList[i].Write();
+      simc_outROOT->Close();
 
       index++;
       
@@ -342,7 +363,10 @@ void calc_hProt_PDiff()
 
                                                                            
 	//Open TFile
-	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[irun]);
+	//string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000_poshYptarOffset.root",run[irun]);
+	//string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000_noYptarOffset.root",run[irun]);
+	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000.root",run[irun]);
+
 	TFile *f1 = new TFile(filename.c_str());
 	
 	//Get TTree
@@ -364,13 +388,13 @@ void calc_hProt_PDiff()
 	T->SetBranchAddress("H.react.y", &hreact_y);
 
 	//hist[index][0] = new TH1F(Form("calc_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4); 
-	histData_hPcalc[index] =  new TH1F(Form("calc_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4);
+	histData_hPcalc[index] =  new TH1F(Form("data_Pcalc_Run%d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4);
 
 	//hist[index][1] = new TH1F(Form("meas_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4);  
-	histData_hPmeas[index] = new TH1F(Form("meas_P: Run %d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4);
+	histData_hPmeas[index] = new TH1F(Form("data_Pmeas_Run%d", run[irun]), Form("Run %d",run[irun]), 100, 1.5, 4);
  
 	//hist[index][2] = new TH1F(Form("pDiff: Run %d",run[irun]), Form("Run %d: HMS (P_{calc} - P_{meas})/P_{meas}", run[irun]), 100, -0.05, 0.05);
-	histData_hPDev[index] = new TH1F(Form("pDiff: Run %d",run[irun]), Form("Run %d: HMS (P_{calc} - P_{meas})/P_{meas}", run[irun]), 100, -0.05, 0.05);
+	histData_hPDev[index] = new TH1F(Form("data_pDiff_Run%d",run[irun]), Form("Run %d: HMS (P_{calc} - P_{meas})/P_{meas}", run[irun]), 100, -0.05, 0.05);
 
 	//hist[index][3] = new TH1F(Form("Emiss: Run %d",run[irun]), Form("Run %d: E_{miss}", run[irun]), 100, -0.2, 0.3);
 	histData_Em[index] = new TH1F(Form("Emiss: Run %d",run[irun]), Form("Run %d: E_{miss}", run[irun]), 100, -0.2, 0.3);
@@ -383,6 +407,15 @@ void calc_hProt_PDiff()
 
 	histhPDev_reacty[index] = new TH2F(Form("hPDiff_vs_hreacty: Run %d", run_num[index]), "", 100, -.5, .5, 80, -0.05, 0.05);
 	
+	data_HList[irun].Add(histData_hPcalc[index]);
+	data_HList[irun].Add(histData_hPmeas[index]);
+       	data_HList[irun].Add(histData_hPDev[index]);
+	data_HList[irun].Add(histData_Em[index]);
+
+	data_HList[irun].Add(histhPDev_xfp[index]);
+	data_HList[irun].Add(histhPDev_xpfp[index]);
+	data_HList[irun].Add(histhPDev_yfp[index]);
+	data_HList[irun].Add(histhPDev_ypfp[index]);
 
 	data_HList[irun].Add(histhPDev_reacty[index]);
 
@@ -405,7 +438,7 @@ void calc_hProt_PDiff()
       
       //-----------LOOP OVER ALL ENTRIES IN TREE-----------------------
       //Loop over all entries
-      for(int i=0; i<50000; i++){
+	for(int i=0; i<T->GetEntries(); i++){
 
 	T->GetEntry(i);
 

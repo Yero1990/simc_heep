@@ -11,13 +11,13 @@ void compare_heep(int run)
   //Pre-defined SIMC/data root file names containing histogram object to comapare
   TString simc_filename =  Form("Wcheck_simc_histos_%d.root", run);
   //TString simc_filename =  Form("Weighted_simc_hms_single_%d_gfor.root", runNUM);
-  TString data_filename = Form("Wcheck_data_histos_%d.root",run); 
+  TString data_filename = Form("./Wcheck_data_histos_%d.root",run); 
 
   TString simc_path;
   TString data_path;
   
-  simc_path = "../simc_analysis/D2_heep/pUnCorr/"+simc_filename;
-  data_path = "./" + data_filename;
+  simc_path = "../simc_analysis/D2_heep/" +  simc_filename;
+  data_path = data_filename;
   
   //Open SIMC/data ROOT files;
   TFile *simc_file = new TFile(simc_path);
