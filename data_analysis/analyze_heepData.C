@@ -10,7 +10,7 @@ void analyze_heepData(int run)
   //TString filename =Form("../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pCorr/coin_replay_heep_check_%d_-1.root",run);                                 
   //TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000_noYptarOffset.root",run);        
   //TString filename =Form("../../hallc_replay/ROOTfiles/D2_heep/delta2ndIter/after/noPcorr/coin_replay_heep_check_%d_-1.root",run);        
-  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000.root",run);        
+  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);        
 
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *T = (TTree*)data_file->Get("T");
@@ -36,6 +36,7 @@ void analyze_heepData(int run)
   TH1F *P_f = new TH1F("P_f", "Final Proton Momentum", Pf_nbins, Pf_xmin, Pf_xmax);
   TH1F *k_f = new TH1F("kf", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
   TH1F *theta_q = new TH1F("theta_q", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+  TH1F *q_vec = new TH1F("q", "q-vector, |q|", q_nbins, q_xmin, q_xmax);
   TH1F *thet_pq = new TH1F("theta_pq", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
   TH1F *thet_pq_v2 = new TH1F("theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
   
@@ -145,6 +146,7 @@ void analyze_heepData(int run)
   TH1F *cut_xbj = new TH1F("cut_xbj", "x-Bjorken", xbj_nbins, xbj_xmin, xbj_xmax);
   TH1F *cut_P_f = new TH1F("cut_P_f", "Final Proton Momentum", Pf_nbins, Pf_xmin, Pf_xmax);
   TH1F *cut_k_f = new TH1F("cut_kf", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
+  TH1F *cut_q_vec = new TH1F("cut_q", "q-vector, |q|", q_nbins, q_xmin, q_xmax);
   TH1F *cut_theta_q = new TH1F("cut_theta_q", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
   TH1F *cut_thet_pq = new TH1F("cut_theta_pq", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
   TH1F *cut_thet_pq_v2 = new TH1F("cut_theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
@@ -381,6 +383,7 @@ void analyze_heepData(int run)
 	  cut_P_f->Fill(Pf);
 	  cut_k_f->Fill(kf);
 	  cut_theta_q->Fill(th_q/dtr);
+	  cut_q_vec->Fill(q3m);
 	  cut_thet_pq->Fill(thxq/dtr);
 	  cut_thet_pq_v2->Fill(theta_pq_v2/dtr);
 
@@ -491,6 +494,7 @@ void analyze_heepData(int run)
       P_f->Fill(Pf);
       k_f->Fill(kf);
       theta_q->Fill(th_q/dtr);
+      q_vec->Fill(q3m);
       thet_pq->Fill(thxq/dtr);
       thet_pq_v2->Fill(theta_pq_v2/dtr);
 

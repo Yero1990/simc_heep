@@ -6,37 +6,69 @@ void checkW_simc(int run)
 {
   //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
- 
+
+  //Central Momenta
+  Double_t hP0;
+  Double_t sP0;
 
   Double_t charge_factor;       //Units: mC   :: beam_current(uA) * time (hrs) * 3600. / 1000.  3600--> hrs to sec,  1000--> uC to mC
   Double_t e_trkEff;
   Double_t h_trkEff;           
-  Double_t c_LT = 1.;
+  Double_t c_LT;
  
   if(run==3288){
+
+    hP0 = 2931.170 / 1000.;
+    sP0 = 8520.256 / 1000.;
+    
     charge_factor =147.648;   //BCM4A
     e_trkEff =  0.9856;       //shms e- trk eff
     h_trkEff = 0.9864;        //hms had trk eff
+    c_LT = 0.9814;
+
   }
   if(run==3371){
+
+    hP0 = 3470.903/1000.;
+    sP0 = 8526.358/1000.;
+    
     charge_factor = 50.193;   //BCM4A (in mC)
     e_trkEff =  0.9842;       //shms e- trk eff
     h_trkEff = 0.9862;        //hms had trk eff
+    c_LT = 0.9891;
+
   }
   if(run==3374){
+
+    hP0 = 2306.895 / 1000.;
+    sP0 = 8526.644 / 1000.;
+
     charge_factor = 50.705;   //BCM4A (in mC)
     e_trkEff =  0.9833;       //shms e- trk eff
     h_trkEff = 0.9883;        //hms had trk eff
+    c_LT = 0.937892;
+
+
   }
   if(run==3376){
+
+    hP0 = 1888.598 / 1000. ;
+    sP0 = 8529.176 / 1000.;
+
     charge_factor = 2.361;   //BCM4A (in mC)
     e_trkEff =  0.9800;       //shms e- trk eff
     h_trkEff = 0.987;        //hms had trk eff
+    c_LT = 0.8490;
   }
   if(run==3377){
+
+    hP0 = 1888.348 / 1000.;
+    sP0 = 8528.391 / 1000.;
+
     charge_factor = 40.074;   //BCM4A (in mC)
     e_trkEff =  0.9814;       //shms e- trk eff
     h_trkEff = 0.9885;        //hms had trk eff
+    c_LT = 0.8531;
   }
   //Read SIMC ROOTfiles
   //TString filename = Form("../../worksim_voli/D2_pCorr/D2_heep_%d.root",run);                                 
@@ -55,10 +87,10 @@ void checkW_simc(int run)
  
 //Kinematics Quantities
 TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
-TH1F *Emiss_v2 = new TH1F("Emissv2","missing energy v2", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV   
 TH1F *pm = new TH1F("pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
 TH1F *Q_2 = new TH1F("Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
 TH1F *omega = new TH1F("omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
+TH1F *omega_noEloss = new TH1F("omega_noEloss","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
 TH1F *W_inv = new TH1F("W_inv", "Invariant Mass, W", W_nbins, W_xmin, W_xmax);     //min width = 19.9 MeV (0.0199) (bin width = 25 MeV)
 TH1F *theta_elec = new TH1F("theta_elec", "Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
 TH1F *theta_prot = new TH1F("theta_prot", "Proton Scatt. Angle", thp_nbins, thp_xmin, thp_xmax);
@@ -69,6 +101,8 @@ TH1F *xbj = new TH1F("xbj", "x-Bjorken", xbj_nbins, xbj_xmin, xbj_xmax);
 TH1F *P_f = new TH1F("P_f", "Final Proton Momentum", Pf_nbins, Pf_xmin, Pf_xmax);
 TH1F *k_f = new TH1F("kf", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
 TH1F *theta_q = new TH1F("theta_q", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+TH1F *theta_q_v2 = new TH1F("theta_q_v2", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+TH1F *q_vec = new TH1F("q", "q-vector, |q|", q_nbins, q_xmin, q_xmax);
 TH1F *thet_pq = new TH1F("theta_pq", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 TH1F *thet_pq_v2 = new TH1F("theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 
@@ -168,6 +202,7 @@ TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", Em_nbins, Em_xmin, Em_x
 TH1F *cut_pm = new TH1F("cut_pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
 TH1F *cut_Q_2 = new TH1F("cut_Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
 TH1F *cut_omega = new TH1F("cut_omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
+TH1F *cut_omega_noEloss = new TH1F("cut_omega_noEloss","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
 TH1F *cut_W_inv = new TH1F("cut_W_inv", "Invariant Mass, W", W_nbins, W_xmin, W_xmax);     //min width = 19.9 MeV (0.0199) (bin width = 25 MeV)
 TH1F *cut_theta_elec = new TH1F("cut_theta_elec", "Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
 TH1F *cut_theta_prot = new TH1F("cut_theta_prot", "Proton Scatt. Angle", thp_nbins, thp_xmin, thp_xmax);
@@ -177,7 +212,9 @@ TH1F *cut_W_2 = new TH1F("cut_W2", "Invariant Mass W2", W2_nbins, W2_xmin, W2_xm
 TH1F *cut_xbj = new TH1F("cut_xbj", "x-Bjorken", xbj_nbins, xbj_xmin, xbj_xmax);
 TH1F *cut_P_f = new TH1F("cut_P_f", "Final Proton Momentum", Pf_nbins, Pf_xmin, Pf_xmax);
 TH1F *cut_k_f = new TH1F("cut_kf", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
+TH1F *cut_q_vec = new TH1F("cut_q", "q-vector, |q|", q_nbins, q_xmin, q_xmax);
 TH1F *cut_theta_q = new TH1F("cut_theta_q", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+TH1F *cut_theta_q_v2 = new TH1F("cut_theta_q_v2", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
 TH1F *cut_thet_pq = new TH1F("cut_theta_pq", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 TH1F *cut_thet_pq_v2 = new TH1F("cut_theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 
@@ -395,6 +432,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   
   //Define Additional Kinematic Variables
   Double_t Eb = 10.6005;  //GeV Beam Energy
+  Double_t nu_noEloss;     //Energy transfer (no Eloss)
   Double_t W2;             //Invarianrt Mass Squared
   Double_t X;              //B-jorken X
   Double_t Pf;             //Final Proton Momentum 
@@ -403,6 +441,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   Double_t Ep;             //proton final energy
   Double_t Ee;             //electron final energy
   Double_t th_q;         //Angle between q-vector and beamline (+z axis --lab)
+  Double_t th_qv2;
   Double_t th_pq;          //version 2 of theta_pq
 
   //Determine Full Weight Quantities (Assume one for heep check)
@@ -429,16 +468,20 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 
     
     //-----Define Additional Kinematic Variables--------
-    Ein = Ein / 1000.;
+    Ein = Ein / 1000.;   //This beam energy has Eloss, therefore, it is slightly smaller than 10.6005 (10.5992)
     W2 = W*W;
-    ki = sqrt(Ein*Ein - me*me);                                                                                                
-    kf = Q2 / (4.*ki*pow(sin(theta_e/2.), 2)); 
-    Pf = sqrt(pow(nu+MP,2) - MP*MP);                                                                 
-    Ep = sqrt(MP*MP + Pf*Pf);                                                                                           
-    X = Q2 / (2.*MP*nu);
+    ki = sqrt(Ein*Ein - me*me);    //use beam energy without Eloss corrections, as they are NOT done in data as well                       
+    //kf = Q2 / (4.*ki*pow(sin(theta_e/2.), 2)); 
+    kf = sP0*(1. + e_delta/100.);
     Ee = sqrt(me*me + kf*kf);
+    nu_noEloss = Eb - Ee;
+    //Pf = sqrt(pow(nu_noEloss+MP,2) - MP*MP);                                                                 
+    Pf = hP0*(1. + h_delta/100.);
+
+    Ep = sqrt(MP*MP + Pf*Pf);                                               
+    X = Q2 / (2.*MP*nu);
     th_q = acos( (ki - kf*cos(theta_e))/q ); //th_q = theta_p + theta_pq;
-    
+    th_qv2 = theta_p - theta_pq;
     th_pq =  th_q - theta_p;
  
   
@@ -466,6 +509,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 	  cut_pm->Fill(Pm, FullWeight);
 	  cut_Q_2->Fill(Q2, FullWeight);
 	  cut_omega->Fill(nu, FullWeight);
+	  cut_omega_noEloss->Fill(nu_noEloss, FullWeight); 
 	  cut_W_inv->Fill(W, FullWeight);
 	  cut_theta_elec->Fill(theta_e/dtr, FullWeight);
 	  cut_theta_prot->Fill(theta_p/dtr, FullWeight);
@@ -477,7 +521,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 	  cut_P_f->Fill(Pf, FullWeight);
 	  cut_k_f->Fill(kf, FullWeight);
 	  cut_theta_q->Fill(th_q/dtr, FullWeight);
-	  
+	  cut_theta_q_v2->Fill(th_qv2/dtr, FullWeight);
+	  cut_q_vec->Fill(q, FullWeight);
 	  cut_thet_pq->Fill(theta_pq/dtr, FullWeight);
 	  cut_thet_pq_v2->Fill(th_pq/dtr, FullWeight);
 
@@ -557,6 +602,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       pm->Fill(Pm, FullWeight);
       Q_2->Fill(Q2, FullWeight);
       omega->Fill(nu, FullWeight);
+      omega_noEloss->Fill(nu_noEloss, FullWeight); 
       W_inv->Fill(W, FullWeight);
       theta_elec->Fill(theta_e/dtr, FullWeight);
       theta_prot->Fill(theta_p/dtr, FullWeight);
@@ -568,6 +614,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       P_f->Fill(Pf, FullWeight);
       k_f->Fill(kf, FullWeight);
       theta_q->Fill(th_q/dtr, FullWeight);
+      theta_q_v2->Fill(th_qv2/dtr, FullWeight);
+      q_vec->Fill(q, FullWeight);
       thet_pq->Fill(theta_pq/dtr, FullWeight);
       thet_pq_v2->Fill(th_pq/dtr, FullWeight);
       
