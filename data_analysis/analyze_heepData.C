@@ -10,7 +10,7 @@ void analyze_heepData(int run)
   //TString filename =Form("../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pCorr/coin_replay_heep_check_%d_-1.root",run);                                 
   //TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000_noYptarOffset.root",run);        
   //TString filename =Form("../../hallc_replay/ROOTfiles/D2_heep/delta2ndIter/after/noPcorr/coin_replay_heep_check_%d_-1.root",run);        
-  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);        
+  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000.root",run);        
 
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *T = (TTree*)data_file->Get("T");

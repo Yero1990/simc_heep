@@ -490,7 +490,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     if(run==3371){c_Em = Em < 0.02;}
     //Full Weight
     FullWeight = (Normfac*Weight*charge_factor*e_trkEff*h_trkEff*c_LT)/nentries;
-    /*
+    
+    
     cout << "Full Weight = " << FullWeight << endl;
     cout << "Normfac = " << Normfac << endl;
     cout << "Weight = " << Weight << endl;
@@ -499,7 +500,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     cout << "h_trkEff = " << h_trkEff << endl;
     cout << "CLT = " << c_LT << endl;
     cout << "nentries = " << nentries << endl;
-    */
+    
 
     //APPLY CUTS: BEGIN CUTS LOOP
       if (c_Em)
