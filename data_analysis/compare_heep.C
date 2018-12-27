@@ -10,7 +10,16 @@ void compare_heep(int run)
   
   //Pre-defined SIMC/data root file names containing histogram object to comapare
   TString simc_filename =  Form("Wcheck_simc_histos_%d.root", run);
-  //TString simc_filename =  Form("Weighted_simc_hms_single_%d_gfor.root", runNUM);
+  
+  //TString simc_filename =  Form("Wcheck_simc_histos_%d_eArmSig1.root", run); 
+  //TString simc_filename =  Form("Wcheck_simc_histos_%d_eArmSig2.root", run); 
+  //  TString simc_filename =  Form("Wcheck_simc_histos_%d_eArmSig1and2.root", run); 
+
+  //  TString simc_filename =  Form("Wcheck_simc_histos_%d_pArmSig1.root", run);                                                                   
+  //TString simc_filename =  Form("Wcheck_simc_histos_%d_pArmSig2.root", run);                                                                        
+  //TString simc_filename =  Form("Wcheck_simc_histos_%d_pArmSig1and2.root", run);                                                                                                         
+    
+ 
   TString data_filename = Form("./Wcheck_data_histos_%d.root",run); 
 
   TString simc_path;

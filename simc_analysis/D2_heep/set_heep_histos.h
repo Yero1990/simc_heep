@@ -69,6 +69,10 @@ Double_t xbj_xmax = 1.1;
 //Pf
 Double_t Pf_nbins = nbins;
 
+//Ep  :proton energy
+Double_t Ep_nbins = nbins;
+
+
 //kf
 Double_t kf_nbins = nbins;
 
@@ -161,7 +165,7 @@ Double_t eyfp_nbins = nbins;
 Double_t expfp_nbins = nbins;
 Double_t eypfp_nbins = nbins;
 
-/*
+
 
 //Run 3288
 Double_t exfp_xmin = -15.;
@@ -197,12 +201,15 @@ Double_t kf_xmax = 9;
 Double_t Pf_xmin = 2.5;
 Double_t Pf_xmax = 3.5;
 
+Double_t Ep_xmin = 2.5;
+Double_t Ep_xmax = 3.5;
+
 Double_t thq_xmin = 32.;
 Double_t thq_xmax = 42.;
 
 Double_t q_xmin = 2.6;
 Double_t q_xmax = 4.;
-*/
+
 
 /*
 //Run 3371
@@ -290,7 +297,7 @@ Double_t q_xmax = 3.;
 
 */
 
-
+/*
 //Run: 3376/3377
 Double_t exfp_xmin = 10.;
 Double_t exfp_xmax = 25.;
@@ -330,7 +337,7 @@ Double_t thq_xmax = 52.;
 
 Double_t q_xmin = 1.6;
 Double_t q_xmax = 2.4;
-
+*/
 
 
 #endif

@@ -1,5 +1,5 @@
-! Simulation for coin. H(e,e'p) runs 1893-1901, January 2018, Hall c
-! of radiative corrections
+B1;95;0cB! Simulation for coin. H(e,e'p) runs 1893-1901, January 2018, Hall c
+!1;95;0c of radiative corrections
 !
 !  D2-Electro-Disintegration (E12-10-003), H(e,e'p) Elastic Run 3288
 ! 'TF' stands for 'this field'
@@ -22,10 +22,14 @@
      dEbeam  =  0.05                                   !  beam energy variation (%)
      electron_arm  =  5                                !  1=hms,2=sos,3=hrsr,4=hrsl,5=shms
      hadron_arm  =  1                                  !  1=hms,2=sos,3=hrsr,4=hrsl,5=shms
-     spec%e%P  =   8528.391                   !  e arm central momentum (MeV/c)
-     spec%e%theta  =  8.495                 !  e arm angle setting (degrees)
-     spec%p%P  =     1888.348                !  p arm central momentum (MeV/c)
-     spec%p%theta  =     47.605                !  p arm angle setting (degrees)
+     spec%e%P  =    8520.525                  !  e arm central momentum (MeV/c)
+     spec%e%theta  =  12.194                 !  e arm angle setting (degrees)
+     spec%p%P  =      2934.92976             ! original Pcorr = 2931.170   p arm central momentum (MeV/c)
+     spec%p%theta  =     37.338                !  p arm angle setting (degrees)
+     spec%e%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt. in e Arm           
+     spec%p%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt in pArm                                                                                    
+     spec%e%sig_smear = 1.0e-8, 5.0e-4, 1.0e-5, 0.07                 !add extra smear. in recon eArm (Ytar, xptar(in mr), yptar(in mr), delta(in %))           
+     spec%p%sig_smear = 1.0e-8, 5.0e-4, 1.0e-5, 0.07                 !add extra smear. in  recon pArm 
 / 
 
  ?=
@@ -69,14 +73,15 @@
 / 
 
 
+
  &BEAM_AND_TARGET_INFO
      gen%xwid  =  0.008868		!  beam width - one sigma (cm)  (89microns)
      gen%ywid  =  0.004235		!  beam width - one sigma (cm)  (42microns)
      targ%fr_pattern  =  3		!  raster pattern: 1=square, 2=circular, 3=real square
      targ%fr1  =  0.1		!  horizontal size OR inner radius(2)
      targ%fr2  =  0.1		!  vertical size OR outer radius(2)
-     targ%xoffset  =  0.147856		!  target x-offset (cm): +x = beam left ( opposite of EPICS)
-     targ%yoffset  =  -0.124581		!  target y-offset (cm): +y = up
+     targ%xoffset  =  0.147996		!  target x-offset (cm): +x = beam left ( opposite of EPICS)
+     targ%yoffset  =  -0.125249		!  target y-offset (cm): +y = up
      targ%zoffset  =  0.0		!  target z-offset (cm): +z = downstream
    				!   zreal = znominal + zoffset
 /
@@ -90,11 +95,9 @@
 /
 
  &P_ARM_OFFSET
-     spec%p%offset%x  =  0.099531		!  x offset (cm)
-     spec%p%offset%y  =  0.324		!  y offset (cm)
+     spec%p%offset%x  =  0.083189		!  x offset (cm)
+     spec%p%offset%y  =  0.286047		!  y offset (cm)
      spec%p%offset%z  =  0.		!  z offset (cm)
      spec%p%offset%xptar  =  0.	!  xptar offset (mr)
      spec%p%offset%yptar  =  0.	!  yptar offset (mr)
 / 
-
-

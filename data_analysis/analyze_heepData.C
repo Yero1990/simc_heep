@@ -9,8 +9,8 @@ void analyze_heepData(int run)
   //Read DATA ROOTfiles
   //TString filename =Form("../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pCorr/coin_replay_heep_check_%d_-1.root",run);                                 
   //TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000_noYptarOffset.root",run);        
-  //TString filename =Form("../../hallc_replay/ROOTfiles/D2_heep/delta2ndIter/after/noPcorr/coin_replay_heep_check_%d_-1.root",run);        
-  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000.root",run);        
+  //TString filename =Form("../../hallc_replay/ROOTfiles/D2_heep/delta2ndIter/after/afterPcorr/coin_replay_heep_check_%d_-1.root",run);        
+  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);        
 
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *T = (TTree*)data_file->Get("T");
@@ -23,6 +23,7 @@ void analyze_heepData(int run)
  
   //Kinematics Quantities
   TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
+  TH1F *Emissv2 = new TH1F("Emissv2","missing energy", Em_nbins, Em_xmin, Em_xmax); 
   TH1F *pm = new TH1F("pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
   TH1F *Q_2 = new TH1F("Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
   TH1F *omega = new TH1F("omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
@@ -34,6 +35,7 @@ void analyze_heepData(int run)
   TH1F *W_2 = new TH1F("W2", "Invariant Mass W2", W2_nbins, W2_xmin, W2_xmax);
   TH1F *xbj = new TH1F("xbj", "x-Bjorken", xbj_nbins, xbj_xmin, xbj_xmax);
   TH1F *P_f = new TH1F("P_f", "Final Proton Momentum", Pf_nbins, Pf_xmin, Pf_xmax);
+  TH1F *Ep_f = new TH1F("Ep_f", "Final Proton Energy", Ep_nbins, Ep_xmin, Ep_xmax);
   TH1F *k_f = new TH1F("kf", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
   TH1F *theta_q = new TH1F("theta_q", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
   TH1F *q_vec = new TH1F("q", "q-vector, |q|", q_nbins, q_xmin, q_xmax);
@@ -134,6 +136,7 @@ void analyze_heepData(int run)
   
   //Kinematics Quantities
   TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV
+  TH1F *cut_Emissv2 = new TH1F("cut_Emissv2","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV    
   TH1F *cut_pm = new TH1F("cut_pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
   TH1F *cut_Q_2 = new TH1F("cut_Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
   TH1F *cut_omega = new TH1F("cut_omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
@@ -145,6 +148,7 @@ void analyze_heepData(int run)
   TH1F *cut_W_2 = new TH1F("cut_W2", "Invariant Mass W2", W2_nbins, W2_xmin, W2_xmax);
   TH1F *cut_xbj = new TH1F("cut_xbj", "x-Bjorken", xbj_nbins, xbj_xmin, xbj_xmax);
   TH1F *cut_P_f = new TH1F("cut_P_f", "Final Proton Momentum", Pf_nbins, Pf_xmin, Pf_xmax);
+  TH1F *cut_Ep_f = new TH1F("cut_Ep_f", "Final Proton Energy", Ep_nbins, Ep_xmin, Ep_xmax); 
   TH1F *cut_k_f = new TH1F("cut_kf", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
   TH1F *cut_q_vec = new TH1F("cut_q", "q-vector, |q|", q_nbins, q_xmin, q_xmax);
   TH1F *cut_theta_q = new TH1F("cut_theta_q", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
@@ -252,6 +256,7 @@ void analyze_heepData(int run)
   Double_t  kf;
   Double_t  Pf;
   Double_t  Em;
+  Double_t  Emv2;
   Double_t  Pm;
   Double_t  thbq;
   Double_t  thxq;
@@ -259,6 +264,7 @@ void analyze_heepData(int run)
   Double_t  theta_p;  //to be determined in loop
   Double_t  theta_pq_v2; //to be determined in loop
   Double_t  W2;
+  Double_t  Ep;
 
   T->SetBranchAddress("P.kin.primary.scat_ang_rad",&theta_e);
   T->SetBranchAddress("P.kin.primary.W",&W);
@@ -338,7 +344,7 @@ void analyze_heepData(int run)
  
   //Define Boolean for Kin. Cuts
   Bool_t c_Em;
-  
+  Bool_t c_hdelta;
   //======================
   // E V E N T   L O O P 
   //======================
@@ -355,20 +361,24 @@ void analyze_heepData(int run)
     T->GetEntry(i);
     
     
-    //Determine theta_p
+    //Determine additional kinematics
     theta_p = xangle - theta_e;
     W2 = W*2;
     theta_pq_v2 = th_q - theta_p;
+    Ep = TMath::Sqrt(MP*MP + Pf*Pf);
+    Emv2 = nu + MP - Ep;
 
     c_Em = Em < 0.03;
+    c_hdelta = h_delta>-8.&&h_delta<8.;
 
     if(run==3371){c_Em = Em < 0.02;}
 
     //APPLY CUTS: BEGIN CUTS LOOP
-      if (c_Em)
+      if (c_Em&&c_hdelta)
 	{
 	  //Kinematics
 	  cut_Emiss->Fill(Em);
+	  cut_Emissv2->Fill(Emv2);
 	  cut_pm->Fill(Pm);
 	  cut_Q_2->Fill(Q2);
 	  cut_omega->Fill(nu);
@@ -381,6 +391,7 @@ void analyze_heepData(int run)
 	  cut_W_2->Fill(W2); 
 	  cut_xbj->Fill(X); 
 	  cut_P_f->Fill(Pf);
+	  cut_Ep_f->Fill(Ep);
 	  cut_k_f->Fill(kf);
 	  cut_theta_q->Fill(th_q/dtr);
 	  cut_q_vec->Fill(q3m);
@@ -480,6 +491,7 @@ void analyze_heepData(int run)
       
       //Kinematics
       Emiss->Fill(Em);
+      Emissv2->Fill(Emv2);
       pm->Fill(Pm);
       Q_2->Fill(Q2);
       omega->Fill(nu);
@@ -492,6 +504,7 @@ void analyze_heepData(int run)
       W_2->Fill(W2); 
       xbj->Fill(X); 
       P_f->Fill(Pf);
+      Ep_f->Fill(Ep);
       k_f->Fill(kf);
       theta_q->Fill(th_q/dtr);
       q_vec->Fill(q3m);
