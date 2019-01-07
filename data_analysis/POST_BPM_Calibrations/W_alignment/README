@@ -1,0 +1,24 @@
+************
+W Alignment
+************
+
+1) The W alignemnt was done first
+
+Units are in [GeV]
+
+Run      W_simc   W_simc_err     W_data     W_data_err   Corr. Factor
+3288     0.9442   0.0002         0.9512     0.0001       1.0006603
+3371     0.9435   0.0003         0.9550     0            1.0010849     
+3374     0.9433   0.0001         0.9488     0.0002       1.0005188     
+3377     0.9425   0.0001         0.9486     0.0001       1.0005754     
+
+Correction Factor:  (1 - dW/Eb),  dW = W_simc - W_data
+Eb = 10.6005
+
+P_corr = P * Corr. Factor
+
+Run      P_elec        P_elec_corr
+3288     8.520526      8.5261521      
+3371     8.5261521     8.5354021
+3374     8.526644      8.5310676
+3377     8.528391      8.5332982

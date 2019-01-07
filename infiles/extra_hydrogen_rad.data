@@ -21,8 +21,8 @@
      correct_Eloss  = F	        !  ONE = correct reconstructed events for eloss.
      correct_raster  =  T	!  ONE = Reconstruct events using 'raster' matrix elements.
      mc_smear  =  T		!  ONE = target & hut mult scatt AND DC smearing.
-     mc_smear_addl = T          !  Additional Smearing from WB
-     recon_mc_smear_addl = T 
+     mc_smear_addl = T          !  Additional Smearing to Mult. Scattering
+     recon_mc_smear_addl = T    !  Additional Smearing to reconstruted quantities
      deForest_flag  =  0	!  0=sigcc1, 1=sigcc2, -1=sigcc1 ONSHELL
      rad_flag  =  0		!  (radiative option #1...see init.f)
      extrad_flag  =  2	        !  (rad. option #2...see init.f)

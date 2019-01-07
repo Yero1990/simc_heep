@@ -1,0 +1,25 @@
+Invariant Mass W Alignment Using H(e,e)p Elastics from Deuteron
+
+-----------------
+--Nov. 29, 2028--
+-----------------
+After checking out the HMS momentum to be OK, and optimizing SHMS delta,
+There were improvements observed in Emiss. The W peak, however, had not yet
+been aligned.  A comparison now is made between W_simc and W_data to
+determine the momentum correction factor for SHMS.
+
+A second iteration of delta Optimization should then be done.
+
+
+The Variation in W with electron momentum is as follows:
+dE' = -E' / Eb * dW,   dW =  W_simc - W_data
+
+E'corr = E' + dE_corr = E' ( 1 - dW/Eb)  -->Multiply by ppcentral in kin file
+
+
+Run     W_simc     W_data      (1 - dW/Eb)    E'corr
+3288    0.9434     0.931       0.998830       8.554008 
+3371    0.9427     0.9403      0.999774       8.562092
+3374    0.9429     0.937       0.999443       8.559258
+3376    0.9423     0.9382      0.999613       8.560713
+3377    0.9423     0.9378      0.999575       8.560388

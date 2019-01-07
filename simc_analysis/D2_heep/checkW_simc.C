@@ -7,41 +7,36 @@ void checkW_simc(int run)
   //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
 
-  //Central Momenta
-  Double_t hP0;
-  Double_t sP0;
+  Double_t eth, hth;
 
   Double_t charge_factor;       //Units: mC   :: beam_current(uA) * time (hrs) * 3600. / 1000.  3600--> hrs to sec,  1000--> uC to mC
   Double_t e_trkEff;
   Double_t h_trkEff;           
   Double_t c_LT;
- 
+  Double_t t_LT;
+
   if(run==3288){
 
-    hP0 = 2931.170 / 1000.;
-    sP0 = 8520.256 / 1000.;
-    
+    eth = 12.194 * TMath::Pi()/180.;
+    hth = -37.338 *TMath::Pi()/180.;
     charge_factor =147.648;   //BCM4A
     e_trkEff =  0.9856;       //shms e- trk eff
     h_trkEff = 0.9864;        //hms had trk eff
     c_LT = 0.9814;
+    t_LT = 0.945919;
 
   }
   if(run==3371){
 
-    hP0 = 3470.903/1000.;
-    sP0 = 8526.358/1000.;
     
     charge_factor = 50.193;   //BCM4A (in mC)
     e_trkEff =  0.9842;       //shms e- trk eff
     h_trkEff = 0.9862;        //hms had trk eff
     c_LT = 0.9891;
-
+    t_LT = 0.946789;
   }
   if(run==3374){
 
-    hP0 = 2306.895 / 1000.;
-    sP0 = 8526.644 / 1000.;
 
     charge_factor = 50.705;   //BCM4A (in mC)
     e_trkEff =  0.9833;       //shms e- trk eff
@@ -52,8 +47,6 @@ void checkW_simc(int run)
   }
   if(run==3376){
 
-    hP0 = 1888.598 / 1000. ;
-    sP0 = 8529.176 / 1000.;
 
     charge_factor = 2.361;   //BCM4A (in mC)
     e_trkEff =  0.9800;       //shms e- trk eff
@@ -62,8 +55,6 @@ void checkW_simc(int run)
   }
   if(run==3377){
 
-    hP0 = 1888.348 / 1000.;
-    sP0 = 8528.391 / 1000.;
 
     charge_factor = 40.074;   //BCM4A (in mC)
     e_trkEff =  0.9814;       //shms e- trk eff
@@ -114,8 +105,11 @@ TH1F *thet_pq_v2 = new TH1F("theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq
 
 //Target Reconstruction Variables
 TH1F *x_tar = new TH1F("x_tar", "x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
-TH1F *y_tar = new TH1F("y_tar", "y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
-TH1F *z_tar = new TH1F("z_tar", "z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
+
+TH1F *hy_tar = new TH1F("hy_tar", hadron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
+TH1F *hz_tar = new TH1F("hz_tar", hadron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
+TH1F *ey_tar = new TH1F("ey_tar", electron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);                                                                              
+TH1F *ez_tar = new TH1F("ez_tar", electron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);  
 
 //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
 TH1F *hytar = new TH1F("hytar", hadron_arm + " Y_{tar}", hytar_nbins, hytar_xmin, hytar_xmax);
@@ -228,8 +222,12 @@ TH1F *cut_thet_pq_v2 = new TH1F("cut_theta_pq_v2", "(Proton, q-vector) Angle, #t
 
 //Target Reconstruction Variables
 TH1F *cut_x_tar = new TH1F("cut_x_tar", "x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
-TH1F *cut_y_tar = new TH1F("cut_y_tar", "y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
-TH1F *cut_z_tar = new TH1F("cut_z_tar", "z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
+
+ TH1F *cut_hy_tar = new TH1F("cut_hy_tar", hadron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax); 
+ TH1F *cut_hz_tar = new TH1F("cut_hz_tar", hadron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);       
+                                                                                                                                                    
+ TH1F *cut_ey_tar = new TH1F("cut_ey_tar", electron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);            
+ TH1F *cut_ez_tar = new TH1F("cut_ez_tar", electron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);  
 
 //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
 TH1F *cut_hytar = new TH1F("cut_hytar", hadron_arm + " Y_{tar}", hytar_nbins, hytar_xmin, hytar_xmax);
@@ -451,6 +449,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   Double_t th_qv2;
   Double_t th_pq;          //version 2 of theta_pq
   Double_t Emv2;
+  Double_t e_ztar;    //alternative z-vertex calculations (Using hcana formula)
+  Double_t h_ztar; 
   //Determine Full Weight Quantities (Assume one for heep check)
   Double_t FullWeight;
 
@@ -478,44 +478,32 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     Ein = Ein / 1000.;   //This beam energy has Eloss, therefore, it is slightly smaller than 10.6005 (10.5992)
     W2 = W*W;
     ki = sqrt(Ein*Ein - me*me);    //use beam energy without Eloss corrections, as they are NOT done in data as well                       
-    //kf = Q2 / (4.*ki*pow(sin(theta_e/2.), 2)); 
-    kf = sP0*(1. + e_delta/100.);
+    kf = e_pf/1000.;  //sP0*(1. + e_delta/100.);
     Ee = sqrt(me*me + kf*kf);
-    nu_noEloss = Eb - Ee;
-    //Pf = sqrt(pow(nu_noEloss+MP,2) - MP*MP);                                                                 
-    Pf = hP0*(1. + h_delta/100.);
+    Pf = h_pf/1000.;  //hP0*(1. + h_delta/100.);
 
     Ep = sqrt(MP*MP + Pf*Pf);                                               
     X = Q2 / (2.*MP*nu);
     th_q = acos( (ki - kf*cos(theta_e))/q ); //th_q = theta_p + theta_pq;
     th_qv2 = theta_p - theta_pq;
     th_pq =  th_q - theta_p;
-    Emv2 = nu + MP - Ep;
   
+    e_ztar = ( (e_ytar) - (tar_x)*(cos(eth)-e_yptar*sin(eth)  ) ) / (-sin(eth)-e_yptar*cos(eth)) ;
+    h_ztar = ( (h_ytar) - (tar_x)*(cos(hth)-h_yptar*sin(hth)  ) ) / (-sin(hth)-h_yptar*cos(hth)) ;
+
     //Define cuts
-    c_Em = Em < 0.03;
+    c_Em = Em < 0.04;
     c_hdelta = h_delta>-8.&&h_delta<8.;
-    if(run==3371){c_Em = Em < 0.02;}
+
     //Full Weight
-    FullWeight = (Normfac*Weight*charge_factor*e_trkEff*h_trkEff*c_LT)/nentries;
-    
-    /*
-    cout << "Full Weight = " << FullWeight << endl;
-    cout << "Normfac = " << Normfac << endl;
-    cout << "Weight = " << Weight << endl;
-    cout << "Charge Factor = " << charge_factor << endl;
-    cout << "e_trkEff = " << e_trkEff << endl;
-    cout << "h_trkEff = " << h_trkEff << endl;
-    cout << "CLT = " << c_LT << endl;
-    cout << "nentries = " << nentries << endl;
-    */
+    FullWeight = (Normfac*Weight*charge_factor*e_trkEff*h_trkEff*t_LT)/nentries;
+
 
     //APPLY CUTS: BEGIN CUTS LOOP
       if (c_Em&&c_hdelta)
 	{
 	  //Kinematics
 	  cut_Emiss->Fill(Em, FullWeight);
-	  cut_Emissv2->Fill(Emv2, FullWeight);
 	  cut_pm->Fill(Pm, FullWeight);
 	  cut_Q_2->Fill(Q2, FullWeight);
 	  cut_omega->Fill(nu, FullWeight);
@@ -538,11 +526,16 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 	  cut_thet_pq_v2->Fill(th_pq/dtr, FullWeight);
 
 	  //Reconstructed Target Quantities (Lab Frame)
-	  cut_x_tar->Fill(tar_x, FullWeight);
-	  cut_y_tar->Fill(tar_y, FullWeight);
-	  cut_z_tar->Fill(tar_z, FullWeight);
-	  
-	  
+	  cut_x_tar->Fill(-tar_x, FullWeight);
+	  cut_hy_tar->Fill(h_yv, FullWeight);
+
+	  cut_hz_tar->Fill(h_zv, FullWeight);
+	  //cut_hz_tar->Fill(h_ztar, FullWeight); 
+	  cut_ey_tar->Fill(e_yv, FullWeight);                                                             
+
+          cut_ez_tar->Fill(e_zv, FullWeight); 
+	  //cut_ez_tar->Fill(e_ztar, FullWeight);
+
 	  //Hadron-Arm Target Reconstruction 
 	  cut_hytar->Fill(h_ytar, FullWeight);
 	  cut_hxptar->Fill(h_xptar, FullWeight);
@@ -610,7 +603,6 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       
       //Kinematics
       Emiss->Fill(Em, FullWeight);
-      Emissv2->Fill(Emv2, FullWeight); 
       pm->Fill(Pm, FullWeight);
       Q_2->Fill(Q2, FullWeight);
       omega->Fill(nu, FullWeight);
@@ -633,10 +625,12 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       thet_pq_v2->Fill(th_pq/dtr, FullWeight);
       
       //Reconstructed Target Quantities (Lab Frame)
-      x_tar->Fill(tar_x, FullWeight);
-      y_tar->Fill(tar_y, FullWeight);
-      z_tar->Fill(tar_z, FullWeight);
-
+      x_tar->Fill(-tar_x, FullWeight);
+      hy_tar->Fill(h_yv, FullWeight);                                                                                                                                     
+      hz_tar->Fill(h_zv, FullWeight);                                                                                                                   
+      ey_tar->Fill(e_yv, FullWeight);                                           
+      ez_tar->Fill(e_zv, FullWeight);                                                                                                                                     
+                                               
       
       //Hadron-Arm Target Reconstruction 
       hytar->Fill(h_ytar, FullWeight);

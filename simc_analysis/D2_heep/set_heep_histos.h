@@ -251,9 +251,10 @@ Double_t thq_xmax = 37.;
 
 Double_t q_xmin = 3.1;
 Double_t q_xmax = 4.2;
+
+Double_t Ep_xmin = 2.5;
+Double_t Ep_xmax = 3.5;
 */
-
-
 /*
 //Run: 3374
 Double_t exfp_xmin = 0.;

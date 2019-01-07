@@ -1,0 +1,34 @@
+*********************
+Updated Heep Studies
+*********************
+
+January 4, 2019
+
+It was found that the calibrated BPM positions were NOT being used.
+So it was determine that the Heep check should be done again.
+In terms of the delta optimization that was done before, Mark said it would NOT
+be affected, as it only removed correlations observed between deltaDiff and focal plane quantities.
+
+Since Emiss and W alignment have to be done again, it is easier to do 50 k replays on
+runs 3288, 3371, 3374, 3377  (3376 was at the same kinematics as 3377, much lower statistics, so it will be ignored)
+
+The starting central momentum values will be those of the previous heep check done. 
+---> Check W/Emiss between DATA/SIMC and determine whether it needs correction
+---> Once the correction is done, determine the NMR to momentum map, (hopefully is a line fit)
+
+The momentum range covered by the heep check covers all momenta in the detuteron experiment, so the fit can be
+used to extract the correct momentum corresponding to NMR value.
+
+
+January 5, 2019
+
+An HMS Xptar offset was determined, and corrected first.
+
+Then, the W alignment was done, as this only depends on the electron arm.
+
+Finally, the Emiss alignment was done, as this would only depend on proton arm, (since W alignment was done, and electron momentum corrected)
+
+
+January 6, 2019
+The (calculate - measured)/measured HMS momentum was determined for DATA/SIMC and the difference taken to check the HMS Momentum. Even though the 
+Emiss and W were aligned and look OK, if one tries to make the momwntum difference smaller, Emiss will NOT be aligne anymore. Why is this?

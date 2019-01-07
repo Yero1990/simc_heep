@@ -31,10 +31,10 @@ void calc_pElec_PDiff()
   //Double_t eP0[5] = {8.5640277, 8.5640277, 8.5640277, 8.5640277, 8.5640277};  //central spec. momentum (UnCorrected SHMS Central Momentum)
   //Double_t eP0[5] = {8.554008, 8.562092, 8.559258, 8.560713, 8.560338};  //central spec. momentum (Corrected SHMS Central Momentum --After delta optimization)
   // Double_t eP0[5] = {8.525027, 8.525232, 8.528170, 8.529253, 8.528954};   //central spec momentum (Used for Emiss Correction)
-  Double_t eP0[5] = {8.520256, 8.526357, 8.526643, 8.529176, 8.528391};   //central spec momentum (Final PCorr)
+  Double_t eP0[5] = {8.520525, 8.526357, 8.526643, 8.529176, 8.528391};   //central spec momentum (Final PCorr)
 
   //Double_t hP0[5] = {2.922111, 3.46017618, 2.2997660, 1.8827606, 1.8825118};  //central spec. momentum (no hYptar Offset)
-  Double_t hP0[5] = {2.931170, 3.4709027, 2.3068953, 1.8885972, 1.8883477};    //central spec momentum (Momentum COrrection after hYptar Offset --3288 for now ONLY) 
+  Double_t hP0[5] = {2.93492976, 3.4709027, 2.3068953, 1.8885972, 1.8883477};    //central spec momentum (Momentum COrrection after hYptar Offset --3288 for now ONLY) 
 
 
   //Define some variables to be determined inside the entry loop
@@ -133,7 +133,7 @@ void calc_pElec_PDiff()
   
  
   //Loop over all kinematic groups
-  for(int irun = 0; irun<5; irun++)
+  for(int irun = 0; irun<1; irun++)
     {
       
       //Initialize histo object array
@@ -555,7 +555,7 @@ void calc_pElec_PDiff()
   int run[5] = {3288, 3371, 3374, 3376, 3377};
   cout << "Entering Run Loop " << endl;
   //Loop over runs
-    for(int irun=0; irun<5; irun++)
+    for(int irun=0; irun<1; irun++)
       {                                 
                             
 	//Initialize histo object array
@@ -566,7 +566,7 @@ void calc_pElec_PDiff()
 	//string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_uncorr/coin_replay_heep_check_%d_-1.root",run[irun]);
 	//string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pCorr/coin_replay_heep_check_%d_-1.root",run[irun]);
 	//string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pUnCorr/coin_replay_heep_check_%d_-1.root",run[irun]);
-	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000.root",run[irun]);
+	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[irun]);
 
 	TFile *f1 = new TFile(filename.c_str());
 	

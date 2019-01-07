@@ -1,4 +1,4 @@
-#include "../simc_analysis/D2_heep/set_heep_histos.h"
+#include "../simc_analysis/D2_heep_updated/set_heep_histos.h"
 
 void analyze_heepData(int run)
 {
@@ -20,7 +20,9 @@ void analyze_heepData(int run)
   
 
   //********* Create 1D Histograms **************
- 
+   
+  TH1F *epCT = new TH1F("epCT","e-Proton Coincidence Time", 100, 0, 20);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
+
   //Kinematics Quantities
   TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
   TH1F *Emissv2 = new TH1F("Emissv2","missing energy", Em_nbins, Em_xmin, Em_xmax); 
@@ -43,10 +45,15 @@ void analyze_heepData(int run)
   TH1F *thet_pq_v2 = new TH1F("theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
   
   //Target Reconstruction Variables
-  TH1F *x_tar = new TH1F("x_tar", "x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
-  TH1F *y_tar = new TH1F("y_tar", "y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
-  TH1F *z_tar = new TH1F("z_tar", "z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
-  
+  TH1F *hx_tar = new TH1F("hx_tar", "HMS x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
+  TH1F *hy_tar = new TH1F("hy_tar", "HMS y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
+  TH1F *hz_tar = new TH1F("hz_tar", "HMS z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
+
+  //Target Reconstruction Variables                                                                 
+  TH1F *px_tar = new TH1F("px_tar", "SHMS x_Target", xtar_nbins, xtar_xmin, xtar_xmax);                  
+  TH1F *py_tar = new TH1F("py_tar", "SHMS y_Target", ytar_nbins, ytar_xmin, ytar_xmax);                   
+  TH1F *pz_tar = new TH1F("pz_tar", "SHMS z_Target", ztar_nbins, ztar_xmin, ztar_xmax);    
+
   //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
   TH1F *hytar = new TH1F("hytar", hadron_arm + " Y_{tar}", hytar_nbins, hytar_xmin, hytar_xmax);
   TH1F *hxptar = new TH1F("hxptar", hadron_arm + " X'_{tar}", hxptar_nbins, hxptar_xmin, hxptar_xmax);
@@ -133,7 +140,8 @@ void analyze_heepData(int run)
 
 
   /************Define Histos to APPLY CUTS*********************************/
-  
+  TH1F *cut_epCT = new TH1F("cut_epCT","e-Proton Coincidence Time", 100, 0, 20);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
+
   //Kinematics Quantities
   TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV
   TH1F *cut_Emissv2 = new TH1F("cut_Emissv2","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV    
@@ -156,10 +164,15 @@ void analyze_heepData(int run)
   TH1F *cut_thet_pq_v2 = new TH1F("cut_theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 
   
-  //Target Reconstruction Variables
-  TH1F *cut_x_tar = new TH1F("cut_x_tar", "x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
-  TH1F *cut_y_tar = new TH1F("cut_y_tar", "y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
-  TH1F *cut_z_tar = new TH1F("cut_z_tar", "z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
+  //HMS Target Reconstruction Variables
+  TH1F *cut_hx_tar = new TH1F("cut_hx_tar", "HMS x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
+  TH1F *cut_hy_tar = new TH1F("cut_hy_tar", "HMS y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
+  TH1F *cut_hz_tar = new TH1F("cut_hz_tar", "HMS z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
+
+  //SHMS Target Reconstruction Variables    
+  TH1F *cut_px_tar = new TH1F("cut_px_tar", "SHMS x_Target", xtar_nbins, xtar_xmin, xtar_xmax);     
+  TH1F *cut_py_tar = new TH1F("cut_py_tar", "SHMS y_Target", ytar_nbins, ytar_xmin, ytar_xmax);      
+  TH1F *cut_pz_tar = new TH1F("cut_pz_tar", "SHMS z_Target", ztar_nbins, ztar_xmin, ztar_xmax);  
   
   //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
   TH1F *cut_hytar = new TH1F("cut_hytar", hadron_arm + " Y_{tar}", hytar_nbins, hytar_xmin, hytar_xmax);
@@ -265,6 +278,9 @@ void analyze_heepData(int run)
   Double_t  theta_pq_v2; //to be determined in loop
   Double_t  W2;
   Double_t  Ep;
+  Double_t  epCoinTime;
+
+  T->SetBranchAddress("CTime.epCoinTime_ROC2", &epCoinTime);
 
   T->SetBranchAddress("P.kin.primary.scat_ang_rad",&theta_e);
   T->SetBranchAddress("P.kin.primary.W",&W);
@@ -326,25 +342,36 @@ void analyze_heepData(int run)
   T->SetBranchAddress("H.gtr.dp",&h_delta);
   
   //--------Target Quantities (tarx, tary, tarz)
-  Double_t  tar_x;
-  Double_t  tar_y;
-  Double_t  tar_z;
+  Double_t  htar_x;
+  Double_t  htar_y;
+  Double_t  htar_z;
   
-  T->SetBranchAddress("P.react.x",&tar_x);
-  T->SetBranchAddress("P.react.y",&tar_y);
-  T->SetBranchAddress("P.react.z",&tar_z);
+  Double_t  ptar_x;                                                                                           
+  Double_t  ptar_y;                                                                             
+  Double_t  ptar_z;
+
+  T->SetBranchAddress("H.react.x",&htar_x);
+  T->SetBranchAddress("H.react.y",&htar_y);
+  T->SetBranchAddress("H.react.z",&htar_z);
+
+  T->SetBranchAddress("P.react.x",&ptar_x);                                                                     
+  T->SetBranchAddress("P.react.y",&ptar_y);     
+  T->SetBranchAddress("P.react.z",&ptar_z); 
 
   //------SHMS Detector Quantities
-  Double_t  pcal_etracknorm;
+  Double_t  pcal_etottracknorm;
   Double_t  pngcer_npesum;
 
-  T->SetBranchAddress("P.cal.etracknorm",&pcal_etracknorm);
+  T->SetBranchAddress("P.cal.etottracknorm",&pcal_etottracknorm);
   T->SetBranchAddress("P.ngcer.npeSum",&pngcer_npesum);
   
  
   //Define Boolean for Kin. Cuts
   Bool_t c_Em;
   Bool_t c_hdelta;
+  Bool_t c_ecal;
+  Bool_t c_ctime;
+
   //======================
   // E V E N T   L O O P 
   //======================
@@ -368,14 +395,17 @@ void analyze_heepData(int run)
     Ep = TMath::Sqrt(MP*MP + Pf*Pf);
     Emv2 = nu + MP - Ep;
 
-    c_Em = Em < 0.03;
-    c_hdelta = h_delta>-8.&&h_delta<8.;
-
-    if(run==3371){c_Em = Em < 0.02;}
+    c_Em = Em < 0.04;                     //Missing energy < 0.04 (40 MeV)
+    c_hdelta = h_delta>-8.&&h_delta<8.;  //good HMS delta range (well known recon. matrix)
+    c_ecal = pcal_etottracknorm > 0.85;   //reject pions
+    c_ctime = epCoinTime>8.6 && epCoinTime<13.6;
 
     //APPLY CUTS: BEGIN CUTS LOOP
-      if (c_Em&&c_hdelta)
-	{
+      if (c_Em&&c_ctime&&c_hdelta)
+	{     
+
+	  cut_epCT->Fill(epCoinTime);
+
 	  //Kinematics
 	  cut_Emiss->Fill(Em);
 	  cut_Emissv2->Fill(Emv2);
@@ -399,10 +429,13 @@ void analyze_heepData(int run)
 	  cut_thet_pq_v2->Fill(theta_pq_v2/dtr);
 
 	  //Reconstructed Target Quantities (Lab Frame)
-	  cut_x_tar->Fill(tar_x);
-	  cut_y_tar->Fill(tar_y);
-	  cut_z_tar->Fill(tar_z);
+	  cut_hx_tar->Fill(htar_x);
+	  cut_hy_tar->Fill(htar_y);
+	  cut_hz_tar->Fill(htar_z);
 	  
+	  cut_px_tar->Fill(ptar_x); 
+          cut_py_tar->Fill(ptar_y);  
+          cut_pz_tar->Fill(ptar_z);                                              
 	  
 	  //Hadron-Arm Target Reconstruction 
 	  cut_hytar->Fill(h_ytar);
@@ -488,7 +521,8 @@ void analyze_heepData(int run)
 	}//End CUTS LOOP
       
       
-      
+      epCT->Fill(epCoinTime);
+
       //Kinematics
       Emiss->Fill(Em);
       Emissv2->Fill(Emv2);
@@ -513,10 +547,13 @@ void analyze_heepData(int run)
 
       
       //Reconstructed Target Quantities (Lab Frame)
-      x_tar->Fill(tar_x);
-      y_tar->Fill(tar_y);
-      z_tar->Fill(tar_z);
-
+      hx_tar->Fill(htar_x);
+      hy_tar->Fill(htar_y);
+      hz_tar->Fill(htar_z);
+                                                                                         
+      px_tar->Fill(ptar_x);                                                                                                                         
+      py_tar->Fill(ptar_y);                                                                                                              
+      pz_tar->Fill(ptar_z);
       
       //Hadron-Arm Target Reconstruction 
       hytar->Fill(h_ytar);
