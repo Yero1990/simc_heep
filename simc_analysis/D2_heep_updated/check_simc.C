@@ -2,17 +2,28 @@
 
 #include "set_heep_histos.h"
 
-void check_simc(int run)
+void check_simc(int run, string eArm)
 {
   //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
+TString hadron_arm;
+TString electron_arm;
 
+ if(eArm=="H"){
+    hadron_arm="SHMS";
+    electron_arm = "HMS";
+ }
+ else if(eArm=="P"){
+   hadron_arm="HMS";
+   electron_arm = "SHMS";
+ }
 
-  Double_t charge_factor;       //Units: mC   :: beam_current(uA) * time (hrs) * 3600. / 1000.  3600--> hrs to sec,  1000--> uC to mC
-  Double_t e_trkEff;
-  Double_t h_trkEff;           
-  Double_t c_LT;
-  Double_t t_LT;
+  //Set Default
+  Double_t charge_factor = 1.;       //Units: mC   :: beam_current(uA) * time (hrs) * 3600. / 1000.  3600--> hrs to sec,  1000--> uC to mC
+  Double_t e_trkEff = 1.;
+  Double_t h_trkEff = 1.;           
+  Double_t c_LT = 1.;
+  Double_t t_LT = 1.;
 
  
 
@@ -57,8 +68,12 @@ void check_simc(int run)
 
   }
   //Read SIMC ROOTfiles
-                            
+    
+  //Deuteron Heep Check Data
   TString filename = Form("../../worksim_voli/D2_heep_%d.root",run);                                 
+  //TString filename = Form("../../worksim_voli/heep_g%dcoin.root",run);                                 
+
+  
 
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *SNT = (TTree*)data_file->Get("SNT");
@@ -96,7 +111,7 @@ TH1F *x_tar = new TH1F("x_tar", "x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
 
 TH1F *hy_tar = new TH1F("hy_tar", hadron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
 TH1F *hz_tar = new TH1F("hz_tar", hadron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
-TH1F *ey_tar = new TH1F("ey_tar", electron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);                                                                              
+TH1F *ey_tar = new TH1F("ey_tar", electron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);                
 TH1F *ez_tar = new TH1F("ez_tar", electron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);  
 
 //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
@@ -207,7 +222,7 @@ TH1F *cut_thet_pq_v2 = new TH1F("cut_theta_pq_v2", "(Proton, q-vector) Angle, #t
 
 
 //Target Reconstruction Variables
-TH1F *cut_x_tar = new TH1F("cut_x_tar", "x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
+ TH1F *cut_x_tar = new TH1F("cut_x_tar", "x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
 
  TH1F *cut_hy_tar = new TH1F("cut_hy_tar", hadron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax); 
  TH1F *cut_hz_tar = new TH1F("cut_hz_tar", hadron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);       
@@ -459,10 +474,11 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     SNT->GetEntry(i);
 
     
+  
     //-----Define Additional Kinematic Variables--------
     Ein = Ein / 1000.;   //This beam energy has Eloss, therefore, it is slightly smaller than 10.6005 (10.5992)
     W2 = W*W;
-    ki = sqrt(Ein*Ein - me*me);    //use beam energy without Eloss corrections, as they are NOT done in data as well                       
+    ki = sqrt(Eb*Eb - me*me);    //use beam energy without Eloss corrections, as they are NOT done in data as well                       
     kf = e_pf/1000.;  //sP0*(1. + e_delta/100.);
     Ee = sqrt(me*me + kf*kf);
     Pf = h_pf/1000.;  //hP0*(1. + h_delta/100.);
@@ -476,7 +492,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 
 
     //Define cuts
-    c_Em = Em < 0.04;
+    c_Em = Em < 0.03;
     c_hdelta = h_delta>-8.&&h_delta<8.;
 
     //Full Weight
@@ -484,7 +500,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 
 
     //APPLY CUTS: BEGIN CUTS LOOP
-      if (c_Em&&c_hdelta)
+    //if (c_Em&&c_hdelta&&e_delta>-10&&e_delta<22.)
+    if(c_Em)  //only use for initial heep check
 	{
 	  //Kinematics
 	  cut_Emiss->Fill(Em, FullWeight);

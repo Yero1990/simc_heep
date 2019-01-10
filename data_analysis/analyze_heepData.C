@@ -1,16 +1,32 @@
 #include "../simc_analysis/D2_heep_updated/set_heep_histos.h"
 
-void analyze_heepData(int run)
+void analyze_heepData(int run, string eArm="")
 {
+  
+  TString hadron_arm;
+  TString electron_arm;
+  //eArm = "H" or "P"
+  string hArm;
+  if(eArm=="P"){
+    hArm="H";
+    hadron_arm="HMS";
+    electron_arm = "SHMS";
+  }
+  else if (eArm=="H")
+    {
+      hArm="P";
+      hadron_arm="SHMS";
+      electron_arm = "HMS";
+    }
 
 //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
     
-  //Read DATA ROOTfiles
-  //TString filename =Form("../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pCorr/coin_replay_heep_check_%d_-1.root",run);                                 
-  //TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000_noYptarOffset.root",run);        
-  //TString filename =Form("../../hallc_replay/ROOTfiles/D2_heep/delta2ndIter/after/afterPcorr/coin_replay_heep_check_%d_-1.root",run);        
+  //Read DATA ROOTfiles  
   TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);        
+
+  //HMS electron Heep Check data
+  //TString filename =Form("../../hallc_replay/ROOTfiles/g%d_coin.root",run);        
 
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *T = (TTree*)data_file->Get("T");
@@ -45,14 +61,14 @@ void analyze_heepData(int run)
   TH1F *thet_pq_v2 = new TH1F("theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
   
   //Target Reconstruction Variables
-  TH1F *hx_tar = new TH1F("hx_tar", "HMS x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
-  TH1F *hy_tar = new TH1F("hy_tar", "HMS y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
-  TH1F *hz_tar = new TH1F("hz_tar", "HMS z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
+  TH1F *hx_tar = new TH1F("hx_tar", hadron_arm + " x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
+  TH1F *hy_tar = new TH1F("hy_tar", hadron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
+  TH1F *hz_tar = new TH1F("hz_tar", hadron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
 
   //Target Reconstruction Variables                                                                 
-  TH1F *px_tar = new TH1F("px_tar", "SHMS x_Target", xtar_nbins, xtar_xmin, xtar_xmax);                  
-  TH1F *py_tar = new TH1F("py_tar", "SHMS y_Target", ytar_nbins, ytar_xmin, ytar_xmax);                   
-  TH1F *pz_tar = new TH1F("pz_tar", "SHMS z_Target", ztar_nbins, ztar_xmin, ztar_xmax);    
+  TH1F *ex_tar = new TH1F("ex_tar", electron_arm + " x_Target", xtar_nbins, xtar_xmin, xtar_xmax);                  
+  TH1F *ey_tar = new TH1F("ey_tar", electron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);                   
+  TH1F *ez_tar = new TH1F("ez_tar", electron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);    
 
   //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
   TH1F *hytar = new TH1F("hytar", hadron_arm + " Y_{tar}", hytar_nbins, hytar_xmin, hytar_xmax);
@@ -89,9 +105,9 @@ void analyze_heepData(int run)
   TH2F *e_xfp_vs_yfp = new TH2F("e_xfp_vs_yfp", "X_{fp} vs Y_{fp}", eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);
   
   //2D HMS v. SHMS Acceptance Correlations
-  TH2F *hxptar_vs_exptar = new TH2F("hxptar_vs_exptar", "HMS vs. SHMS, X'_{tar}", exptar_nbins, exptar_xmin, exptar_xmax, hxptar_nbins, hxptar_xmin, hxptar_xmax);
-  TH2F *hyptar_vs_eyptar = new TH2F("hyptar_vs_eyptar", "HMS vs. SHMS, Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, hyptar_nbins, hyptar_xmin, hyptar_xmax);
-  TH2F *hdelta_vs_edelta = new TH2F("hdelta_vs_edelta", "HMS vs. SHMS, #delta", edelta_nbins, edelta_xmin, edelta_xmax, hdelta_nbins, hdelta_xmin, hdelta_xmax);
+  TH2F *hxptar_vs_exptar = new TH2F("hxptar_vs_exptar", hadron_arm + " vs."+electron_arm+", X'_{tar}", exptar_nbins, exptar_xmin, exptar_xmax, hxptar_nbins, hxptar_xmin, hxptar_xmax);
+  TH2F *hyptar_vs_eyptar = new TH2F("hyptar_vs_eyptar", hadron_arm + " vs."+electron_arm+ ", Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, hyptar_nbins, hyptar_xmin, hyptar_xmax);
+  TH2F *hdelta_vs_edelta = new TH2F("hdelta_vs_edelta", hadron_arm + " vs."+electron_arm+ ", #delta", edelta_nbins, edelta_xmin, edelta_xmax, hdelta_nbins, hdelta_xmin, hdelta_xmax);
   
   //OPTICS CHECK (W and Emiss Correlations with elestron-Arm Focal Plane / Target Quantities)
   TH2F *W_vs_exfp = new TH2F("W_vs_exfp", "W vs eX_{fp}", exfp_nbins, exfp_xmin, exfp_xmax, W_nbins, W_xmin, W_xmax);
@@ -164,15 +180,15 @@ void analyze_heepData(int run)
   TH1F *cut_thet_pq_v2 = new TH1F("cut_theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 
   
-  //HMS Target Reconstruction Variables
-  TH1F *cut_hx_tar = new TH1F("cut_hx_tar", "HMS x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
-  TH1F *cut_hy_tar = new TH1F("cut_hy_tar", "HMS y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
-  TH1F *cut_hz_tar = new TH1F("cut_hz_tar", "HMS z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
+  //Hadron Arm Target Reconstruction Variables
+  TH1F *cut_hx_tar = new TH1F("cut_hx_tar", hadron_arm + " x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
+  TH1F *cut_hy_tar = new TH1F("cut_hy_tar", hadron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
+  TH1F *cut_hz_tar = new TH1F("cut_hz_tar", hadron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
 
-  //SHMS Target Reconstruction Variables    
-  TH1F *cut_px_tar = new TH1F("cut_px_tar", "SHMS x_Target", xtar_nbins, xtar_xmin, xtar_xmax);     
-  TH1F *cut_py_tar = new TH1F("cut_py_tar", "SHMS y_Target", ytar_nbins, ytar_xmin, ytar_xmax);      
-  TH1F *cut_pz_tar = new TH1F("cut_pz_tar", "SHMS z_Target", ztar_nbins, ztar_xmin, ztar_xmax);  
+  //Electron Arm Target Reconstruction Variables    
+  TH1F *cut_ex_tar = new TH1F("cut_ex_tar", electron_arm + " x_Target", xtar_nbins, xtar_xmin, xtar_xmax);     
+  TH1F *cut_ey_tar = new TH1F("cut_ey_tar", electron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);      
+  TH1F *cut_ez_tar = new TH1F("cut_ez_tar", electron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);  
   
   //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
   TH1F *cut_hytar = new TH1F("cut_hytar", hadron_arm + " Y_{tar}", hytar_nbins, hytar_xmin, hytar_xmax);
@@ -209,9 +225,9 @@ void analyze_heepData(int run)
   TH2F *cut_e_xfp_vs_yfp = new TH2F("cut_e_xfp_vs_yfp", "X_{fp} vs Y_{fp}", eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);
   
   //2D HMS v. SHMS Acceptance Correlations
-  TH2F *cut_hxptar_vs_exptar = new TH2F("cut_hxptar_vs_exptar", "HMS vs. SHMS, X'_{tar}", exptar_nbins, exptar_xmin, exptar_xmax, hxptar_nbins, hxptar_xmin, hxptar_xmax);
-  TH2F *cut_hyptar_vs_eyptar = new TH2F("cut_hyptar_vs_eyptar", "HMS vs. SHMS, Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, hyptar_nbins, hyptar_xmin, hyptar_xmax);
-  TH2F *cut_hdelta_vs_edelta = new TH2F("cut_hdelta_vs_edelta", "HMS vs. SHMS, #delta", edelta_nbins, edelta_xmin, edelta_xmax, hdelta_nbins, hdelta_xmin, hdelta_xmax);
+  TH2F *cut_hxptar_vs_exptar = new TH2F("cut_hxptar_vs_exptar", hadron_arm + " vs."+electron_arm+", X'_{tar}", exptar_nbins, exptar_xmin, exptar_xmax, hxptar_nbins, hxptar_xmin, hxptar_xmax);
+  TH2F *cut_hyptar_vs_eyptar = new TH2F("cut_hyptar_vs_eyptar", hadron_arm + " vs."+electron_arm+", Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, hyptar_nbins, hyptar_xmin, hyptar_xmax);
+  TH2F *cut_hdelta_vs_edelta = new TH2F("cut_hdelta_vs_edelta", hadron_arm + " vs."+electron_arm+", #delta", edelta_nbins, edelta_xmin, edelta_xmax, hdelta_nbins, hdelta_xmin, hdelta_xmax);
   
   //OPTICS CHECK (W correlations with electron arm Focal Plane / Target Quantities)
   TH2F *cut_W_vs_exfp = new TH2F("cut_W_vs_exfp", "cut_W vs eX_{fp}", exfp_nbins, exfp_xmin, exfp_xmax, W_nbins, W_xmin, W_xmax);
@@ -279,28 +295,30 @@ void analyze_heepData(int run)
   Double_t  W2;
   Double_t  Ep;
   Double_t  epCoinTime;
-
+  Double_t  pindex;
+  
   T->SetBranchAddress("CTime.epCoinTime_ROC2", &epCoinTime);
 
-  T->SetBranchAddress("P.kin.primary.scat_ang_rad",&theta_e);
-  T->SetBranchAddress("P.kin.primary.W",&W);
-  T->SetBranchAddress("P.kin.primary.Q2",&Q2);
-  T->SetBranchAddress("P.kin.primary.x_bj",&X);
-  T->SetBranchAddress("P.kin.primary.nu",&nu);
-  T->SetBranchAddress("P.kin.primary.q3m",&q3m);
-  T->SetBranchAddress("P.kin.primary.th_q",&th_q);
-  T->SetBranchAddress("P.gtr.p",&kf);
-  T->SetBranchAddress("H.gtr.p",&Pf);
+  T->SetBranchAddress(Form("%s.kin.primary.scat_ang_rad", eArm.c_str()),&theta_e);
+  T->SetBranchAddress(Form("%s.kin.primary.W", eArm.c_str()),&W);
+  T->SetBranchAddress(Form("%s.kin.primary.Q2", eArm.c_str()),&Q2);
+  T->SetBranchAddress(Form("%s.kin.primary.x_bj", eArm.c_str()),&X);
+  T->SetBranchAddress(Form("%s.kin.primary.nu", eArm.c_str()),&nu);
+  T->SetBranchAddress(Form("%s.kin.primary.q3m", eArm.c_str()),&q3m);
+  T->SetBranchAddress(Form("%s.kin.primary.th_q", eArm.c_str()),&th_q);
+  T->SetBranchAddress(Form("%s.gtr.p", eArm.c_str()),&kf);
+  T->SetBranchAddress(Form("%s.gtr.p", hArm.c_str()),&Pf);
+  T->SetBranchAddress(Form("%s.gtr.index",eArm.c_str()),&pindex);
 
-  T->SetBranchAddress("H.kin.secondary.emiss",&Em);
-  T->SetBranchAddress("H.kin.secondary.pmiss",&Pm);
-  T->SetBranchAddress("H.kin.secondary.th_bq",&thbq);      //Polar angle of recoil system with q (rad)
-  T->SetBranchAddress("H.kin.secondary.th_xq",&thxq);     //Polar angle of detected particle with q
-  T->SetBranchAddress("H.kin.secondary.xangle",&xangle);  //Angle of detected particle with scattered electron (Used to determine hadron angle)
+  T->SetBranchAddress(Form("%s.kin.secondary.emiss", hArm.c_str()),&Em);
+  T->SetBranchAddress(Form("%s.kin.secondary.pmiss", hArm.c_str()),&Pm);
+  T->SetBranchAddress(Form("%s.kin.secondary.th_bq", hArm.c_str()),&thbq);      //Polar angle of recoil system with q (rad)
+  T->SetBranchAddress(Form("%s.kin.secondary.th_xq", hArm.c_str()),&thxq);     //Polar angle of detected particle with q
+  T->SetBranchAddress(Form("%s.kin.secondary.xangle", hArm.c_str()),&xangle);  //Angle of detected particle with scattered electron (Used to determine hadron angle)
   
 
 
-  //-------SHMS Focal Plane / Target
+  //-------Electron Arm Focal Plane / Target
   Double_t  e_xfp;
   Double_t  e_xpfp;
   Double_t  e_yfp;
@@ -310,17 +328,17 @@ void analyze_heepData(int run)
   Double_t  e_xptar;
   Double_t  e_delta;
   
-  T->SetBranchAddress("P.dc.x_fp",&e_xfp);
-  T->SetBranchAddress("P.dc.xp_fp",&e_xpfp);
-  T->SetBranchAddress("P.dc.y_fp",&e_yfp);
-  T->SetBranchAddress("P.dc.yp_fp",&e_ypfp);
+  T->SetBranchAddress(Form("%s.dc.x_fp", eArm.c_str()),&e_xfp);
+  T->SetBranchAddress(Form("%s.dc.xp_fp", eArm.c_str()),&e_xpfp);
+  T->SetBranchAddress(Form("%s.dc.y_fp", eArm.c_str()),&e_yfp);
+  T->SetBranchAddress(Form("%s.dc.yp_fp", eArm.c_str()),&e_ypfp);
   
-  T->SetBranchAddress("P.gtr.y",&e_ytar);
-  T->SetBranchAddress("P.gtr.ph",&e_yptar);
-  T->SetBranchAddress("P.gtr.th",&e_xptar);
-  T->SetBranchAddress("P.gtr.dp",&e_delta);
+  T->SetBranchAddress(Form("%s.gtr.y", eArm.c_str()),&e_ytar);
+  T->SetBranchAddress(Form("%s.gtr.ph", eArm.c_str()),&e_yptar);
+  T->SetBranchAddress(Form("%s.gtr.th", eArm.c_str()),&e_xptar);
+  T->SetBranchAddress(Form("%s.gtr.dp", eArm.c_str()),&e_delta);
   
-  //-------HMS Focal Plane / Target
+  //-------Hadron Focal Plane / Target
   Double_t  h_xfp;
   Double_t  h_xpfp;
   Double_t  h_yfp;
@@ -331,32 +349,34 @@ void analyze_heepData(int run)
   Double_t  h_xptar;
   Double_t  h_delta;
   
-  T->SetBranchAddress("H.dc.x_fp",&h_xfp);
-  T->SetBranchAddress("H.dc.xp_fp",&h_xpfp);
-  T->SetBranchAddress("H.dc.y_fp",&h_yfp);
-  T->SetBranchAddress("H.dc.yp_fp",&h_ypfp);
+  T->SetBranchAddress(Form("%s.dc.x_fp", hArm.c_str()),&h_xfp);
+  T->SetBranchAddress(Form("%s.dc.xp_fp", hArm.c_str()),&h_xpfp);
+  T->SetBranchAddress(Form("%s.dc.y_fp", hArm.c_str()),&h_yfp);
+  T->SetBranchAddress(Form("%s.dc.yp_fp", hArm.c_str()),&h_ypfp);
   
-  T->SetBranchAddress("H.gtr.y",&h_ytar);
-  T->SetBranchAddress("H.gtr.ph",&h_yptar);
-  T->SetBranchAddress("H.gtr.th",&h_xptar);
-  T->SetBranchAddress("H.gtr.dp",&h_delta);
+  T->SetBranchAddress(Form("%s.gtr.y", hArm.c_str()),&h_ytar);
+  T->SetBranchAddress(Form("%s.gtr.ph", hArm.c_str()),&h_yptar);
+  T->SetBranchAddress(Form("%s.gtr.th", hArm.c_str()),&h_xptar);
+  T->SetBranchAddress(Form("%s.gtr.dp", hArm.c_str()),&h_delta);
+
   
   //--------Target Quantities (tarx, tary, tarz)
   Double_t  htar_x;
   Double_t  htar_y;
   Double_t  htar_z;
   
-  Double_t  ptar_x;                                                                                           
-  Double_t  ptar_y;                                                                             
-  Double_t  ptar_z;
+  Double_t  etar_x;                                                                                           
+  Double_t  etar_y;                                                                             
+  Double_t  etar_z;
 
-  T->SetBranchAddress("H.react.x",&htar_x);
-  T->SetBranchAddress("H.react.y",&htar_y);
-  T->SetBranchAddress("H.react.z",&htar_z);
+  T->SetBranchAddress(Form("%s.react.x", hArm.c_str()),&htar_x);
+  T->SetBranchAddress(Form("%s.react.y", hArm.c_str()),&htar_y);
+  T->SetBranchAddress(Form("%s.react.z", hArm.c_str()),&htar_z);
+  
+  T->SetBranchAddress(Form("%s.react.x", eArm.c_str()),&etar_x);
+  T->SetBranchAddress(Form("%s.react.y", eArm.c_str()),&etar_y);
+  T->SetBranchAddress(Form("%s.react.z", eArm.c_str()),&etar_z);
 
-  T->SetBranchAddress("P.react.x",&ptar_x);                                                                     
-  T->SetBranchAddress("P.react.y",&ptar_y);     
-  T->SetBranchAddress("P.react.z",&ptar_z); 
 
   //------SHMS Detector Quantities
   Double_t  pcal_etottracknorm;
@@ -383,8 +403,9 @@ void analyze_heepData(int run)
   
   
   
-  for (Long64_t i=0; i<nentries;i++) {
-    
+   for (Long64_t i=0; i<nentries;i++) {
+  //for (Long64_t i=0; i<100000;i++) {
+
     T->GetEntry(i);
     
     
@@ -395,14 +416,15 @@ void analyze_heepData(int run)
     Ep = TMath::Sqrt(MP*MP + Pf*Pf);
     Emv2 = nu + MP - Ep;
 
-    c_Em = Em < 0.04;                     //Missing energy < 0.04 (40 MeV)
+    c_Em = Em < -0.04;                     //Missing energy < 0.04 (40 MeV)
     c_hdelta = h_delta>-8.&&h_delta<8.;  //good HMS delta range (well known recon. matrix)
     c_ecal = pcal_etottracknorm > 0.85;   //reject pions
     c_ctime = epCoinTime>8.6 && epCoinTime<13.6;
 
     //APPLY CUTS: BEGIN CUTS LOOP
-      if (c_Em&&c_ctime&&c_hdelta)
-	{     
+    //if (c_Em&&c_ctime&&c_hdelta&&c_ecal&&pindex>-1&&e_delta>-10.&&e_delta<22.)
+    if (c_Em)
+    {     
 
 	  cut_epCT->Fill(epCoinTime);
 
@@ -433,9 +455,9 @@ void analyze_heepData(int run)
 	  cut_hy_tar->Fill(htar_y);
 	  cut_hz_tar->Fill(htar_z);
 	  
-	  cut_px_tar->Fill(ptar_x); 
-          cut_py_tar->Fill(ptar_y);  
-          cut_pz_tar->Fill(ptar_z);                                              
+	  cut_ex_tar->Fill(etar_x); 
+          cut_ey_tar->Fill(etar_y);  
+          cut_ez_tar->Fill(etar_z);                                              
 	  
 	  //Hadron-Arm Target Reconstruction 
 	  cut_hytar->Fill(h_ytar);
@@ -551,9 +573,9 @@ void analyze_heepData(int run)
       hy_tar->Fill(htar_y);
       hz_tar->Fill(htar_z);
                                                                                          
-      px_tar->Fill(ptar_x);                                                                                                                         
-      py_tar->Fill(ptar_y);                                                                                                              
-      pz_tar->Fill(ptar_z);
+      ex_tar->Fill(etar_x);                                                                                                                         
+      ey_tar->Fill(etar_y);                                                                                                              
+      ez_tar->Fill(etar_z);
       
       //Hadron-Arm Target Reconstruction 
       hytar->Fill(h_ytar);

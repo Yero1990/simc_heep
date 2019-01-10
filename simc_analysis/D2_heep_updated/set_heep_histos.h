@@ -6,9 +6,6 @@
 //configuration of this file, and it will set the histogram ranges of multiple
 //files simultaneosuly, if included as a header in that file.
 
-TString hadron_arm="HMS";
-TString electron_arm = "SHMS";
-
 // define some constants
 static const Double_t pi = 3.141592654;
 static const Double_t dtr = pi/180.;
@@ -29,13 +26,13 @@ Double_t nbins = 100;
 //----------Kinematic Quantities---------
 //Emiss
 Double_t Em_nbins = 100;
-Double_t Em_xmin = -0.05;
-Double_t Em_xmax = 0.1;
+Double_t Em_xmin = -0.15;//-0.05;
+Double_t Em_xmax = 0.15; //0.1;
 
 //Pmiss
 Double_t Pm_nbins = nbins;
 Double_t Pm_xmin = -0.02;
-Double_t Pm_xmax = 0.06;
+Double_t Pm_xmax = 0.1; //0.06;
 
 //Q2
 Double_t Q2_nbins = nbins;
@@ -45,8 +42,8 @@ Double_t om_nbins = nbins;
 
 //W_inv
 Double_t W_nbins = nbins;
-Double_t W_xmin = 0.8;
-Double_t W_xmax = 1.1;
+Double_t W_xmin = 0.5; //0.8;
+Double_t W_xmax = 1.2; //1.1;
 
 //theta_elec
 Double_t the_nbins = nbins;

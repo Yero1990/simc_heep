@@ -3,7 +3,7 @@ The momentum fraction is defined as: dP = (Pcalc - Pmeas) / Pmeas
 The mean of this distribution is fitted for data and simc, and the difference is taken 
 
 **(DATA - SIMC)***
-Run 3288: mean: -0.0022787 err: 3.13513e-05
-Run 3371: mean: 0.000497327 err: 4.22059e-05
-Run 3374: mean: -0.00176635 err: 3.67652e-05
-Run 3377: mean: -0.00142627 err: 4.29902e-05
+Run 3288: mean: -0.00319526 err: 3.10011e-05
+Run 3371: mean: -0.0034279 err: 4.27602e-05
+Run 3374: mean: -0.00219156 err: 3.64875e-05
+Run 3377: mean: -0.00164668 err: 4.23916e-05

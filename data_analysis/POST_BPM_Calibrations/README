@@ -1,1 +1,57 @@
-../../simc_analysis/D2_heep_updated/README
+*********************
+Updated Heep Studies
+*********************
+
+January 4, 2019
+
+It was found that the calibrated BPM positions were NOT being used.
+So it was determine that the Heep check should be done again.
+In terms of the delta optimization that was done before, Mark said it would NOT
+be affected, as it only removed correlations observed between deltaDiff and focal plane quantities.
+
+The starting central momentum values will be those of EPICS. 
+---> Check W/Emiss between DATA/SIMC and determine whether it needs correction
+---> Once the correction is done, determine the NMR to momentum map, (hopefully is a line fit)
+
+The momentum range covered by the heep check covers all momenta in the detuteron experiment, so the fit can be
+used to extract the correct momentum corresponding to NMR value.
+
+
+January 7, 2019
+
+***** IMPORTANT: Check xptar/yptar SIMC/DATA comparisons FIRST, and make sure no offsets are required ***
+
+January 8, 2019
+---------------------------
+HMS Electrons Cross-Check
+---------------------------
+
+Directory: /data_analysis/HMS_ELECTRONS
+
+** Kinematic groups g1, g2, g3, g4, g6 and g10 were selected to have additional checks on the HMS momentum.
+   These runs were taken at 3-pass, except one (5-pass). These runs were ep elastics with HMS electrons.
+   The average BPMs were taken from the ttree H.rb.* leafs, and MisPointings from REPORT FILE for SIMC.
+   
+** The W peaks have been fitted and dW variations found. Also the derivatives of dW/dEb, dW/dE' and dW/dth_e
+   were used to determine variations in Eb, E' and th_e that could cause dW. See /data_analysis/HMS_ELECTRONS
+   directory, were these studies were done. 
+
+------------------------------------
+Heep Check Steps for Deuteron Data
+------------------------------------
+
+** Xptar / Yptar offsets in both arms were set to zero.
+
+** Use the nominal (EPICS) central momenta for both data/simc as staring values.
+
+** Compare DATA / SIMC, and look for any offsets in xptar / yptar consistent throughout the data.  If there are,
+   These should be corrected and the data replayed before attempting to correct for spectrometer momentum.
+
+** Determine HMS momentum corr. factor  minimizing (Pcalc - Pmeas) / Pmeas between data and SIMC. (Look in /checkHMS directory)
+
+** Now that we have confidence in HMS momentum setting, look at the SHMS xptar/yptar distributons for any possible offsets.
+   Correct for these, before attempting to align W.
+
+** Once all align SHMS W peak to determine the SHMS momentum correction. This
+should take care of the Emiss alignment as Emiss (Eb, E', Ep), and Eb and Ep (beam and proton) are well known.
+

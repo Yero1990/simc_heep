@@ -1,0 +1,61 @@
+**********************
+H(e,e'p) Minimization
+**********************
+
+January 9, 2019
+
+Brief: A minimization procedure is attempted, in order to determine some combination 
+       relative beam energy, spectrometer momentum and angle corrections that will work 
+       a range of H(e,e'p) data taken.
+
+Here is an overview of the procedure for HMS electrons (or protons)
+
+
+A data file with the following is necessary: 
+
+*********************************************************************************************************
+
+Nomenclature: Eb -> Beam Energy  
+              E' -> Electron Momentum
+	      th_e -> Electron Angle
+	      Mp -> Proton Mass
+	      nu -> Energy Transfer (Eb - E')
+	      Q2 -> 4-Momentum Transfer 
+
+Formulas:  W (Eb, E', th_e) = Mp**2 + 2*Mp*nu -Q2    (Invariant Mass)
+	   nu = Eb - E'
+	   Q2 = 4*Eb*E'sin2(th_e / 2)
+
+Derivatives:   dW / dEb = E' / Eb
+	       dW / dE' = - Eb / E'
+	       dW / dth_e = - 2 * Eb * E' * sin(th_e/2) * cos(th_e/2) / Mp
+ 
+
+Parameters to vary:  p1 = dEb / Eb,  p2 = dE' / E',  p3 = dth_e       (relative values)
+
+Definitions: 
+dW_meas = W_simc - W_data   (fit W peak from data and simc)
+
+dW_predicted = ( dW / dEb ) * dEb   +   ( dW / dE' ) * dE'   +   ( dW / dth_e ) * dth_e      (total derivative)
+             = ( dW / dEb ) * p1*Eb   +   ( dW / dE' ) * p2*E'   +   ( dW / dth_e ) * p3 
+
+Delta_W (p1, p2, p3) = dW_meas - dW_predicted  (Quantity to minimize)
+
+Problem: Find p1, p2, p3 such as to minimize Delta_W
+
+Chi2-Minimization:  X2 = Sum_{runs} [ (dW_meas_i - dW_predicted(p1,p2,p3))/dW_meas_err_i ] ^ 2
+                    dX2 / dp1 = 0
+		    dX2 / dp2 = 0
+		    dX2 / dp3 = 0
+
+HMS electrons:
+-------------------------------------------------------------------------------------------------------
+      Run         dW_meas      dW / dEb      dW / dE'      dW / dth_e       dW_predicted       Delta_W
+-------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+**********************************************************************************************************

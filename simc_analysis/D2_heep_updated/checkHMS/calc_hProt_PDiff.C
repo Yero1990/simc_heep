@@ -25,7 +25,7 @@ void calc_hProt_PDiff()
   Double_t Mp = 0.938272;  //proton mass
   Double_t Eb = 10.6005;
   //  Double_t hP0[4] = {2.931169, 3.470903, 2.306895, 1.888348};    //Staring HMS Central Momentum
-    Double_t hP0[4] = {2.9444540, 3.4772470, 2.3160550, 1.8951340};        //Corrected HMS Central Momentum
+  //  Double_t hP0[4] = {2.9444540, 3.4772470, 2.3160550, 1.8951340};        //Corrected HMS Central Momentum
   // Double_t hP0[4] = {2.9379372, 3.4772470, 2.3160550, 1.8951340}; 
   
   //Define some variables to be determined inside the entry loop
@@ -89,10 +89,16 @@ void calc_hProt_PDiff()
   TCanvas *c3_simc = new TCanvas("c3_simc","Fractional Deviation from P_{meas} vs. Kinematics Group", 2500,1000);
   
   TCanvas *c4_simc[4];                                                                            
+
+  //Define SOme Cuts
+  Bool_t c_simcEm;
+
+
  
   Double_t FullWeight;
 
   int run[4] = {3288, 3371, 3374, 3377};
+
 
 
 
@@ -182,7 +188,10 @@ void calc_hProt_PDiff()
       //for(int i=0; i<1000; i++){
 
 	T->GetEntry(i);
-	
+
+	//Define CUts
+	c_simcEm = Em < 0.03;
+
 	//Calculate the cross-sect. weight
 	FullWeight = (Normfac*Weight)/T->GetEntries();
 	
@@ -193,7 +202,7 @@ void calc_hProt_PDiff()
 	//cout << "hPf = " << hPf << endl;
 
 	//Fill Histograms
-	if (Em<0.04){
+	if (c_simcEm ){
 	hist_hPcalc[index]->Fill(hmsP_calc, FullWeight);      //Fill calculated momentum
 	hist_hPmeas[index]->Fill(hmsP_meas, FullWeight);      //Fill measure momentum
 	hist_hPDev[index]->Fill( (hmsP_calc - hmsP_meas)/ hmsP_meas, FullWeight);   //Fill Fractional  Deviation of Calculated from Measured Momentum
@@ -318,6 +327,10 @@ void calc_hProt_PDiff()
 
   Double_t hxfp, hxpfp, hyfp, hypfp;
 
+  
+  //----DEFINE SOME CUTS
+  double Em_min[4] = {-0.125, -0.115, -0.14, -0.14}; //Emiss < Em_min Determined using EPICS momenta data
+  Bool_t c_dataEm;
 
   //-------------CREATE EMPTY HISTOGRAMS---------------------------------------------
   
@@ -382,6 +395,9 @@ void calc_hProt_PDiff()
 	histData_hPcalc[index] =  new TH1F(Form("data_Pcalc_Run%d", run[index]), Form("Run %d: HMS Calc./Meas. Momentum",run[index]), 100, 1.5, 4);
 	histData_hPmeas[index] = new TH1F(Form("data_Pmeas_Run%d", run[index]), "", 100, 1.5, 4);
 
+	//histData_hPcalc[index] =  new TH1F(Form("data_Pcalc_Run%d", run[index]), Form("Run %d: HMS Calc./Meas. Momentum",run[index]), 100, -10, 10);
+	//histData_hPmeas[index] = new TH1F(Form("data_Pmeas_Run%d", run[index]), "", 100, -10, 10);
+
 	histData_hPDev[index] = new TH1F(Form("data_pDiff_Run%d",run[index]), Form("Run %d: HMS Momentum Fraction", run[index]), 100, -0.05, 0.05);
 	histData_Em[index] = new TH1F(Form("Emiss: Run %d",run[index]), Form("Run %d: Missing Energy", run[index]), 100, -0.2, 0.3);
 
@@ -419,15 +435,19 @@ void calc_hProt_PDiff()
 	histhPDev_ypfp[index]->GetYaxis()->SetTitle("HMS [P_{calc} - P_{meas}] / P_{meas}");  
       
       
-      //Define new variables to be calculated in the loop
-      
-      
+  
       //-----------LOOP OVER ALL ENTRIES IN TREE-----------------------
       //Loop over all entries
 	for(int i=0; i<T->GetEntries(); i++){
-	  //for(int i=0; i<1000; i++){
+	//for(int i=0; i<1000; i++){
 
 	T->GetEntry(i);
+ 
+	//Define the CUTS
+	c_dataEm = emiss < Em_min[index];
+      
+	//cout << "c_DATAEm = " << c_dataEm << " Emiss = " << emiss << endl;
+
 
 	//HMS Particle angles relative to central angle
 	htheta_p = xangle*180./TMath::Pi() - ptheta_e;
@@ -435,9 +455,8 @@ void calc_hProt_PDiff()
 	//HMS Particle calculated momentum (Using only the particle angle and beam energy)
 	hmsP_calc = 2.*Mp*Eb*(Eb + Mp)*TMath::Cos(htheta_p*TMath::Pi()/180.) / (Mp*Mp + 2.*Mp*Eb + Eb*Eb*TMath::Power(TMath::Sin(htheta_p*TMath::Pi()/180.),2)) ;
 
-
 	
-	if(TMath::Abs(htheta_p)<100 && TMath::Abs(hmsP_calc)<100 && TMath::Abs(hms_Pmeas)<100. &&  emiss < 0.06 )
+	if(TMath::Abs(htheta_p)<100 && TMath::Abs(hmsP_calc)<100 && TMath::Abs(hms_Pmeas)<100. &&  c_dataEm)
 	  {
 
 	    //Fill Histograms
