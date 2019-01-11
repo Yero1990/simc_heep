@@ -39,7 +39,7 @@ Then, a momentum correction is determined so as to get DATA to match SIMC.
 
 '''
 
-'''
+
 #Define Some Constants
 dtr = np.pi / 180.    #degrees to radians
 Mp = 0.938272           #proton mass
@@ -150,8 +150,8 @@ for i, ikg in enumerate(kg):
     dEe_list.append(dEe/hmsP[i])
     dEe_err_list.append(dEe_err/hmsP[i])
 
-    dthe_list.append(dth_e/th_e)
-    dthe_err_list.append(dth_e_err/th_e)
+    dthe_list.append(dth_e)
+    dthe_err_list.append(dth_e_err)
     
     Ee_factor_list.append(Ee_corr_factor)
     Ee_factor_err_list.append(Ee_corr_factor_err)
@@ -212,7 +212,7 @@ f1.save('D2_heep_kin.txt')
 #------PLOT-----
 #---------------
 
-'''
+
 plt.figure(1)
 B.plot_exp(hmsP, Ee_factor_list, Ee_factor_err_list, color='black', label='HMS Electron Correction Factor (3-PASS, except 2.9 GeV)')
 B.plot_exp(hmsP_prot, Ep_corr_factor_list, Ep_corr_factor_err_list, color='red', label='HMS Proton Correction Factor (5-PASS)')
@@ -226,38 +226,36 @@ plt.grid(linestyle='dotted')
 
 B.pl.show()
 
-
+'''
 plt.figure(1)
-B.plot_exp(hmsP, dthe_list, dthe_err_list, color='blue', label=r'Relative Electron Angle Variation  $\delta\theta_{e}/\theta_{e}$')
+B.plot_exp(hmsP, dthe_list, dthe_err_list, color='blue', label=r'Electron Angle Variation  $\delta\theta_{e}$')
 B.pl.title('Electron Angle Variation vs. HMS Central Momentum')
 B.pl.xlabel('HMS Central Momentum [GeV]')
-#B.pl.ylabel(r'Relative Electron Angle Variation  $\delta\theta_{e}/\theta_{e}$')
+B.pl.ylabel(r'Electron Angle Variation  $\delta\theta_{e}$')
 B.pl.legend()
 plt.grid(linestyle='dotted')
 #B.pl.show()
 
-#plt.figure(2)
+plt.figure(2)
 B.plot_exp(hmsP, dEb_list, dEb_err_list, color='black', label=r'Relative Beam Energy Variation  $\delta E_{b}/E_{b}$')         
 B.pl.title('Beam Energy Variation vs. HMS Central Momentum')   
 B.pl.xlabel('HMS Central Momentum [GeV]')                                                 
-#B.pl.ylabel(r'Relative Beam Energy Variation  $\delta E_{b}/E_{b}$')         
+B.pl.ylabel(r'Relative Beam Energy Variation  $\delta E_{b}/E_{b}$')         
 B.pl.legend()
 plt.grid(linestyle='dotted') 
 
 #B.pl.show()
 
-#plt.figure(3)
+plt.figure(3)
 B.plot_exp(hmsP, dEe_list, dEe_err_list, color='red', label=r'Relative Electron Momentum Variation  $\delta E_{e}/E_{e}$')
 B.pl.title('Electron Momentum Variation vs. HMS Central Momentum')
 B.pl.xlabel('HMS Central Momentum [GeV]')                        
-#B.pl.ylabel(r'Relative Electron Momentum Variation  $\delta E_{e}/E_{e}$')           
+B.pl.ylabel(r'Relative Electron Momentum Variation  $\delta E_{e}/E_{e}$')           
 plt.grid(linestyle='dotted') 
 B.pl.legend()
-B.pl.ylabel('Relative Variations')
-
                          
 B.pl.show()
-'''
+
 
 '''
 #Code that calculated the derivatives of the proton calculated momentum, for H(e,e'p)

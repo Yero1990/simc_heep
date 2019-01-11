@@ -24,10 +24,7 @@ void calc_hProt_PDiff()
   //Define some constants
   Double_t Mp = 0.938272;  //proton mass
   Double_t Eb = 10.6005;
-  //  Double_t hP0[4] = {2.931169, 3.470903, 2.306895, 1.888348};    //Staring HMS Central Momentum
-  //  Double_t hP0[4] = {2.9444540, 3.4772470, 2.3160550, 1.8951340};        //Corrected HMS Central Momentum
-  // Double_t hP0[4] = {2.9379372, 3.4772470, 2.3160550, 1.8951340}; 
-  
+
   //Define some variables to be determined inside the entry loop
   Double_t hmsP_calc;   //calculated HMS momentum
   Double_t hmsP_meas;   //measured HMS momentum 
@@ -563,9 +560,9 @@ void calc_hProt_PDiff()
   ofstream ofile;
   ofile.open("momentum_fraction_diff.data");
 
-  ofile << "This file contains the momentum fraction difference between DATA/SIMC " << endl;
-  ofile << "The momentum fraction is defined as: dP = (Pcalc - Pmeas) / Pmeas" << endl;
-  ofile << "The mean of this distribution is fitted for data and simc, and the difference is taken " << endl;
+  ofile << "#This file contains the momentum fraction difference between DATA/SIMC " << endl;
+  ofile << "#The momentum fraction is defined as: dP = (Pcalc - Pmeas) / Pmeas" << endl;
+  ofile << "#The mean of this distribution is fitted for data and simc, and the difference is taken " << endl;
   ofile << "" << endl;
 
   TCanvas *yRes_diff_Canv = new TCanvas("yRes_diff", "", 2500, 1000);
@@ -583,11 +580,18 @@ void calc_hProt_PDiff()
   yRes_diff_err[2] = TMath::Sqrt(data_yRes_arr_err[2]*data_yRes_arr_err[2] + yRes_arr_err[2]*yRes_arr_err[2]);
   yRes_diff_err[3] = TMath::Sqrt(data_yRes_arr_err[3]*data_yRes_arr_err[3] + yRes_arr_err[3]*yRes_arr_err[3]);
 
-  ofile << "**(DATA - SIMC)***" << endl;
-  ofile << "Run 3288: mean: " << yRes_diff[0] << " err: " << yRes_diff_err[0] << endl;
-  ofile << "Run 3371: mean: " << yRes_diff[1] << " err: " << yRes_diff_err[1] << endl;
-  ofile << "Run 3374: mean: " << yRes_diff[2] << " err: " << yRes_diff_err[2] << endl;
-  ofile << "Run 3377: mean: " << yRes_diff[3] << " err: " << yRes_diff_err[3] << endl;
+  ofile << "#!Run[i,0]/    Pf_data[f,1]/     Pf_data_err[f,2]/     Pf_simc[f3]/     Pf_simc_err[f,4]/" << endl;
+  ofile << run[0] << "    " <<  data_yRes_arr[0] << "    " << data_yRes_arr_err[0] << "    " << yRes_arr[0] << "     " << yRes_arr_err[0] << endl;
+  ofile << run[1] << "    " <<  data_yRes_arr[1] << "    " << data_yRes_arr_err[1] << "    " << yRes_arr[1] << "     " << yRes_arr_err[1] << endl;
+  ofile << run[2] << "    " <<  data_yRes_arr[2] << "    " << data_yRes_arr_err[2] << "    " << yRes_arr[2] << "     " << yRes_arr_err[2] << endl;
+  ofile << run[3] << "    " <<  data_yRes_arr[3] << "    " << data_yRes_arr_err[3] << "    " << yRes_arr[3] << "     " << yRes_arr_err[3] << endl;
+
+  ofile << "" << endl;
+  ofile << "#DATA-SIMC"<<endl;
+  ofile << "#Run 3288: mean: " << yRes_diff[0] << " err: " << yRes_diff_err[0] << endl;
+  ofile << "#Run 3371: mean: " << yRes_diff[1] << " err: " << yRes_diff_err[1] << endl;
+  ofile << "#Run 3374: mean: " << yRes_diff[2] << " err: " << yRes_diff_err[2] << endl;
+  ofile << "#Run 3377: mean: " << yRes_diff[3] << " err: " << yRes_diff_err[3] << endl;
 
   ofile.close();
 
