@@ -99,8 +99,8 @@ print('total p3: ',nsteps_p3)
 fout = open('chi2_fit_results.txt', 'w')
 fout2 = open('sorted_chi2.txt', 'w')
 
-fout.write('#! kg[f,0]/  Run[f,1]/  dW_meas[f,2]/   dW_meas_err[f,3]/   dW_dEb[f,4]/    dW_dP[f,5]/     dW_dth[f,6]/     dW_pred[f,7]/     dW_diff[f,8]/   dW_chi2_i[f,9]/    dW_chi2_sum[f,10]/   dPfr_meas[f,11]/   dPfr_meas_err[f,12]/   dPfr_dEb[f,13]/    dPfr_dP[f,14]/     dPfr_dth[f,15]/     dPfr_pred[f,16]/     dPfr_diff[f,17]/   dPfr_chi2_i[f,18]/    dPfr_chi2_sum[f,19]/    total_chi2_i[f,20]/   total_chi2_sum[f, 21]/   dEb_Eb[f,22]/      dP_P[f,23]/     dth_th[f,24]/ \n')
-fout2.write('#! dEb_Eb[f,0]/  dP_P[f,1]/   dth[f,2]/    total_chi2[f,3]/    total_redChi2[f,4]/ \n')
+fout.write('#! kg[f,0]/     Run[f,1]/     dW_meas[f,2]/     dW_meas_err[f,3]/     dW_dEb[f,4]/     dW_dP[f,5]/     dW_dth[f,6]/     dW_pred[f,7]/     dW_diff[f,8]/   dW_chi2_i[f,9]/    dW_chi2_sum[f,10]/   dPfr_meas[f,11]/   dPfr_meas_err[f,12]/   dPfr_dEb[f,13]/    dPfr_dP[f,14]/     dPfr_dth[f,15]/     dPfr_pred[f,16]/     dPfr_diff[f,17]/   dPfr_chi2_i[f,18]/    dPfr_chi2_sum[f,19]/    total_chi2_i[f,20]/   total_chi2_sum[f, 21]/   dEb_Eb[f,22]/      dP_P[f,23]/     dth_th[f,24]/ \n')
+fout2.write('#! dEb_Eb[f,0]/  dP_P[f,1]/   dth[f,2]/    total_chi2[f,3]/    total_redChi2[f,4]/    total_chi2_elec[f,5]/    total_redChi2_elec[f,6]/    total_chi2_prot[f,7]/    total_redChi2_prot[f,8]/ \n')
 
 #Chi2 Counter
 dW_chi2 = 0
@@ -110,11 +110,17 @@ total_chi2 = 0
 
 #Number of Observations Counter
 N_obs = len(kg)     #number of data points
-N_total = nsteps_p1 * nsteps_p2 * nsteps_p3  #total number of possible parameter configurations
-print ('N_total = ', N_total)
-
+N_obs_proton = len(kg[particle=='p'])
+N_obs_electron = len(kg[particle=='e'])
 #Number of Parameters
 N_parm = 3
+
+print('Nobs = ',N_obs)
+print('Nobs_proton = ',N_obs_proton)
+print('Nobs_electron = ',N_obs_electron)
+
+N_total = nsteps_p1 * nsteps_p2 * nsteps_p3  #total number of possible parameter configurations
+print ('N_total = ', N_total)
 
 
 
@@ -131,8 +137,16 @@ for m in frange(p1_min, p1_max+step_p1, step_p1):
             #Loop over kinematic group 
             for i, ikg in enumerate(kg):
                 
+                #Set to zero if particle type not specified
                 dW_chi2_i = 0
-                dPfr_chi2_i = 0
+                dW_meas = 0 
+                dW_err = 0
+                dW_dEb = 0
+                dW_dP = 0
+                dW_dth = 0
+                dW_pred = 0
+                dW_diff = 0
+
                 dPfr_meas = 0
                 dPfr_err = 0
                 dPcalc_dEb = 0
@@ -143,6 +157,8 @@ for m in frange(p1_min, p1_max+step_p1, step_p1):
                 dPfr_pred = 0
                 dPfr_diff = 0
                 dPfr_chi2_i = 0
+
+        
 
                 th = hmsAng[i] * dtr     #convert HMS angle to radians
 
@@ -235,21 +251,37 @@ for m in frange(p1_min, p1_max+step_p1, step_p1):
                 total_chi2_i = dW_chi2_i + dPfr_chi2_i 
 
                 total_chi2 = total_chi2 + total_chi2_i
+                 
 
+                
+                line = '{0[0]:<20} {0[1]:<20} {0[2]:<20} {0[3]:<20} {0[4]:<20} {0[5]:<20} {0[6]:<20} {0[7]:<20} {0[8]:<20} {0[9]:<20} {0[10]:<20} {0[11]:<20} {0[12]:<20} {0[13]:<20} {0[14]:<20} {0[15]:<20} {0[16]:<20} {0[17]:<20} {0[18]:<20} {0[19]:<20} {0[20]:<20} {0[21]:<20} {0[22]:<20} {0[23]:<20} {0[24]:<20}  \n'
+
+                values = [int(kg[i]), int(run[i]), round(dW_meas, 6), round(dW_err, 6), round(dW_dEb,6), round(dW_dP,6), round(dW_dth,6), round(dW_pred, 6), round((dW_diff),6), round(dW_chi2_i ,6), round(dW_chi2 ,6), round(dPfr_meas, 6), round(dPfr_err, 6), round(dPfr_dEb, 6), round(dPfr_dP, 6), round(dPfr_dth, 6), round(dPfr_pred, 6), round(dPfr_diff, 6), round(dPfr_chi2_i,6), round(dPfr_chi2, 6), round(total_chi2_i, 6),  round(total_chi2, 6), round(p1,6), round(p2,6), round(p3,6) ]
+
+                fout.write(line.format(values))
                 #Write all possible configurations of p1,p2,p3 to a txt file
-                fout.write('%s     %s     %s     %s     %s     %s     %s     %s     %s     %s     %s     %s     %s     %s    %s     %s     %s     %s     %s     %s     %s     %s     %s     %s     %s\n' % 
-                           (int(kg[i]), int(run[i]), round(dW_meas, 6), round(dW_err, 6), round(dW_dEb,6), round(dW_dP,6), round(dW_dth,6), round(dW_pred, 6), round((dW_diff),6), round(dW_chi2_i ,6), round(dW_chi2 ,6), round(dPfr_meas, 6), round(dPfr_err, 6), round(dPfr_dEb, 6), round(dPfr_dP, 6), round(dPfr_dth, 6), round(dPfr_pred, 6), round(dPfr_diff, 6), round(dPfr_chi2_i, 6), round(dPfr_chi2, 6), round(total_chi2_i, 6),  round(total_chi2, 6), round(p1,6), round(p2,6), round(p3,6) ))
+                #fout.write('%5s     %5s     %5s     %-15s     %-15s     %-15s     %s     %s     %s     %s     %s     %s     %s     %s    %s     %s     %s     %s     %s     %s     %s     %s     %s     %s     %s\n' % 
+                 #          (int(kg[i]), int(run[i]), round(dW_meas, 6), round(dW_err, 6), round(dW_dEb,6), round(dW_dP,6), round(dW_dth,6), round(dW_pred, 6), round((dW_diff),6), round(dW_chi2_i ,6), round(dW_chi2 ,6), round(dPfr_meas, 6), round(dPfr_err, 6), round(dPfr_dEb, 6), round(dPfr_dP, 6), round(dPfr_dth, 6), round(dPfr_pred, 6), round(dPfr_diff, 6), round(dPfr_chi2_i, 6), round(dPfr_chi2, 6), round(total_chi2_i, 6),  round(total_chi2, 6), round(p1,6), round(p2,6), round(p3,6) ))
 
 
             total_red_chi2 = total_chi2 /(N_obs - N_parm)
+            total_red_chi2_prot = dPfr_chi2 / (N_obs_proton - N_parm)
+            total_red_chi2_elec = dW_chi2 / (N_obs_electron - N_parm)
+
             
+
             #Append to lists
             p1_list.append(p1)
             p2_list.append(p2)
             p3_list.append(p3)
             total_chi2_list.append(total_chi2)
             total_red_chi2_list.append(total_red_chi2)
-
+            
+            dW_chi2_list.append(dW_chi2)
+            dW_red_chi2_list.append(total_red_chi2_elec)
+            
+            dPfr_chi2_list.append(dPfr_chi2)
+            dPfr_red_chi2_list.append(total_red_chi2_prot)
 
 
           
@@ -262,15 +294,15 @@ for m in frange(p1_min, p1_max+step_p1, step_p1):
 
 
 #Sort general lists (a, b, c, ...) according to a, where a = dW_chi2_list to sort from smallest to largest chi2
-s = sorted(zip(total_chi2_list,total_red_chi2_list,p1_list,p2_list,p3_list))
-total_chi2_list,total_red_chi2_list,p1_list,p2_list,p3_list = map(list, zip(*s))
+s = sorted(zip(total_chi2_list,total_red_chi2_list,dW_chi2_list,dW_red_chi2_list,dPfr_chi2_list,dPfr_red_chi2_list,p1_list,p2_list,p3_list))
+total_chi2_list,total_red_chi2_list,dW_chi2_list,dW_red_chi2_list,dPfr_chi2_list,dPfr_red_chi2_list,p1_list,p2_list,p3_list = map(list, zip(*s))
 
 
 #Write Lists to text file, enumerate in chi2 
 for item, chi2 in enumerate(total_chi2_list):
     #print('item = ',item, ' chi2 = ', chi2)
     #print('redChi2 = ',dW_red_chi2_list[item])
-    fout2.write('%s    %s    %s    %s    %s\n' % (round(p1_list[item],4), round(p2_list[item],4), round(p3_list[item],4), round(chi2,4), round(total_red_chi2_list[item],4)))
+    fout2.write('%s    %s    %s    %s    %s    %s    %s    %s    %s\n' % (round(p1_list[item],4), round(p2_list[item],4), round(p3_list[item],4), round(chi2,4), round(total_red_chi2_list[item],4),  round(dW_chi2_list[item],4), round(dW_red_chi2_list[item],4),  round(dPfr_chi2_list[item],4), round(dPfr_red_chi2_list[item],4) ))                                          
 
 fout.close()
 fout2.close()
@@ -290,14 +322,4 @@ fout2.close()
         #fout.write('%s\n' % '{0[0]:<5}{0[1]:<10}{0[2]:<10}{0[3]:<10}{0[4]:<10}'.format(data))
 #-------------------------------------------------------------------------------------------------
 
-'''
-plt.figure(1)
-B.plot_exp(p1_list, dW_chi2_list, 0, color='blue', label='p1')
 
-plt.figure(2)
-B.plot_exp(p2_list, dW_chi2_list, 0, color='red', label='p2')
-
-plt.figure(3)
-B.plot_exp(p3_list, dW_chi2_list, 0, color='black', label='p3')
-B.pl.show()
-'''
