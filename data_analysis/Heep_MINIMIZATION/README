@@ -43,19 +43,67 @@ Delta_W (p1, p2, p3) = dW_meas - dW_predicted  (Quantity to minimize)
 
 Problem: Find p1, p2, p3 such as to minimize Delta_W
 
-Chi2-Minimization:  X2 = Sum_{runs} [ (dW_meas_i - dW_predicted(p1,p2,p3))/dW_meas_err_i ] ^ 2
+Chi2-Minimization:  X2 = Sum_{i runs} [ (dW_meas_i - dW_predicted(p1,p2,p3))/dW_meas_err_i ] ^ 2
                     dX2 / dp1 = 0
 		    dX2 / dp2 = 0
 		    dX2 / dp3 = 0
 
 HMS electrons:
--------------------------------------------------------------------------------------------------------
-      Run         dW_meas      dW / dEb      dW / dE'      dW / dth_e       dW_predicted       Delta_W
--------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+      Run         dW_meas   dW_meas_err   dW / dEb      dW / dE'      dW / dth_e       dW_predicted       Delta_W
+-------------------------------------------------------------------------------------------------------------------
+
+
+******************************************************************************************************************
+
+For HMS Protons:
+
+Nomenclature: P: HMS proton momentum
+              th_p : HMS proton angle
+
+Formulas: Pcalc (Eb, th_p) = 2 * Mp * Eb * (Eb + Mp) * cos(th_p) / ( Mp**2 + 2*Mp*Eb + (Eb*sin(th_p))**2 )  #Calculated proton momentum (Assuming Elastics)
+
+	  Pfr = (Pcalc(dEb, th_p) - Pmeas) / Pmeas     #fractional momentum
+
+
+Derivatives: dPfr / dEb = 1 / Pmeas * [ dPcalc / dEb ]
+	     dPfr / dPmeas = -Pcalc / Pmeas**2
+	     dPfr / dth_p = 1 / Pmeas * [ dPcalc / dth_p ] 
+
+	     dPcalc / dEb = 2 * Mp * (2*Eb + Mp)*cos(th_p) / (Mp**2 + 2*Mp*Eb + (Eb* sin(th_p))**2 ) - [ 4 * Mp * Eb * (Eb + Mp)*cos(th_p) /  (Mp**2 + 2*Mp*Eb + (Eb* sin(th_p))**2 )**2 ] * [Mp + Eb*sin**2(th_p)] 
+ 
+	     dPcalc / dth_p = - 2*Mp*Eb*(Eb+Mp)*sin(th_p) / ( Mp**2 + 2*Mp*Eb + (Eb*sin(th_p))**2 ) - [ 2*Mp*Eb*(Eb+Mp)*cos(th_p) / ( Mp**2 + 2*Mp*Eb + (Eb*sin(th_p))**2 )**2 ] * [2*sin(th_p)*cos(th_p)]*Eb**2
+	     
+
+Parameters to vary:  p1 = dEb / Eb,  p2 = dP / P,  p3 = dth_p       (relative values, same three parameters as for the electron case)
+
+
+Definitions:
+dPfr_meas = Pfr_simc - Pfr_data,  
+
+dPfr_predicted = ( dPfr / dEb ) * dEb  +  ( dPfr / dP ) * dP  +  ( dPfr / dth ) * dth  
+	       = ( dPfr / dEb ) * p1*Eb  +  ( dPfr / dP ) * p2*P  +  ( dPfr / dth ) * p3  
+
+
+Delta_Pfr (p1, p2, p3) = dPfr_meas - dPfr_predicted  (Quantity to minimize)
+
+Problem: Find p1, p2, p3 such as to minimize Delta_Pfr
+
+Chi2-Minimization:  X2 = Sum_{i runs} [ (dPfr_meas_i - dPfr_predicted(p1,p2,p3))/dPfr_meas_err_i ] ^ 2
+                    dX2 / dp1 = 0
+		    dX2 / dp2 = 0
+		    dX2 / dp3 = 0
+
+
+HMS protons:
+-----------------------------------------------------------------------------------------------------------------------------------
+      Run         dPfr_meas    dPfr_meas_err   dPfr / dEb      dPfr / dPmeas      dPfr / dth       dPfr_predicted       Delta_Pfr
+-----------------------------------------------------------------------------------------------------------------------------------
 
 
 
-
-
+NOTE: In the chi2Min.py code, rather than taking the derivatives with respect to the parameters p1 ,p2, p3, A loop is made over a range
+for each parameter, resulting in p1*p2*p3 total configurations which can yield a chi2.  The configuration of parameters giving the smallest 
+chi2 is then taken.
 
 **********************************************************************************************************

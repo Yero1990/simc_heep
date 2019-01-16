@@ -23,10 +23,14 @@ void analyze_heepData(int run, string eArm="")
   //gROOT->SetBatch(kTRUE);
     
   //Read DATA ROOTfiles  
-  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);        
+  //TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);        
 
   //HMS electron Heep Check data
-  //TString filename =Form("../../hallc_replay/ROOTfiles/g%d_coin.root",run);        
+  TString filename =Form("../../hallc_replay/ROOTfiles/good_Heep_hmsElec/g%d_coin.root",run);        
+
+  //HMS proton Heep Check data
+  //TString filename =Form("../../hallc_replay/ROOTfiles/good_Heep_hmsElec/g%d_coin.root",run);        
+
 
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *T = (TTree*)data_file->Get("T");
@@ -403,8 +407,8 @@ void analyze_heepData(int run, string eArm="")
   
   
   
-   for (Long64_t i=0; i<nentries;i++) {
-  //for (Long64_t i=0; i<100000;i++) {
+  //for (Long64_t i=0; i<nentries;i++) {
+  for (Long64_t i=0; i<100000;i++) {
 
     T->GetEntry(i);
     
@@ -416,7 +420,9 @@ void analyze_heepData(int run, string eArm="")
     Ep = TMath::Sqrt(MP*MP + Pf*Pf);
     Emv2 = nu + MP - Ep;
 
-    c_Em = Em < -0.04;                     //Missing energy < 0.04 (40 MeV)
+    //c_Em = Em < -0.1;   hms e-data: g7                    
+    //c_Em = Em < -0.02;   hms e-data: g8                    
+    //c_Em = Em < -0.05;   hms e-data: g9
     c_hdelta = h_delta>-8.&&h_delta<8.;  //good HMS delta range (well known recon. matrix)
     c_ecal = pcal_etottracknorm > 0.85;   //reject pions
     c_ctime = epCoinTime>8.6 && epCoinTime<13.6;

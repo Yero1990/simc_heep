@@ -14,13 +14,14 @@ Mp = 0.938272           #proton mass
 
 
 # Plotting reduced chi2 vs. relative quantities, while holding fixed other relative quantities, to observe sensitivity
-
+'''
 f = B.get_file('sorted_chi2.txt')
 dEb_Eb = B.get_data(f, 'dEb_Eb')
 dP_P = B.get_data(f, 'dP_P')
 dth = B.get_data(f, 'dth')
 redchi2 = B.get_data(f, 'total_redChi2')
-'''
+
+
 #When plotting lists with multiple conditions, put a single boolean like '&' or '|', for some reason, '&&' does NOT work. 
 #See 'python plot with conditions on other lists' in Google, and search for it in "StackOverflow" link
 
@@ -113,11 +114,13 @@ B.pl.xlim(-0.0045, 0.0060)
 B.pl.show()
 '''
 
+'''
+#-------------chi2 vs. relative beam energy---------
+#dth_arr = [-0.001, -0.0005]  
+#dP_P_arr = [-0.0015, -0.0005, 0.0005, 0.0015]  #, -0.0015, -0.0005, 0.0005, 0.0025]
 
-#-----------------------chi2 vs. relative beam energy---------
 dth_arr = [-0.001, -0.0005]  
-dP_P_arr = [-0.0015, -0.0005, 0.0005, 0.0015]  #, -0.0015, -0.0005, 0.0005, 0.0025]
-
+dP_P_arr = [-0.0015, -0.001, -0.0005, 0.00]
 
 
 color_arr = ['red', 'blue', 'cyan', 'green']#, 'magenta']
@@ -149,7 +152,72 @@ B.pl.xlim(-0.0011, 0.00155)
 B.pl.show()
 
 #----------------------------
+'''
 
+#PLOT (W_simc - W_data) vs. E' for difference beam energies (Measured DATA/SIMC quantities)
+f = B.get_file('hms_kin.data')
+particle = B.get_data(f, 'particle')
+hmsP = B.get_data(f, 'nmr_P')
+hmsAng = B.get_data(f, 'hms_Angle')
+Eb = B.get_data(f, 'beam_e')
+data_W = B.get_data(f, 'data_W_mean')
+data_W_err = B.get_data(f, 'data_W_mean_err')
+simc_W = B.get_data(f, 'simc_W_mean')
+simc_W_err = B.get_data(f, 'simc_W_mean_err')
+
+dW_meas = simc_W - data_W
+dW_meas_err = np.sqrt(simc_W_err**2 + data_W_err**2)
+
+
+B.plot_exp(hmsP[(Eb==10.6005) & (particle=='e')], dW_meas[(Eb==10.6005) & (particle=='e') ], dW_meas_err[(Eb==10.6005) & (particle=='e')], color='r', marker='o', label = 'Eb = 10.6005 GeV' )
+B.plot_exp(hmsP[(Eb==6.42765) & (particle=='e')], dW_meas[(Eb==6.42765) & (particle=='e') ], dW_meas_err[(Eb==6.42765) & (particle=='e')], color='b', marker='s', label = 'Eb = 6.42765 GeV' )
+B.plot_exp(hmsP[(Eb==3.83350) & (particle=='e')], dW_meas[(Eb==3.83350) & (particle=='e') ], dW_meas_err[(Eb==3.83350) & (particle=='e')], color='g', marker='^', label = 'Eb = 3.83350 GeV' )
+B.plot_exp(hmsP[(Eb==4.93090) & (particle=='e')], dW_meas[(Eb==4.93090) & (particle=='e') ], dW_meas_err[(Eb==4.93090) & (particle=='e')], color='c', marker='v', label = 'Eb = 4.93090 GeV' )
+
+#B.pl.legend()
+#B.pl.xlabel('HMS Central Momentum [GeV]')
+#B.pl.ylabel(r'W Variations, $dW_{SIMC} - dW_{DATA}$ [GeV]')
+#B.pl.title('HMS Electrons: dW vs. Momentum')
+#B.pl.show()
+
+#Plot Predicted dW vs. P
+#Assume: dP/P = -0.0015,  dth = -0.0005, dEb/Eb = 0.0004
+dP_P = -0.0015
+dth = -0.0005
+dEb_Eb = 0.0004
+
+
+#Calculated W derivatives
+
+#dW_dEb = hmsP[particle=='e']/Eb[particle=='e']
+#dW_dP = -Eb[particle=='e']/hmsP[particle=='e']
+#dW_dth = -2 * Eb[particle=='e'] * hmsP[particle=='e'] * np.sin(th/2) * np.cos(th/2) / Mp
+Eb_0 = 10.6005
+Eb_1 = 6.42765
+Eb_2 = 3.83350
+Eb_3 = 4.93090
+
+dW_pred0 = hmsP[(Eb==Eb_0) & (particle=='e')] * dEb_Eb - Eb[(Eb==Eb_0) & (particle=='e')]*dP_P - 2 * Eb[(Eb==Eb_0) & (particle=='e')] * hmsP[(Eb==Eb_0) & (particle=='e')] * np.sin(hmsAng[(Eb==Eb_0) & (particle=='e')]*dtr/2) * np.cos(hmsAng[(Eb==Eb_0) & (particle=='e')]/2) / Mp * dth
+dW_pred1 = hmsP[(Eb==Eb_1) & (particle=='e')] * dEb_Eb - Eb[(Eb==Eb_1) & (particle=='e')]*dP_P - 2 * Eb[(Eb==Eb_1) & (particle=='e')] * hmsP[(Eb==Eb_1) & (particle=='e')] * np.sin(hmsAng[(Eb==Eb_1) & (particle=='e')]*dtr/2) * np.cos(hmsAng[(Eb==Eb_1) & (particle=='e')]/2) / Mp * dth
+dW_pred2 = hmsP[(Eb==Eb_2) & (particle=='e')] * dEb_Eb - Eb[(Eb==Eb_2) & (particle=='e')]*dP_P - 2 * Eb[(Eb==Eb_2) & (particle=='e')] * hmsP[(Eb==Eb_2) & (particle=='e')] * np.sin(hmsAng[(Eb==Eb_2) & (particle=='e')]*dtr/2) * np.cos(hmsAng[(Eb==Eb_2) & (particle=='e')]/2) / Mp * dth
+dW_pred3 = hmsP[(Eb==Eb_3) & (particle=='e')] * dEb_Eb - Eb[(Eb==Eb_3) & (particle=='e')]*dP_P - 2 * Eb[(Eb==Eb_3) & (particle=='e')] * hmsP[(Eb==Eb_3) & (particle=='e')] * np.sin(hmsAng[(Eb==Eb_3) & (particle=='e')]*dtr/2) * np.cos(hmsAng[(Eb==Eb_3) & (particle=='e')]/2) / Mp * dth
+
+
+B.plot_exp(hmsP[(Eb==Eb_0) & (particle=='e')], dW_pred0, color='r', marker='o', markersize=12, markerfacecolor='none', label = 'dW Predicted: Eb = 10.6005 GeV' )
+B.plot_exp(hmsP[(Eb==Eb_1) & (particle=='e')], dW_pred1, color='b', marker='s', markersize=12, markerfacecolor='none', label =  'dW Predicted: Eb = 6.42765 GeV' )
+B.plot_exp(hmsP[(Eb==Eb_2) & (particle=='e')], dW_pred2, color='g', marker='^', markersize=12, markerfacecolor='none', label =  'dW Predicted: Eb = 3.83350 GeV' )
+B.plot_exp(hmsP[(Eb==Eb_3) & (particle=='e')], dW_pred3, color='c', marker='v', markersize=12, markerfacecolor='none', label =  'dW Predicted: Eb = 4.93090 GeV' )
+
+B.pl.legend()
+B.pl.xlabel('HMS Central Momentum [GeV]')
+B.pl.ylabel(r'W Variations, dW [GeV]')
+B.pl.title('HMS Electrons: dW vs. Momentum')
+B.pl.grid(True)
+B.pl.show()
+
+
+
+'''
 #---------------------------------
 #---PLOTTING W derivatives--------
 #---------------------------------
@@ -176,7 +244,7 @@ B.pl.show()
 #dW_dth = -2 * Eb * P * np.sin(theta/2) * np.cos(theta/2) / Mp
 
 #------If the independent variables are absolute quantities-------
-'''
+
 #relative beam energy configurations
 dEb_Eb1 = -0.01  
 dEb_Eb2 = -0.008

@@ -23,7 +23,10 @@ void calc_hProt_PDiff()
 
   //Define some constants
   Double_t Mp = 0.938272;  //proton mass
-  Double_t Eb = 10.6005;
+
+  //Double_t Eb = 10.6005; D2 Heep Data
+  Double_t Eb[4] = {2.221728, 6.42765, 6.42765, 10.6005};
+
 
   //Define some variables to be determined inside the entry loop
   Double_t hmsP_calc;   //calculated HMS momentum
@@ -94,7 +97,8 @@ void calc_hProt_PDiff()
  
   Double_t FullWeight;
 
-  int run[4] = {3288, 3371, 3374, 3377};
+  //int run[4] = {3288, 3371, 3374, 3377};
+  int run[4] = {1, 2, 3, 4};
 
 
 
@@ -106,7 +110,10 @@ void calc_hProt_PDiff()
       simc_HList[index](0);
 
 
-      string filename = Form("../../../worksim_voli/D2_heep_%d.root", run[index]);                                   
+      //      string filename = Form("../../../worksim_voli/D2_heep_%d.root", run[index]);                                   
+      
+      //Additional proton data
+      string filename = Form("../../../worksim_voli/heep_kg%dcoin.root", run[index]);                                   
 
       TFile *f1 = new TFile(filename.c_str());                                                                           
 
@@ -187,13 +194,13 @@ void calc_hProt_PDiff()
 	T->GetEntry(i);
 
 	//Define CUts
-	c_simcEm = Em < 0.03;
+	c_simcEm = Em < 0.02;
 
 	//Calculate the cross-sect. weight
 	FullWeight = (Normfac*Weight)/T->GetEntries();
 	
 	//Calculated proton Momentum (Using formula)
-	hmsP_calc = 2.*Mp*Eb*(Eb + Mp)*TMath::Cos(theta_p) / (Mp*Mp + 2.*Mp*Eb + Eb*Eb*TMath::Power(TMath::Sin(theta_p),2));
+	hmsP_calc = 2.*Mp*Eb[index]*(Eb[index] + Mp)*TMath::Cos(theta_p) / (Mp*Mp + 2.*Mp*Eb[index] + Eb[index]*Eb[index]*TMath::Power(TMath::Sin(theta_p),2));
 	//Measured Momentum Obtained from delta
 	hmsP_meas = hPf / 1000.;//h_delta*hP0[index] / 100. + hP0[index];
 	//cout << "hPf = " << hPf << endl;
@@ -326,7 +333,10 @@ void calc_hProt_PDiff()
 
   
   //----DEFINE SOME CUTS
-  double Em_min[4] = {-0.125, -0.115, -0.14, -0.14}; //Emiss < Em_min Determined using EPICS momenta data
+  //double Em_min[4] = {-0.125, -0.115, -0.14, -0.14}; //Emiss < Em_min Determined using EPICS momenta data D2 hEEP
+  
+  double Em_min[4] = {-0.015, -0.045, -0.05, -0.12}; //Emiss < Em_min Determined using EPICS momenta hprotkg1,2,3,4
+
   Bool_t c_dataEm;
 
   //-------------CREATE EMPTY HISTOGRAMS---------------------------------------------
@@ -368,7 +378,11 @@ void calc_hProt_PDiff()
 
                                                                            
 	//Open TFile
-	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[index]);
+	//string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[index]);
+	
+	//Additional Proton data
+	string filename = Form("../../../../hallc_replay/ROOTfiles/good_Heep_hmsProt/hprot_kg%d.root",run[index]);
+
 
 	TFile *f1 = new TFile(filename.c_str());
 	
@@ -450,7 +464,7 @@ void calc_hProt_PDiff()
 	htheta_p = xangle*180./TMath::Pi() - ptheta_e;
 
 	//HMS Particle calculated momentum (Using only the particle angle and beam energy)
-	hmsP_calc = 2.*Mp*Eb*(Eb + Mp)*TMath::Cos(htheta_p*TMath::Pi()/180.) / (Mp*Mp + 2.*Mp*Eb + Eb*Eb*TMath::Power(TMath::Sin(htheta_p*TMath::Pi()/180.),2)) ;
+	hmsP_calc = 2.*Mp*Eb[index]*(Eb[index] + Mp)*TMath::Cos(htheta_p*TMath::Pi()/180.) / (Mp*Mp + 2.*Mp*Eb[index] + Eb[index]*Eb[index]*TMath::Power(TMath::Sin(htheta_p*TMath::Pi()/180.),2)) ;
 
 	
 	if(TMath::Abs(htheta_p)<100 && TMath::Abs(hmsP_calc)<100 && TMath::Abs(hms_Pmeas)<100. &&  c_dataEm)

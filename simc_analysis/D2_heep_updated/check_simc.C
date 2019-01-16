@@ -70,8 +70,8 @@ TString electron_arm;
   //Read SIMC ROOTfiles
     
   //Deuteron Heep Check Data
-  TString filename = Form("../../worksim_voli/D2_heep_%d.root",run);                                 
-  //TString filename = Form("../../worksim_voli/heep_g%dcoin.root",run);                                 
+  //TString filename = Form("../../worksim_voli/D2_heep_%d.root",run);                                 
+  TString filename = Form("../../worksim_voli/heep_g%dcoin.root",run);                                 
 
   
 
