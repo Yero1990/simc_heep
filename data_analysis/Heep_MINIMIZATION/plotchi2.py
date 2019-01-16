@@ -4,8 +4,10 @@
 
 import numpy as np
 import LT.box as B
+import matplotlib.ticker as tk
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+
 
 #Define Some Constants                                                                                                     
 dtr = np.pi / 180.    #degrees to radians                                                                                                                                 
@@ -14,7 +16,7 @@ Mp = 0.938272           #proton mass
 
 
 # Plotting reduced chi2 vs. relative quantities, while holding fixed other relative quantities, to observe sensitivity
-'''
+
 f = B.get_file('sorted_chi2.txt')
 dEb_Eb = B.get_data(f, 'dEb_Eb')
 dP_P = B.get_data(f, 'dP_P')
@@ -22,48 +24,21 @@ dth = B.get_data(f, 'dth')
 redchi2 = B.get_data(f, 'total_redChi2')
 
 
-#When plotting lists with multiple conditions, put a single boolean like '&' or '|', for some reason, '&&' does NOT work. 
-#See 'python plot with conditions on other lists' in Google, and search for it in "StackOverflow" link
-
-B.plot_exp(dth[(dP_P==-0.0025) & (dEb_Eb==0.0)], redchi2[(dP_P==-0.0025) & (dEb_Eb==0.0)], color='red', marker='^', label=r'$\frac{dEb}{Eb}$ = 0.0,  $\frac{dP}{P}$ = -0.0025')
-B.plot_exp(dth[(dP_P==-0.0025) & (dEb_Eb==0.001)], redchi2[(dP_P==-0.0025) & (dEb_Eb==0.001)], color='red', marker='^', markerfacecolor='none', label=r'$\frac{dEb}{Eb}$ = 0.001,  $\frac{dP}{P}$ = -0.0025')
-
-B.plot_exp(dth[(dP_P==-0.0015) & (dEb_Eb==0.000)], redchi2[(dP_P==-0.0015) & (dEb_Eb==0.0)], color='blue', marker='o', label=r'$\frac{dEb}{Eb}$ = 0.0,  $\frac{dP}{P}$ = -0.0015')
-B.plot_exp(dth[(dP_P==-0.0015) & (dEb_Eb==0.001)], redchi2[(dP_P==-0.0015) & (dEb_Eb==0.001)], color='blue', marker='o', markerfacecolor='none', label=r'$\frac{dEb}{Eb}$ = 0.001,  $\frac{dP}{P}$ = -0.0015')
-
-B.plot_exp(dth[(dP_P==-0.0005) & (dEb_Eb==0.0)], redchi2[(dP_P==-0.0005) & (dEb_Eb==0.0)], color='cyan', marker='s', label=r'$\frac{dEb}{Eb}$ = 0.0,  $\frac{dP}{P}$ = -0.0005')
-B.plot_exp(dth[(dP_P==-0.0005) & (dEb_Eb==0.001)], redchi2[(dP_P==-0.0005) & (dEb_Eb==0.001)], color='cyan', marker='s', markerfacecolor='none', label=r'$\frac{dEb}{Eb}$ = 0.001,  $\frac{dP}{P}$ = -0.0005')
-
-B.plot_exp(dth[(dP_P==0.0005) & (dEb_Eb==0.0)], redchi2[(dP_P==0.0005) & (dEb_Eb==0.0)], color='green', marker='v', label=r'$\frac{dEb}{Eb}$ = 0.0,  $\frac{dP}{P}$ = 0.0005')
-B.plot_exp(dth[(dP_P==0.0005) & (dEb_Eb==0.001)], redchi2[(dP_P==0.0005) & (dEb_Eb==0.001)], color='green', marker='v', markerfacecolor='none',label=r'$\frac{dEb}{Eb}$ = 0.001,  $\frac{dP}{P}$ = 0.0005')
-
-B.plot_exp(dth[(dP_P==0.0025) & (dEb_Eb==0.0)], redchi2[(dP_P==0.0025) & (dEb_Eb==0.0)], color='magenta', marker='P', label=r'$\frac{dEb}{Eb}$ = 0.0,  $\frac{dP}{P}$ = 0.0025')
-B.plot_exp(dth[(dP_P==0.0025) & (dEb_Eb==0.001)], redchi2[(dP_P==0.0025) & (dEb_Eb==0.001)], color='magenta', marker='P', markerfacecolor='none',label=r'$\frac{dEb}{Eb}$ = 0.001,  $\frac{dP}{P}$ = 0.0025')
-
-B.plot_exp(dth[(dP_P==-0.0035) & (dEb_Eb==0.0)], redchi2[(dP_P==-0.0035) & (dEb_Eb==0.0)], color='black', marker='D', label=r'$\frac{dEb}{Eb}$ = 0.0,  $\frac{dP}{P}$ = -0.0035')
-B.plot_exp(dth[(dP_P==-0.0035) & (dEb_Eb==0.001)], redchi2[(dP_P==-0.0035) & (dEb_Eb==0.001)], color='black', marker='D', markerfacecolor='none',label=r'$\frac{dEb}{Eb}$ = 0.001,  $\frac{dP}{P}$ = -0.0035')
-
-B.pl.legend()
-B.pl.xlabel(r'Relative Angle, d$\theta$[rad]')
-B.pl.ylabel(r'Total Reduced $\chi^{2}_{\nu}$')
-B.pl.yscale('log')
-
-B.pl.show("same")
-'''
-
-
 '''
 #-------chi2 vs. HMS Angle Variations, dtheta-------------
 
-dP_P_arr = [-0.0035, -0.0025, -0.0015, -0.0005, 0.0005, 0.0025]
+#dP_P_arr = [-0.0035, -0.0025, -0.0015, -0.0005, 0.0005, 0.0025]
+
+dP_P_arr = [-0.0025, -0.0015, -0.0005, 0.0, 0.0005, 0.0015, 0.0025]
 dEb_Eb_arr = [0.0, 0.001]
-color_arr = ['black', 'red', 'blue', 'cyan', 'green', 'magenta']
-fcolor_arr = ['none']
-marker_arr = ['D', '^', 'o', 's', 'v', 'P']
+
+color_arr = ['black', 'red', 'blue', 'cyan', 'green', 'magenta', 'purple']
+marker_arr = ['X', 'D', '^', 'o', 's', 'v', 'P']
+
 
 for i in range(0, len(dP_P_arr)):
     for j in range(0, len(dEb_Eb_arr)):
-        print ('dP_P[i] = ', dP_P_arr[i], 'dEb_Eb[j] = ',dEb_Eb_arr[j], 'color[k] = ',color_arr[i])
+        #print ('dP_P[i] = ', dP_P_arr[i], 'dEb_Eb[j] = ',dEb_Eb_arr[j], 'color[k] = ',color_arr[i])
         if j==0:
             B.plot_exp(dth[(dP_P==dP_P_arr[i]) & (dEb_Eb==dEb_Eb_arr[j])], redchi2[(dP_P==dP_P_arr[i]) & (dEb_Eb==dEb_Eb_arr[j])], color=color_arr[i], marker=marker_arr[i], label=r'$\frac{dEb}{Eb}$ = %s,  $\frac{dP}{P}$ = %s'%(dEb_Eb_arr[j],dP_P_arr[i]))
         if j==1:
@@ -72,7 +47,11 @@ for i in range(0, len(dP_P_arr)):
 
 B.pl.legend(loc='lower right')
 B.pl.grid(True, which='both')
-B.pl.yscale('log')
+#B.pl.yscale('log')
+ax = B.pl.axes()
+ax.set_yscale('log')
+ax.set_yticks([100, 130, 200, 500, 1000,5000, 10000, 20000])
+ax.get_yaxis().set_major_formatter(tk.ScalarFormatter())
 B.pl.title(r'Reduced Chi2 ($\chi^{2}_{\nu}$) vs. HMS Angle Variations')
 B.pl.xlabel(r'HMS Angle Variations, d$\theta$[rad]')
 B.pl.ylabel(r'Total Reduced $\chi^{2}_{\nu}$')
@@ -84,19 +63,18 @@ B.pl.show()
 '''
 
 '''
-#-------chi2 vs. HMS Relative Momentum, dtheta-------------
+#-------chi2 vs. HMS Relative Momentum, dP/P-------------
 
-dth_arr = [-0.0015, -0.001, -0.0005, 0.0005, 0.001, 0.0015]
+#dth_arr = [-0.0015, -0.001, -0.0005, 0.0005, 0.001, 0.0015]
 
+dth_arr = [-0.001, -0.0005, 0.0, 0.0005, 0.001]
 dEb_Eb_arr = [0.0, 0.001]
 
-color_arr = ['black', 'red', 'blue', 'cyan', 'green', 'magenta']
-fcolor_arr = ['none']
-marker_arr = ['D', '^', 'o', 's', 'v', 'P']
+color_arr = ['black', 'red', 'blue', 'magenta', 'green']
+marker_arr = ['D', '^', 'o', 's', 'v']
 
 for i in range(0, len(dth_arr)):
     for j in range(0, len(dEb_Eb_arr)):
-        #print ('dP_P[i] = ', dP_P_arr[i], 'dEb_Eb[j] = ',dEb_Eb_arr[j], 'color[k] = ',color_arr[i])
         if j==0:
             B.plot_exp(dP_P[(dth==dth_arr[i]) & (dEb_Eb==dEb_Eb_arr[j])], redchi2[(dth==dth_arr[i]) & (dEb_Eb==dEb_Eb_arr[j])], color=color_arr[i], marker=marker_arr[i], label=r'$\frac{dEb}{Eb}$ = %s,  $\delta\theta$ = %s (rad)'%(dEb_Eb_arr[j],dth_arr[i]))
         if j==1:
@@ -105,9 +83,13 @@ for i in range(0, len(dth_arr)):
 
 B.pl.legend(loc='lower right')
 B.pl.grid(True, which='both')
-B.pl.yscale('log')
-B.pl.title(r'Reduced Chi2 ($\chi^{2}_{\nu}$) vs. HMS Angle Variations')
-B.pl.xlabel(r'HMS Momentum, $\frac{dP}{P}$')
+#B.pl.yscale('log')
+ax = B.pl.axes()
+ax.set_yscale('log')
+ax.set_yticks([100, 130, 200, 500, 1000,5000, 10000, 20000])
+ax.get_yaxis().set_major_formatter(tk.ScalarFormatter())
+B.pl.title(r'Reduced Chi2 ($\chi^{2}_{\nu}$) vs. HMS Momentum Fraction')
+B.pl.xlabel(r'HMS Momentum Fraction, $\frac{dP}{P}$')
 B.pl.ylabel(r'Total Reduced $\chi^{2}_{\nu}$')
 B.pl.xticks(np.arange(-0.0045, 0.0060, step=0.0005))
 B.pl.xlim(-0.0045, 0.0060)
@@ -115,37 +97,39 @@ B.pl.show()
 '''
 
 '''
-#-------------chi2 vs. relative beam energy---------
+#-------------chi2 vs. relative beam energy, dEb / Eb---------
 #dth_arr = [-0.001, -0.0005]  
 #dP_P_arr = [-0.0015, -0.0005, 0.0005, 0.0015]  #, -0.0015, -0.0005, 0.0005, 0.0025]
 
-dth_arr = [-0.001, -0.0005]  
+dth_arr = [-0.001, -0.0005, 0.]  
 dP_P_arr = [-0.0015, -0.001, -0.0005, 0.00]
 
 
-color_arr = ['red', 'blue', 'cyan', 'green']#, 'magenta']
-fcolor_arr = ['none']
-marker_arr = ['o', 's']#, 'v', 'P']
+color_arr = ['red', 'blue', 'green']#, 'magenta']
+marker_arr = ['o', 's', 'D'] #, 'P']
 
 for i in range(0, len(dth_arr)):
     for j in range(0, len(dP_P_arr)):
-        #print ('dP_P[i] = ', dP_P_arr[i], 'dEb_Eb[j] = ',dEb_Eb_arr[j], 'color[k] = ',color_arr[i])
         if j==0:
-            B.plot_exp(dEb_Eb[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], redchi2[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], color=color_arr[i], marker=marker_arr[i], label=r'$\frac{dP}{P}$ = %s,  $\delta\theta$ = %s (rad)'%(dP_P_arr[j],dth_arr[i]))
+            B.plot_exp(dEb_Eb[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], redchi2[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], color=color_arr[i], fillstyle='full', markersize=6, marker=marker_arr[i], label=r'$\frac{dP}{P}$ = %s,  $\delta\theta$ = %s (rad)'%(dP_P_arr[j],dth_arr[i]))
         if j==1:
-            B.plot_exp(dEb_Eb[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], redchi2[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], color=color_arr[i], markerfacecolor='none', marker=marker_arr[i], label=r'$\frac{dP}{P}$ = %s,  $\delta\theta$ = %s (rad)'%(dP_P_arr[j],dth_arr[i]))
+            B.plot_exp(dEb_Eb[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], redchi2[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], color=color_arr[i], fillstyle='top', markersize=6, marker=marker_arr[i], label=r'$\frac{dP}{P}$ = %s,  $\delta\theta$ = %s (rad)'%(dP_P_arr[j],dth_arr[i]))
         if j==2:
-            B.plot_exp(dEb_Eb[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], redchi2[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], color=color_arr[i], fillstyle='right', marker=marker_arr[i], label=r'$\frac{dP}{P}$ = %s,  $\delta\theta$ = %s (rad)'%(dP_P_arr[j],dth_arr[i]))
+            B.plot_exp(dEb_Eb[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], redchi2[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], color=color_arr[i], fillstyle='right',markersize=6, marker=marker_arr[i], label=r'$\frac{dP}{P}$ = %s,  $\delta\theta$ = %s (rad)'%(dP_P_arr[j],dth_arr[i]))
         if j==3:
-            B.plot_exp(dEb_Eb[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], redchi2[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], color=color_arr[i], fillstyle='left', marker=marker_arr[i], label=r'$\frac{dP}{P}$ = %s,  $\delta\theta$ = %s (rad)'%(dP_P_arr[j],dth_arr[i]))
+            B.plot_exp(dEb_Eb[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], redchi2[(dth==dth_arr[i]) & (dP_P==dP_P_arr[j])], color=color_arr[i], fillstyle='none', markersize=6,marker=marker_arr[i], label=r'$\frac{dP}{P}$ = %s,  $\delta\theta$ = %s (rad)'%(dP_P_arr[j],dth_arr[i]))
 
 
             
-B.pl.legend(loc='lower right')
+B.pl.legend(loc='upper right')
 B.pl.grid(True, which='both')
-B.pl.yscale('log')
+#B.pl.yscale('log')
+ax = B.pl.axes()
+ax.set_yscale('log')
+ax.set_yticks([100, 130, 200, 500, 1000,5000])
+ax.get_yaxis().set_major_formatter(tk.ScalarFormatter())
 B.pl.title(r'Reduced Chi2 ($\chi^{2}_{\nu}$) vs. Beam Energy Variations')
-B.pl.xlabel(r'Beam Energy Variations, $\frac{dE_{b}}{E_{b}}$')
+B.pl.xlabel(r'Beam Energy Fraction, $\frac{dE_{b}}{E_{b}}$')
 B.pl.ylabel(r'Total Reduced $\chi^{2}_{\nu}$')
 #B.pl.xticks(np.arange(-0.0045, 0.0060, step=0.0005))
 B.pl.xlim(-0.0011, 0.00155)
@@ -153,6 +137,7 @@ B.pl.show()
 
 #----------------------------
 '''
+
 
 #PLOT (W_simc - W_data) vs. E' for difference beam energies (Measured DATA/SIMC quantities)
 f = B.get_file('hms_kin.data')
@@ -184,7 +169,7 @@ B.plot_exp(hmsP[(Eb==4.93090) & (particle=='e')], dW_meas[(Eb==4.93090) & (parti
 #Assume: dP/P = -0.0015,  dth = -0.0005, dEb/Eb = 0.0004
 dP_P = -0.0015
 dth = -0.0005
-dEb_Eb = 0.0004
+dEb_Eb = 0.0008
 
 
 #Calculated W derivatives

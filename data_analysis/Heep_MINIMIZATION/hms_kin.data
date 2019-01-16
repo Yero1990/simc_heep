@@ -4,6 +4,7 @@
 #p1 =  dEb / Eb,  p2 = dP / P,   p3 = dth  
 #(   beam[GeV], momentum[GeV],  angle[rad]  relative uncertainties  )
 #Startng with run 6595 corresponds to LT HMS Heep singles. Some columns still need to be updated
+#particle[s,2]/  --> refers to the detected HMS Particle
 
 #! kin_group[i,0]/    Run[i,1]/   particle[s,2]/    	nmr_true[f,3]/	     nmr_P[f,4]/      hms_Angle[f,5]/   shms_P[f,6]/    shms_Angle[f,7]/   beam_e[f,8]/   x_BPM[f,9]/    y_BPM[f,10]/   hmsX_MisPoint[f,11]/   hmsY_MisPoint[f,12]/    shmsX_MisPoint[f,13]/     shmsY_MisPoint[f,14]/     data_W_mean[f,15]/   data_W_mean_err[f,16]/     simc_W_mean[f,17]/       simc_W_mean_err[f,18]/    data_Pfr_mean[f, 19]/      data_Pfr_mean_err[f, 20]/     simc_Pfr_mean[f, 21]/      simc_Pfr_mean_err[f, 22]/      comments[s,23]/	  	      	      		    
    1	              0		  e			0.988186	     3.6096	      27.502	        3.609	        27.619	           6.42765	  0.04499        0.005489	0.091246      	       0.170270		       -0.126000		 -0.060000                 0.9235               0.0002                     0.944                    0.0                       0.0	       		 0.0		      	       0.0			  0.0		                 ep-coincidence-g1_coin                                                                                            
