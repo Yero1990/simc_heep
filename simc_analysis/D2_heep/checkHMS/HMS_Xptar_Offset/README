@@ -1,0 +1,20 @@
+******************
+ HMS Xptar Offset
+******************
+
+January 18, 2018
+There is an offset observed between DATA/SIMC in HMS xptar.
+This offset can be estimated by comparing the mean of the 
+xptar distributions. This would then be applied to data.
+
+The SIMC/DATA HMS Xptar was normalized and compared. Black is DATA.  RED is SIMC.
+Run    data_mean   simc_mean    simc-data
+3288   -0.002266   0.0006213    0.00288729
+3371   -0.001962   0.001003     0.002965
+3374   -0.002832   0.0007381	0.00357009
+3377   -0.003182   0.001137     0.004319
+
+Average Diff. =  0.0034353499999999998 radians (3.435e-3 rad) -->hxptar_offset
+
+The offset of hxptar was applied in: 
+DEUTERON_ANALYSIS/PARAM/HMS/GEN/hms_flags.param

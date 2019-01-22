@@ -12,11 +12,10 @@ from mpl_toolkits.mplot3d import Axes3D
 #Define Some Constants                                                                                                     
 dtr = np.pi / 180.    #degrees to radians                                                                                                                                 
 Mp = 0.938272           #proton mass                                                                                                                                                
-     
 
 
-# Plotting reduced chi2 vs. relative quantities, while holding fixed other relative quantities, to observe sensitivity
-
+#Plotting reduced chi2 vs. relative quantities, while holding fixed other relative quantities, to observe sensitivity
+'''
 f = B.get_file('sorted_chi2.txt')
 dEb_Eb = B.get_data(f, 'dEb_Eb')
 dP_P = B.get_data(f, 'dP_P')
@@ -24,7 +23,6 @@ dth = B.get_data(f, 'dth')
 redchi2 = B.get_data(f, 'total_redChi2')
 
 
-'''
 #-------chi2 vs. HMS Angle Variations, dtheta-------------
 
 #dP_P_arr = [-0.0035, -0.0025, -0.0015, -0.0005, 0.0005, 0.0025]
@@ -50,7 +48,7 @@ B.pl.grid(True, which='both')
 #B.pl.yscale('log')
 ax = B.pl.axes()
 ax.set_yscale('log')
-ax.set_yticks([100, 130, 200, 500, 1000,5000, 10000, 20000])
+ax.set_yticks([100, 130, 200, 500, 700, 1000,5000, 10000, 20000])
 ax.get_yaxis().set_major_formatter(tk.ScalarFormatter())
 B.pl.title(r'Reduced Chi2 ($\chi^{2}_{\nu}$) vs. HMS Angle Variations')
 B.pl.xlabel(r'HMS Angle Variations, d$\theta$[rad]')
@@ -60,9 +58,9 @@ B.pl.xlim(-0.0022, 0.0032)
 B.pl.show()
 
 #----------------------------
-'''
 
-'''
+
+
 #-------chi2 vs. HMS Relative Momentum, dP/P-------------
 
 #dth_arr = [-0.0015, -0.001, -0.0005, 0.0005, 0.001, 0.0015]
@@ -86,7 +84,7 @@ B.pl.grid(True, which='both')
 #B.pl.yscale('log')
 ax = B.pl.axes()
 ax.set_yscale('log')
-ax.set_yticks([100, 130, 200, 500, 1000,5000, 10000, 20000])
+ax.set_yticks([100, 130, 200, 500, 700, 1000,5000, 10000, 20000])
 ax.get_yaxis().set_major_formatter(tk.ScalarFormatter())
 B.pl.title(r'Reduced Chi2 ($\chi^{2}_{\nu}$) vs. HMS Momentum Fraction')
 B.pl.xlabel(r'HMS Momentum Fraction, $\frac{dP}{P}$')
@@ -94,9 +92,9 @@ B.pl.ylabel(r'Total Reduced $\chi^{2}_{\nu}$')
 B.pl.xticks(np.arange(-0.0045, 0.0060, step=0.0005))
 B.pl.xlim(-0.0045, 0.0060)
 B.pl.show()
-'''
 
-'''
+
+
 #-------------chi2 vs. relative beam energy, dEb / Eb---------
 #dth_arr = [-0.001, -0.0005]  
 #dP_P_arr = [-0.0015, -0.0005, 0.0005, 0.0015]  #, -0.0015, -0.0005, 0.0005, 0.0025]
@@ -126,7 +124,7 @@ B.pl.grid(True, which='both')
 #B.pl.yscale('log')
 ax = B.pl.axes()
 ax.set_yscale('log')
-ax.set_yticks([100, 130, 200, 500, 1000,5000])
+ax.set_yticks([100, 130, 200, 500, 700, 1000,5000])
 ax.get_yaxis().set_major_formatter(tk.ScalarFormatter())
 B.pl.title(r'Reduced Chi2 ($\chi^{2}_{\nu}$) vs. Beam Energy Variations')
 B.pl.xlabel(r'Beam Energy Fraction, $\frac{dE_{b}}{E_{b}}$')
@@ -138,9 +136,8 @@ B.pl.show()
 #----------------------------
 '''
 
-
-#PLOT (W_simc - W_data) vs. E' for difference beam energies (Measured DATA/SIMC quantities)
 f = B.get_file('hms_kin.data')
+run = B.get_data(f, 'Run')
 particle = B.get_data(f, 'particle')
 hmsP = B.get_data(f, 'nmr_P')
 hmsAng = B.get_data(f, 'hms_Angle')
@@ -149,7 +146,14 @@ data_W = B.get_data(f, 'data_W_mean')
 data_W_err = B.get_data(f, 'data_W_mean_err')
 simc_W = B.get_data(f, 'simc_W_mean')
 simc_W_err = B.get_data(f, 'simc_W_mean_err')
+data_Pfr = B.get_data(f, 'data_Pfr_mean')
+data_Pfr_err = B.get_data(f, 'data_Pfr_mean_err') 
+simc_Pfr = B.get_data(f, 'simc_Pfr_mean')                                                
+simc_Pfr_err = B.get_data(f, 'simc_Pfr_mean_err')                                        
 
+
+
+#PLOT (W_simc - W_data) vs. E' for difference beam energies (Measured DATA/SIMC quantities)
 dW_meas = simc_W - data_W
 dW_meas_err = np.sqrt(simc_W_err**2 + data_W_err**2)
 
@@ -158,12 +162,6 @@ B.plot_exp(hmsP[(Eb==10.6005) & (particle=='e')], dW_meas[(Eb==10.6005) & (parti
 B.plot_exp(hmsP[(Eb==6.42765) & (particle=='e')], dW_meas[(Eb==6.42765) & (particle=='e') ], dW_meas_err[(Eb==6.42765) & (particle=='e')], color='b', marker='s', label = 'Eb = 6.42765 GeV' )
 B.plot_exp(hmsP[(Eb==3.83350) & (particle=='e')], dW_meas[(Eb==3.83350) & (particle=='e') ], dW_meas_err[(Eb==3.83350) & (particle=='e')], color='g', marker='^', label = 'Eb = 3.83350 GeV' )
 B.plot_exp(hmsP[(Eb==4.93090) & (particle=='e')], dW_meas[(Eb==4.93090) & (particle=='e') ], dW_meas_err[(Eb==4.93090) & (particle=='e')], color='c', marker='v', label = 'Eb = 4.93090 GeV' )
-
-#B.pl.legend()
-#B.pl.xlabel('HMS Central Momentum [GeV]')
-#B.pl.ylabel(r'W Variations, $dW_{SIMC} - dW_{DATA}$ [GeV]')
-#B.pl.title('HMS Electrons: dW vs. Momentum')
-#B.pl.show()
 
 #Plot Predicted dW vs. P
 #Assume: dP/P = -0.0015,  dth = -0.0005, dEb/Eb = 0.0004
@@ -198,6 +196,132 @@ B.pl.xlabel('HMS Central Momentum [GeV]')
 B.pl.ylabel(r'W Variations, dW [GeV]')
 B.pl.title('HMS Electrons: dW vs. Momentum')
 B.pl.grid(True)
+B.pl.show()
+
+
+'''
+
+#Plot Momentum Fraction Measured/Predicted vs. Central Momentum
+
+#Select ONLY protons
+Eb = Eb[particle=='p']
+P = hmsP[particle=='p']
+th = hmsAng[particle=='p'] * dtr
+
+simc_Pfr = simc_Pfr[particle=='p']
+data_Pfr = data_Pfr[particle=='p']
+
+simc_Pfr_err = simc_Pfr_err[particle=='p']
+data_Pfr_err = data_Pfr_err[particle=='p']
+
+#Measured dPfrac 
+dPfr_meas = (simc_Pfr - data_Pfr)*P
+dPfr_meas_err = np.sqrt((simc_Pfr_err*P)**2 + (data_Pfr_err*P)**2) 
+
+#dPfr_meas = (simc_Pfr - data_Pfr)
+#dPfr_meas_err = np.sqrt((simc_Pfr_err)**2 + (data_Pfr_err)**2) 
+
+
+#------calculated derivatives for predicted dPfr--------
+Pcalc =  2*Mp*Eb*(Eb+Mp)*np.cos(th) / ( Mp**2 + 2*Mp*Eb + pow(Eb*np.sin(th),2) )
+
+dPcalc_dEb = 2.* Mp * (2.*Eb + Mp)* np.cos(th) / (Mp*Mp + 2.*Mp*Eb + np.power(Eb*np.sin(th),2) ) - ( 4. * Mp*Eb*(Eb+Mp)*np.cos(th) * (Mp + Eb*np.sin(th)*np.sin(th)) ) / ( np.power(Mp*Mp + 2.*Mp*Eb+np.power(Eb*np.sin(th),2),2) )
+dPcalc_dth = -2.*Mp*Eb*(Eb + Mp)*np.sin(th) / (Mp*Mp + 2.*Mp*Eb + np.power(Eb*np.sin(th),2) ) - 2.*Mp*Eb*(Eb + Mp)*np.cos(th) / (np.power( Mp*Mp + 2.*Mp*Eb + np.power(Eb*np.sin(th),2),2 )) * Eb*Eb*(2.*np.sin(th) * np.cos(th)) 
+
+
+#dPfr_dEb =  dPcalc_dEb / P
+#dPfr_dP = - Pcalc / pow(P,2)
+#dPfr_dth = dPcalc_dth / P
+
+dPfr_dEb =  dPcalc_dEb 
+dPfr_dP = - 1
+dPfr_dth = dPcalc_dth
+
+#Assume relative uncertainties: dP/P = -0.0015,  dth = -0.0005, dEb/Eb = 0.0008
+#(For now, these give the lowest reduced chi2)
+dP_P = -0.0015
+dth = -0.0005
+dEb_Eb = 0.0008
+
+
+dPfr_pred =  (dPfr_dEb * Eb * dEb_Eb  +  dPfr_dP * P * dP_P +  dPfr_dth * dth)*P
+#dPfr_pred =  (dPfr_dEb * Eb * dEb_Eb  +  dPfr_dP * P * dP_P +  dPfr_dth * dth)
+
+#Plot Measured dPfr
+B.plot_exp(P, dPfr_meas, dPfr_meas_err, marker='o', color='red', label=r'Measured: $E_{b}$=10.6005 GeV')
+
+#Plot Predicted dPfr
+B.plot_exp(P, dPfr_pred, marker='s', color='blue', label=r'Predicted: $E_{b}$=10.6005 GeV')
+B.pl.title('HMS Momentum Difference vs. Central Momentum')
+B.pl.xlabel('HMS Momentum [GeV]')
+B.pl.ylabel('HMS Momentum Difference, dP [GeV]')
+B.pl.legend()
+B.pl.grid(True)
+B.pl.show()
+
+'''
+#Plot Momentum Correction, Assuming dth = 0 and dEb / Eb = 0, for different beam energies
+#Beam Energy Configurations 
+Eb0 = 10.6005
+Eb1 = 6.42765
+Eb2 = 4.93090
+Eb3 = 3.83350
+
+#------Electrons--------
+ 
+#dW = Wsimc - Wdata
+dW0 = simc_W[(particle=='e') & (Eb==Eb0)] - data_W[(particle=='e') & (Eb==Eb0)]
+dW1 = simc_W[(particle=='e') & (Eb==Eb1)] - data_W[(particle=='e') & (Eb==Eb1)]
+dW2 = simc_W[(particle=='e') & (Eb==Eb2)] - data_W[(particle=='e') & (Eb==Eb2)]
+dW3 = simc_W[(particle=='e') & (Eb==Eb3)] - data_W[(particle=='e') & (Eb==Eb3)]
+
+dW0_err = np.sqrt(simc_W_err[(particle=='e') & (Eb==Eb0)]**2 + data_W_err[(particle=='e') & (Eb==Eb0)]**2)
+dW1_err = np.sqrt(simc_W_err[(particle=='e') & (Eb==Eb1)]**2 + data_W_err[(particle=='e') & (Eb==Eb1)]**2)
+dW2_err = np.sqrt(simc_W_err[(particle=='e') & (Eb==Eb2)]**2 + data_W_err[(particle=='e') & (Eb==Eb2)]**2)
+dW3_err = np.sqrt(simc_W_err[(particle=='e') & (Eb==Eb3)]**2 + data_W_err[(particle=='e') & (Eb==Eb3)]**2)
+
+#Electron Momentum Correction Factor
+Pcorr_elec0 = (1 - dW0 / Eb0)
+Pcorr_elec1 = (1 - dW1 / Eb1)
+Pcorr_elec2 = (1 - dW2 / Eb2)
+Pcorr_elec3 = (1 - dW3 / Eb3)
+
+#Error
+Pcorr_elec0_err = dW0_err / Eb0
+Pcorr_elec1_err = dW1_err / Eb1
+Pcorr_elec2_err = dW2_err / Eb2
+Pcorr_elec3_err = dW3_err / Eb3
+
+
+#------Protons--------
+
+#dPf = Pfr_simc - Pfr_data
+#Pcorr = P + P*dPf = P*(1+ dPf)
+
+dPf0 = simc_Pfr[(particle=='p') & (Eb==Eb0)] - data_Pfr[(particle=='p') & (Eb==Eb0)]
+dPf0_err = np.sqrt(simc_Pfr_err[(particle=='p') & (Eb==Eb0)]**2 + data_Pfr_err[(particle=='p') & (Eb==Eb0)]**2)
+
+#---ONLY Applied when Pfr = (Pcalc - Pmeas) / Pmeas
+#Pcorr_prot0 = (1 - dPf0)
+#Pcorr_prot0_err = dPf0_err
+
+Pcorr_prot0 = (1 - dPf0/hmsP[(particle=='p') & (Eb==Eb0)])
+Pcorr_prot0_err = dPf0_err/hmsP[(particle=='p') & (Eb==Eb0)]
+
+
+#Plot
+B.plot_exp(hmsP[(particle=='e') & (Eb==Eb0)], Pcorr_elec0, Pcorr_elec0_err, marker='o', color='r', label=r'HMS $e^{-}, E_{b}=%s$'%Eb0)
+B.plot_exp(hmsP[(particle=='e') & (Eb==Eb1)], Pcorr_elec1, Pcorr_elec1_err, marker='s', color='b', label=r'HMS $e^{-}, E_{b}=%s$'%Eb1)
+B.plot_exp(hmsP[(particle=='e') & (Eb==Eb2)], Pcorr_elec2, Pcorr_elec2_err, marker='^', color='g', label=r'HMS $e^{-}, E_{b}=%s$'%Eb2)
+B.plot_exp(hmsP[(particle=='e') & (Eb==Eb3)], Pcorr_elec3, Pcorr_elec3_err, marker='D', color='magenta', label=r'HMS $e^{-}, E_{b}=%s$'%Eb3)
+
+B.plot_exp(hmsP[(particle=='p') & (Eb==Eb0)], Pcorr_prot0, Pcorr_prot0_err, marker='o', fillstyle='none', color='r', label=r'HMS $p^{+}, E_{b}=%s$'%Eb0)
+
+B.pl.xlabel('HMS Central Momentum [GeV]')
+B.pl.ylabel('HMS Momentum Correction Factor')
+B.pl.title('HMS: Momentum Correction Factor vs. Central Momentum')
+B.pl.grid(True)
+B.pl.legend()
 B.pl.show()
 
 

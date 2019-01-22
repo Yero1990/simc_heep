@@ -1,0 +1,21 @@
+#Python script to get average of REPORT_FILE quantities
+
+import LT.box as B
+import sys
+import pandas as pd    #used for data frame
+import numpy as np
+import re
+
+
+#report file basename
+
+#open run list
+f = open('runlist.txt')
+
+for irun in f:
+    #print(irun)
+    #open report file
+    #reportFile = "../../../REPORT_OUTPUT/%s/PRODUCTION/replay_%s_scaler_%s_%s.report"% (spec.upper(), spec, run, -1)
+    base = "replay_coin_heep_check_%s_-1.report"% (irun)
+    reportFile = "/w/hallc-scifs17exp/E12-10-003/REPORT_OUTPUT/COIN/PRODUCTION/"+base
+    print(reportFile)

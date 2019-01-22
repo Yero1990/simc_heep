@@ -1,0 +1,9 @@
+***************************
+SHMS Delta Re-Optimization
+***************************
+
+A momentum correction was found from optimization, as the 00000 term in the matrix.
+In the befor / after directories are the SIMC/DATA comparisons without / with this
+momentum correction applied both to data and simc.
+
+The correction was: E'corr = E'* 0.999548 for all heep runs

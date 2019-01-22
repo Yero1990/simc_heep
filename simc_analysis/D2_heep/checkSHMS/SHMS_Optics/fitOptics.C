@@ -3,7 +3,7 @@
 //applied to the correlations, to remove any unnecessary events that may be background or outside of the
 //SHMS delta acceptance.
 
-//To set the curts, a separate code, "set_optics_cuts.C" needs to be called. This code will produce root files
+//To set the cuts, a separate code, "set_optics_cuts.C" needs to be called. This code will produce root files
 //with the necessary cuts stored. These files are then read in this code and the cuts applied inside the entry loop.
 //The optics matrix fit is then performed inside the event loop. 
 

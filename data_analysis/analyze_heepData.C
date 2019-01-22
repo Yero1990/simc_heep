@@ -1,4 +1,4 @@
-#include "../simc_analysis/D2_heep_updated/set_heep_histos.h"
+#include "../simc_analysis/D2_heep/set_heep_histos.h"
 
 void analyze_heepData(int run, string eArm="")
 {
@@ -23,10 +23,10 @@ void analyze_heepData(int run, string eArm="")
   //gROOT->SetBatch(kTRUE);
     
   //Read DATA ROOTfiles  
-  //TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);        
+  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);        
 
   //HMS electron Heep Check data
-  TString filename =Form("../../hallc_replay/ROOTfiles/good_Heep_hmsElec/g%d_coin.root",run);        
+  //TString filename =Form("../../hallc_replay/ROOTfiles/good_Heep_hmsElec/g%d_coin.root",run);        
 
   //HMS proton Heep Check data
   //TString filename =Form("../../hallc_replay/ROOTfiles/good_Heep_hmsElec/g%d_coin.root",run);        
@@ -40,8 +40,10 @@ void analyze_heepData(int run, string eArm="")
   
 
   //********* Create 1D Histograms **************
-   
+     
+  //Detector Histograms
   TH1F *epCT = new TH1F("epCT","e-Proton Coincidence Time", 100, 0, 20);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
+  TH1F *etottrknorm = new TH1F("etot_tracknorm", "SHMS Total Normalized Track Energy", 100, 0.5, 2.3);
 
   //Kinematics Quantities
   TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
@@ -161,6 +163,7 @@ void analyze_heepData(int run, string eArm="")
 
   /************Define Histos to APPLY CUTS*********************************/
   TH1F *cut_epCT = new TH1F("cut_epCT","e-Proton Coincidence Time", 100, 0, 20);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
+  TH1F *cut_etottrknorm = new TH1F("cut_etot_tracknorm", "SHMS Total Normalized Track Energy", 100, 0.5, 2.3);
 
   //Kinematics Quantities
   TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV
@@ -393,8 +396,18 @@ void analyze_heepData(int run, string eArm="")
   //Define Boolean for Kin. Cuts
   Bool_t c_Em;
   Bool_t c_hdelta;
+  Bool_t c_edelta;
   Bool_t c_ecal;
   Bool_t c_ctime;
+
+
+  //Set Minimum Emiss Cut depending on RUn Number
+  Double_t Em_min;
+  if (run==3288){Em_min = 0.04;}
+  if (run==3371){Em_min = 0.05;}  //hP_corr_only:-0.08;}
+  if (run==3374){Em_min = 0.03;}
+  if (run==3377){Em_min = 0.03;}
+
 
   //======================
   // E V E N T   L O O P 
@@ -407,8 +420,7 @@ void analyze_heepData(int run, string eArm="")
   
   
   
-  //for (Long64_t i=0; i<nentries;i++) {
-  for (Long64_t i=0; i<100000;i++) {
+  for (Long64_t i=0; i<nentries;i++) {
 
     T->GetEntry(i);
     
@@ -419,20 +431,26 @@ void analyze_heepData(int run, string eArm="")
     theta_pq_v2 = th_q - theta_p;
     Ep = TMath::Sqrt(MP*MP + Pf*Pf);
     Emv2 = nu + MP - Ep;
+    c_Em = Em < Em_min;      //-0.125, -0.115, -0.14, -0.14 --> 3288, 3371, 3374, 3377 (Determined using EPICS momenta data D2 hEEP)                       
+                             //-0.11, -0.08, -0.13, -0.13 --->Corrected HMS P, Em cuts
 
+    
     //c_Em = Em < -0.1;   hms e-data: g7                    
     //c_Em = Em < -0.02;   hms e-data: g8                    
     //c_Em = Em < -0.05;   hms e-data: g9
+    
     c_hdelta = h_delta>-8.&&h_delta<8.;  //good HMS delta range (well known recon. matrix)
-    c_ecal = pcal_etottracknorm > 0.85;   //reject pions
-    c_ctime = epCoinTime>8.6 && epCoinTime<13.6;
+    c_ecal = pcal_etottracknorm > 0.85 &&  pcal_etottracknorm < 1.2;   //reject pions
+    c_ctime = epCoinTime>8.5 && epCoinTime<13.5;
+    c_edelta = e_delta > -10 && e_delta < 22.;
+   
 
     //APPLY CUTS: BEGIN CUTS LOOP
-    //if (c_Em&&c_ctime&&c_hdelta&&c_ecal&&pindex>-1&&e_delta>-10.&&e_delta<22.)
-    if (c_Em)
+    if (c_Em&&c_hdelta&&c_ctime&&pindex>-1&&c_ecal)   //pindex > -1  ---> select good tracks
     {     
 
 	  cut_epCT->Fill(epCoinTime);
+	  cut_etottrknorm->Fill(pcal_etottracknorm);
 
 	  //Kinematics
 	  cut_Emiss->Fill(Em);
@@ -550,6 +568,7 @@ void analyze_heepData(int run, string eArm="")
       
       
       epCT->Fill(epCoinTime);
+      etottrknorm->Fill(pcal_etottracknorm);
 
       //Kinematics
       Emiss->Fill(Em);

@@ -49,9 +49,11 @@ Heep Check Steps for Deuteron Data
 
 ** Determine HMS momentum corr. factor  minimizing (Pcalc - Pmeas) / Pmeas between data and SIMC. (Look in /checkHMS directory)
 
-** Now that we have confidence in HMS momentum setting, look at the SHMS xptar/yptar distributons for any possible offsets.
-   Correct for these, before attempting to align W.
+** Now that we have confidence in HMS momentum setting, look at the SHMS (delta_calc - delta_meas) vs. focal plane. Fit these correlations
+   with 1st / 2nd order terms. The '00000' constant term represents the momentum correction in the SHMS. This constant factor should take care of any
+   Emiss (Eb, E', Ep) /  W (Eb, E', th_e) alignment between data/simc. If there are still offets in W, then this is likely attributed to an anlge offset, eyptar.
+   If Emiss is NOT aligned, then this is most likely attributed to incorrect Ep (proton momentum correction due to an angle offset hyptar), since Pcalc (Eb, th_p) vs.
+   Pmeas. is a little off.
 
-** Once all align SHMS W peak to determine the SHMS momentum correction. This
-should take care of the Emiss alignment as Emiss (Eb, E', Ep), and Eb and Ep (beam and proton) are well known.
+
 

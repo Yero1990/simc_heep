@@ -1,9 +1,0 @@
-#Deuteron Heep Summary
-#data_simc_Pfrac = (Pcalc_data - Pmeas_data) / Pmeas_data   - (Pcalc_simc - Pmeas_simc) / Pmeas_simc
-
-#! Run[i,0]/   	nmr_true[f,1]/	     nmr_P[f,2]/      hms_Angle[f,3]/   shms_P[f,4]/    shms_Angle[f,5]/   beam_e[f,6]/  x_BPM[f,7]/    y_BPM[f,8]/    hmsX_MisPoint[f,9]/   hmsY_MisPoint[f,10]/    shmsX_MisPoint[f,11]/     shmsY_MisPoint[f,12]/     data_simc_Pfrac[f, 13]/    data_simc_Pfrac_err[f, 14]/
-   3288		0.804333	     2.938	      37.338 	      	8.7   		12.194    	   10.6005	 0.02645        0.01657        0.083188               0.286020                -0.126                    -0.06                     -0.00319526                 3.10011e-05                          
-   3371		0.952715	     3.48	      33.545      	8.7      	13.93	           10.6005       0.02645        0.01670        0.083545               0.236799		      -0.126   			-0.06 			  -0.0034279		      4.27602e-05
-   3374		0.632393	     2.31	      42.9    	      	8.7		9.928	           10.6005       0.02652        0.01659	       0.088909		      0.324		      -0.126	    		-0.06  			  -0.00219156 		      3.64875e-05
-   3377		0.517404	     1.8899	      47.605     	8.7      	8.495	           10.6005 	 0.02637	0.01697        0.099545               0.324                   -0.126                    -0.06  			  -0.00164668                 4.23916e-05                                                             
-	

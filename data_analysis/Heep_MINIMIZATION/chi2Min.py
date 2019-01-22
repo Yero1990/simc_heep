@@ -35,6 +35,7 @@ Mp = 0.938272           #proton mass
 #fname = 'hms_kin_elec.data'
 #fname = 'hms_kin_proton.data'
 #fname = 'hms_kin_noLT.data'
+#fname = 'hms_kin_proton.data'
 fname = 'hms_kin.data'
 
 f = B.get_file(fname)
@@ -73,36 +74,38 @@ dPfr_red_chi2_list = []
 total_chi2_list = []
 total_red_chi2_list = []
 
-
+#Histogram List
+test_list = []
 
 #Step size of Relative Variables, p1 = dEb /Eb, p2 = dP /P, p3 = d_th
 step_p1 = 0.0002     #(steps of 0.02%, for example) 
-step_p2 = 0.0005 
-step_p3 = 0.0005
+step_p2 = 0.0005     #0.0001
+step_p3 = 0.0005     #0.0001
 
 #Parameters Range  
 p1_min = -0.001
 p1_max =  0.001
 
-p2_min = -0.004
-p2_max =  0.004
+p2_min = -0.002 
+p2_max =  0.002 
 
-p3_min =  -0.002
+p3_min = -0.002
 p3_max =  0.002
 
 
-nsteps_p1 = (p1_max - p1_min) / step_p1 + 1   # +1 is to include the first step (otherwise, it will count after the first step)
-nsteps_p2 = (p2_max - p2_min) / step_p2 + 1
-nsteps_p3 = (p3_max - p3_min) / step_p3 + 1
+#nsteps_p1 = (p1_max - p1_min) / step_p1 + 1   # +1 is to include the first step (otherwise, it will count after the first step)
+#nsteps_p2 = (p2_max - p2_min) / step_p2 + 1
+#nsteps_p3 = (p3_max - p3_min) / step_p3 + 1
 
 
-print('total p1: ',nsteps_p1)
-print('total p2: ',nsteps_p2)
-print('total p3: ',nsteps_p3)
+#print('total p1: ',nsteps_p1)
+#print('total p2: ',nsteps_p2)
+#print('total p3: ',nsteps_p3)
 
 #Output file
 fout = open('chi2_fit_results.txt', 'w')
 fout2 = open('sorted_chi2.txt', 'w')
+
 
 fout.write('#! kg[f,0]/     Run[f,1]/     dW_meas[f,2]/     dW_meas_err[f,3]/     dW_dEb[f,4]/     dW_dP[f,5]/     dW_dth[f,6]/     dW_pred[f,7]/     dW_diff[f,8]/   dW_chi2_i[f,9]/    dW_chi2_sum[f,10]/   dPfr_meas[f,11]/   dPfr_meas_err[f,12]/   dPfr_dEb[f,13]/    dPfr_dP[f,14]/     dPfr_dth[f,15]/     dPfr_pred[f,16]/     dPfr_diff[f,17]/   dPfr_chi2_i[f,18]/    dPfr_chi2_sum[f,19]/    total_chi2_i[f,20]/   total_chi2_sum[f, 21]/   dEb_Eb[f,22]/      dP_P[f,23]/     dth_th[f,24]/ \n')
 fout2.write('#! dEb_Eb[f,0]/  dP_P[f,1]/   dth[f,2]/    total_chi2[f,3]/    total_redChi2[f,4]/    total_chi2_elec[f,5]/    total_redChi2_elec[f,6]/    total_chi2_prot[f,7]/    total_redChi2_prot[f,8]/ \n')
@@ -124,10 +127,8 @@ print('Nobs = ',N_obs)
 print('Nobs_proton = ',N_obs_proton)
 print('Nobs_electron = ',N_obs_electron)
 
-N_total = nsteps_p1 * nsteps_p2 * nsteps_p3  #total number of possible parameter configurations
-print ('N_total = ', N_total)
-
-
+#N_total = nsteps_p1 * nsteps_p2 * nsteps_p3  #total number of possible parameter configurations
+#print ('N_total = ', N_total)
 
 
 for m in frange(p1_min, p1_max+step_p1, step_p1):
@@ -139,7 +140,7 @@ for m in frange(p1_min, p1_max+step_p1, step_p1):
             dPfr_chi2 = 0
             total_chi2 = 0
             
-            #Loop over kinematic group 
+            #Loop over kinematic group (or runs)
             for i, ikg in enumerate(kg):
                 
                 #Set to zero if particle type not specified
@@ -202,16 +203,16 @@ for m in frange(p1_min, p1_max+step_p1, step_p1):
 
                     #Quantity to be minimized, chi2_i  (ith run or kin. group)
                     dW_chi2_i = (dW_diff / dW_err)**2
-
+                    
                 dW_chi2 = dW_chi2 + dW_chi2_i
-
+                
                 
 
                 if particle[i]=='p':
                     #---------------HMS PROTONS-----------------
                 
                     #Measured Variations in fractional momentum
-                    dPfr_meas = simcPfr[i] - dataPfr[i]
+                    dPfr_meas = (simcPfr[i] - dataPfr[i])
                     dPfr_err = np.sqrt(simcPfr_err[i]**2 + dataPfr_err[i]**2)
                 
                     # Formula for fractional momentum:
@@ -231,16 +232,19 @@ for m in frange(p1_min, p1_max+step_p1, step_p1):
                     #Take derivatives wih respect to fractional momentum
 
                     #Derivative dPfr/dPmeas 
-                    dPfr_dP = - Pcalc / pow(hmsP[i],2)
-                
+                    #dPfr_dP = - Pcalc / pow(hmsP[i],2)  #ONLY if Pfr = (Pcalc - Pmeas) / Pmeas
+                    dPfr_dP = -1.
+                    
                     #Derivative dPfr/dEb
-                    dPfr_dEb = dPcalc_dEb / hmsP[i]
-
+                    #dPfr_dEb = dPcalc_dEb / hmsP[i]
+                    dPfr_dEb = dPcalc_dEb
+                    
                     #Derivative dPfr/dth
-                    dPfr_dth = dPcalc_dth / hmsP[i]
-
+                    #dPfr_dth = dPcalc_dth / hmsP[i]
+                    dPfr_dth = dPcalc_dth
+                    
                     #Predicted Variations in Pfr
-                    dPfr_pred =  dPfr_dEb * dEb  +  dPfr_dP * dP +  dPfr_dth * dth
+                    dPfr_pred =  (dPfr_dEb * dEb  +  dPfr_dP * dP +  dPfr_dth * dth) 
                 
                     dPfr_diff = dPfr_meas - dPfr_pred
 
@@ -248,6 +252,7 @@ for m in frange(p1_min, p1_max+step_p1, step_p1):
                     dPfr_chi2_i = (dPfr_diff / dPfr_err)**2
 
                 dPfr_chi2 = dPfr_chi2 + dPfr_chi2_i
+                
 
                 #-------------------------------------
                 # Combine ELECTRONS AND PROTONS CHI2
@@ -290,8 +295,7 @@ for m in frange(p1_min, p1_max+step_p1, step_p1):
 
 
           
-
-                
+             
 
             #dW_chi2_list.append(dW_chi2)
             #dW_red_chi2_list.append(dW_red_chi2)
@@ -311,20 +315,4 @@ for item, chi2 in enumerate(total_chi2_list):
 
 fout.close()
 fout2.close()
-
-
-
-#--------IMPORTANT TO ALIGN COLUMNS.  STILL NEEDS TO BE LOOKED AT . . . ------------------------
-#Open txt files to align columns
-#with open('sorted_chi2.txt', 'r+') as fout:
-#    for line in fout:
-#        data = line.split()
-       # print '{0[0]:<5}{0[1]:<10}{0[2]:<10}{0[3]:<10}{0[4]:<10}'.format(data)   #aligns all five columsn [0], [1], ...,  the '<5' ,means left-align spacing between the columns
-#        letter = '{0[0]:<5}{0[1]:<10}{0[2]:<10}{0[3]:<10}{0[4]:<10}'.format(data) 
-#        print ('%s\n' % (letter))
-#    fout.write(letter)
-        #line = '{0[0]:<5}{0[1]:<10}{0[2]:<10}{0[3]:<10}{0[4]:<10}'.format(data)
-        #fout.write('%s\n' % '{0[0]:<5}{0[1]:<10}{0[2]:<10}{0[3]:<10}{0[4]:<10}'.format(data))
-#-------------------------------------------------------------------------------------------------
-
 

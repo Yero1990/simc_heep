@@ -18,7 +18,7 @@ void compare_heep(int run)
   TString simc_path;
   TString data_path;
   
-  simc_path = "../simc_analysis/D2_heep_updated/" +  simc_filename;
+  simc_path = "../simc_analysis/D2_heep/" +  simc_filename;
   data_path = data_filename;
   
   //Open SIMC/data ROOT files;

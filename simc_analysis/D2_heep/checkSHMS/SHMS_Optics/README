@@ -66,3 +66,31 @@ There may even be cross terms, like 11000, which represents ----> Coefficient * 
 can be correlated within themselves. 
 
 
+
+-----------------------------------
+HOW TO USE THE CODE: set_cuts.C
+-----------------------------------
+
+** root -l "set_cuts(run, fp)"     
+--> run: run number,   fp: 0, 1, 2, 3  (0:xfp, 1:xpfp, 2:yfp, 3:ypfp)
+
+ex.  root -l "set_cuts(3288, 1)"
+
+Then, you will be prompted with:
+
+--------
+   No cut  =  eDelta_vs_xpfp_cut: Run 3288
+   Enter (-1 quit, -10 delete cut) 
+--------
+and an empty TCanvas.  To display the plot and star making a polygon cut, 
+type: 0  
+and hit enter.
+
+Draw lines by clicking the plot region where you want to make the cut. When
+connecting the final line, rather than a single click, do a double click.
+
+Then type: -1 
+to save the cut and exit.
+
+Do the same for the remaining focal plane quantities.
+

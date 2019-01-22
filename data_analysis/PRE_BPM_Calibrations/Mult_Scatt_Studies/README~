@@ -1,0 +1,65 @@
+*****************************
+SIMC Additional Mult. Scatt, 
+Smearing Studies
+*****************************
+
+Effects on additional multiple scattering and smearing in SIMC are studied.
+
+The additional flags used are:
+     mc_smear_addl = T          !  Additional Smearing
+     recon_mc_smear_addl = T    !  Smearing done on reconstructed variables Ytar, Xptar, Yptar, Delta                                                                                  
+
+
+     The parameters used in the input file are:
+     
+     **mc_smear_addl = T  
+     spec%e%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt. in e Arm  (The two values are sig1 and sig2 from two gaussians used)               
+     spec%p%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt in pArm       
+    
+     **recon_mc_smear_addl = T
+     spec%e%sig_smear = 1.0e-6, 1.0e-6, 1.0e-6, 1.0e-6                 !add extra smear. in recon eArm (Ytar, xptar, yptar, delta)                                           
+     spec%p%sig_smear = 1.0e-6, 1.0e-6, 1.0e-6, 1.0e-6                 !add extra smear. in  recon pArm        
+
+     The studies consist of varying each of the individual parameters, and observing any changes in DATA/SIMC comparisons
+     A staring value of 1.0e-6 was used, and is defined as NO SMEARING (Effects are OFF)
+
+     Directory Structure:
+     --> target_smearing (mc_smear_addl = T)
+         --> no smear (sig1 = 1.0e-6,  sig2 = 1.0e-6)
+         --> eArm_sig1 (sig1 = 1.0e-3,  sig2 = 1.0e-6)   : Made SIMC W and X a little worse than expected 
+	 --> eArm_sig2 (sig1 = 1.0e-6,  sig2 = 1.0e-3)   : Improved Pmiss (W, X and other KIn. remained same)       *** Good Candidate for later Use
+	 --> eArm_sig1and2 (sig1 = 1.0e-3,  sig2 = 1.0e-3)  : Improves Pmiss (W, X, Emiss and other Kin. look worse)
+    
+
+	 --> pArm_sig1 (sig1 = 1.0e-3,  sig2 = 1.0e-6)   :   No Changes observed                                                                              
+         --> pArm_sig2 (sig1 = 1.0e-6,  sig2 = 1.0e-3)   :   No Changes observed
+         --> pArm_sig1and2 (sig1 = 1.0e-3,  sig2 = 1.0e-3)  : No Changes obsevred                                                                    
+       
+
+       Same pArm studies were done with sig = 1.0e-1 and it severely affected SHMS focal plane, and HMS/SHMS deltas, and other quantities **SHould NOT use sig 1.0e-1
+
+
+-------------EMAIL from Werner about Smearing Studies (Dec. 26 2018)---------------------------
+
+&KINEMATICS_MAIN
+     Ebeam  =  10600.5                       !  (MeV)
+     dEbeam  =  0.05                                   !  beam energy variation (%)
+     electron_arm  =  5                                !  1=hms,2=sos,3=hrsr,4=hrsl,5=shms
+     hadron_arm  =  1                                  !  1=hms,2=sos,3=hrsr,4=hrsl,5=shms
+     spec%e%P  =    8520.256                  !  e arm central momentum (MeV/c)
+     spec%e%theta  =  12.194                 !  e arm angle setting (degrees)
+     spec%p%P  =      2931.170               !  p arm central momentum (MeV/c)
+     spec%p%theta  =     37.338                !  p arm angle setting (degrees)
+     spec%e%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt. in e Arm
+     spec%p%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt in pArm
+     spec%e%sig_smear = 1.0e-8, 2.0e-3, 2.0e-3, 0.075 !add extra smear. in recon eArm (Ytar, xptar, yptar, delta)
+     spec%p%sig_smear = 1.0e-8, 2.0e-3, 2.0e-3, 0.075 !add extra smear. in  recon pArm
+/ 
+
+Notice I added a 7.5e-4 smearing for recon. momenta (in the input file it is in %) and a 2 mr smearing for the xptar and yptar. The Em spectra for hydrogen are only 
+sensitive to the reconstructed momenta but not the angles (have a look in the code (event.f) where they are calculated) while W and Em and Pm depend on the angles as 
+well and they show a much larger sensitivity.  This will again be a bit different in D(ee’p) as there the recoiling energy increases with pm and its effect on Em will increase. 
+You need also be sure that you use the correct cosy calculations in the simulation (check sharing/transp.f etc.) . (the red lines in the attached plots are those with the 
+additional smearing)
+
+-------------------------------------------------------------------------------------------------
