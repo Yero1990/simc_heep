@@ -18,18 +18,18 @@
 / 
  =?
  &KINEMATICS_MAIN
-     Ebeam  =  10600.5                       !  (MeV)
+     Ebeam  =  10600.5                      !  (MeV)
      dEbeam  =  0.05                                   !  beam energy variation (%)
      electron_arm  =  5                                !  1=hms,2=sos,3=hrsr,4=hrsl,5=shms
      hadron_arm  =  1                                  !  1=hms,2=sos,3=hrsr,4=hrsl,5=shms
-     spec%e%P  =  8700.                             !e arm central momentum (MeV/c)
-     spec%e%theta  =  9.928                         ! 9.9525 e arm angle setting (degrees)
-     spec%p%P  =  2310.                            !p arm central momentum (MeV/c)
-     spec%p%theta  = 42.9                           ! 42.969 p arm angle setting (degrees)
-     spec%e%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt. in e Arm		  
-     spec%p%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt in pArm                                                    
-     spec%e%sig_smear = 1.0e-8, 1.0e-6, 1.0e-6, 1.0e-6                 !add extra smear. in recon eArm (Ytar, xptar(in mr), yptar(in mr), delta(in %))    
-     spec%p%sig_smear = 1.0e-8, 1.0e-6, 1.0e-6, 1.0e-6                 !add extra smear. in  recon pArm 
+     spec%e%P  =    8541.                          ! 8541., 8541.829, 8542.,  8542.311, 8546.443, 8547.187, 8700. e arm central momentum (MeV/c)
+     spec%e%theta  =  9.928                         ! e arm angle setting (degrees)
+     spec%p%P  =  2304.8787                         !2310.  p arm central momentum (MeV/c)
+     spec%p%theta  = 42.9                           ! p arm angle setting (degrees)
+     !spec%e%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt. in e Arm		  
+     !spec%p%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt in pArm                                                    
+     !spec%e%sig_smear = 1.0e-8, 1.0e-6, 1.0e-6, 0.06                 !add extra smear. in recon eArm (Ytar, xptar(in mr), yptar(in mr), delta(in %))    
+     !spec%p%sig_smear = 1.0e-8, 1.0e-6, 1.0e-6, 0.06                 !add extra smear. in  recon pArm 
 / 
 
  ?=
@@ -78,8 +78,8 @@
      targ%fr_pattern  =  3		!  raster pattern: 1=square, 2=circular, 3=real square
      targ%fr1  =  0.13		!  horizontal size OR inner radius(2)
      targ%fr2  =  0.13		!  vertical size OR outer radius(2)
-     targ%xoffset  =  0.02652		!  target x-offset (cm): +x = beam right (EPICS)
-     targ%yoffset  =  0.01659		!  target y-offset (cm): +y = up
+     targ%xoffset  =  0.026541		!  target x-offset (cm): +x = beam right (EPICS)
+     targ%yoffset  =  0.016522		!  target y-offset (cm): +y = up
      targ%zoffset  =  0.0		!  target z-offset (cm): +z = downstream
    				!   zreal = znominal + zoffset
 /
@@ -88,16 +88,16 @@
      spec%e%offset%x  =  -0.126		!  x offset (cm)
      spec%e%offset%y  =   -0.06		!  y offset (cm)
      spec%e%offset%z  =  0.		!  z offset (cm)
-     spec%e%offset%xptar  =  0.	!  xptar offset (mr)
-     spec%e%offset%yptar  =  0.	!  yptar offset (mr)
+     spec%e%offset%xptar  =  0.	        !  xptar offset (mr)
+     spec%e%offset%yptar  =  0.1815      ! yptar offset (mr)
 /
 
  &P_ARM_OFFSET
      spec%p%offset%x  =  0.088909		!  x offset (cm)
      spec%p%offset%y  =  0.324		!  y offset (cm)
      spec%p%offset%z  =  0.		!  z offset (cm)
-     spec%p%offset%xptar  =  0.	!  xptar offset (mr)
-     spec%p%offset%yptar  =  0.	!  yptar offset (mr)
+     spec%p%offset%xptar  =  3.4353	!  xptar offset (mr)
+     spec%p%offset%yptar  =  0.0	!  yptar offset (mr)
 / 
 
 

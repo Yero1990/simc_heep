@@ -1,7 +1,0 @@
-After Re-Optimizing the SHMS delta, the SHMS W appears to be a little off as well as yptar.
-
-After taking an educated guess, based on eYptar DATA/SIMC comparison, the eYptar correction was determined to be (+ 1e-4 rad)
-The data/simc eYptar now matches for all Heep Runs.
-
-
-The new eYptar_offset in shmsflags.param is: dth_e = + 5.77866424e-4 -2.4895872904e-4 + 1e-4 = 0.000429  ( or 4.29e-4 rad)

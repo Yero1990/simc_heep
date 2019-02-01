@@ -21,14 +21,22 @@ void calc_pElec_PDiff()
 
   //Create an object array to store histograms 
   TObjArray data_HList[4]; 
-  
   TObjArray simc_HList[4]; 
 
 
   //Define some constants
   Double_t Mp = 0.938272;  //proton mass
   Double_t Eb = 10.6005;
-  Double_t eP0[4] = {8.7, 8.7, 8.7, 8.7};  //central spec. momentum (UnCorrected SHMS Central Momentum)
+  //Double_t eP0[4] = {8.7, 8.7, 8.7, 8.7};  //central spec. momentum (UnCorrected SHMS Central Momentum)
+  //Double_t eP0[4] = {8.547187, 8.547187, 8.547187, 8.547187};  //central spec. momentum (FIRST OPTIMIZATION, using "00000" term as ppcentral_offset)  
+  //Double_t eP0[4] = {8.546443, 8.546443, 8.546443, 8.546443};  //central spec. momentum (SECOND OPTIMIZATION, using additional "00000" term as ppcentral_offset)  
+  //Double_t eP0[4] = {8.542311, 8.542311,8.542311,8.542311}; //central spec. momentum (Emiss Alignment)
+ 
+  //Double_t eP0[4] = {8.542, 8.542,8.542,8.542}; //TESTING
+  //Double_t eP0[4] = {8.541829, 8.541829,8.541829,8.541829}; //TESTING
+  Double_t eP0[4] = {8.541, 8.541,8.541,8.541}; //TESTING
+  // Double_t eP0[4] = {8.5409, 8.5409,8.5409,8.5409}; //TESTING
+
 
   Double_t hP0[4] = {2.9284279, 3.4679035, 2.3048787, 1.8865303};  //central spec. momentum (Corrected HMS)
 
@@ -137,7 +145,8 @@ void calc_pElec_PDiff()
 
       //string filename = Form("../../../worksim_voli/D2_pUnCorr/D2_heep_%d.root", run_num[irun]);                                   
       //string filename = Form("../../../worksim_voli/D2_pCorr/D2_heep_%d.root", run_num[irun]);                                   
-      string filename = Form("../../../worksim_voli/D2_Heep/hmsCorrected/D2_heep_%d.root", run_num[irun]);                                   
+      //string filename = Form("../../../worksim_voli/D2_Heep/hmsCorrected/D2_heep_%d.root", run_num[irun]);                                   
+      string filename = Form("../../../worksim_voli/D2_heep_%d.root", run_num[irun]);        //SHMS Corrected Momentum (Emiss aligned) 
 
       TFile *f1 = new TFile(filename.c_str());                                                                           
 
@@ -301,8 +310,7 @@ void calc_pElec_PDiff()
 	FullWeight = (Normfac*Weight)/T->GetEntries();
 
 	//Define some cuts
-      
-
+ 
 	hmsP_meas = hPf/1000.; //h_delta*hP0[irun] / 100. + hP0[irun]; delta = (P - P0) / P0 * 100
 
         //Calculated proton Momentum (Using formula)                                                           
@@ -461,9 +469,11 @@ void calc_pElec_PDiff()
   //---------------------DATA----------------------------
   
   //Em cut array
-  Double_t Em_cut_arr[4] = {-0.11, -0.08, -0.13, -0.13};   //Em cuts after HMS P correction: 3288, 3371, 3374, 3377
-  
- //Define some variables to be determined inside the entry loop
+  //Double_t Em_cut_arr[4] = {-0.11, -0.08, -0.13, -0.13};   //Em cuts after HMS P correction: 3288, 3371, 3374, 3377
+  //Double_t Em_cut_arr[4] = {0.03, 0.03, 0.04, 0.045};      //Em cuts after FIRST SHMS DELTA OPTIMIZATION
+  Double_t Em_cut_arr[4] = {0.05, 0.05, 0.05, 0.05};      //Em cuts after SECOND SHMS DELTA OPTIMIZATION
+
+//Define some variables to be determined inside the entry loop
   Double_t htheta_p;     //proton arm angle (event by event)
 
   //Define TTree variables
@@ -563,18 +573,20 @@ void calc_pElec_PDiff()
 	//string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_uncorr/coin_replay_heep_check_%d_-1.root",run[irun]);
 	//string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pCorr/coin_replay_heep_check_%d_-1.root",run[irun]);
 	//string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pUnCorr/coin_replay_heep_check_%d_-1.root",run[irun]);
-	string filename = Form("../../../../hallc_replay/ROOTfiles/DEUTERON/hmsCorrected/coin_replay_heep_check_%d_-1.root",run[irun]);
+	//string filename = Form("../../../../hallc_replay/ROOTfiles/DEUTERON/hmsCorrected/coin_replay_heep_check_%d_-1.root",run[irun]);
+	//string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[irun]);
+	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000.root",run[irun]);
 
 	TFile *f1 = new TFile(filename.c_str());
 	
 	//Get TTree
 	TTree *T = (TTree*)f1->Get("T");
 	
-	double pdiff_min = -0.03;
-	double pdiff_max = -0.005;
+	double pdiff_min = -0.02;//-0.03;
+	double pdiff_max = 0.02;//-0.005;
 
-	double del_min = -3.;
-	double del_max = -0.5;
+	double del_min = -0.5;//-3.;
+	double del_max = 0.5;//-0.5;
 
 	//Set Branch Address
 	T->SetBranchAddress(n_xangle, &xangle);
@@ -612,10 +624,10 @@ void calc_pElec_PDiff()
 	  histePDev_ypfp[irun] = new TH2F(Form("ePDiff_vs_ypfp: Run %d", run_num[irun]), "", 100, -0.015, 0.015, 80, pdiff_min, pdiff_max);               
 	
 	  //(shms_delta_calc - shms_delta_meas) vs. shms focal plane                                                                                        
-	  histeDelta_xfp[irun] = new TH2F(Form("eDelta_vs_xfp: Run %d", run_num[irun]), "", 100, 10., 25, 80, del_min, del_max);                                   
-	  histeDelta_xpfp[irun] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run_num[irun]), "", 100, 0.01, 0.05, 80, del_min, del_max);                            
-	  histeDelta_yfp[irun] = new TH2F(Form("eDelta_vs_yfp: Run %d", run_num[irun]), "", 100, -10., 5, 80, del_min, del_max);                                  
-	  histeDelta_ypfp[irun] = new TH2F(Form("eDelta_vs_ypfp: Run %d", run_num[irun]), "", 100, -0.015, 0.015, 80, del_min, del_max);
+	  histeDelta_xfp[irun] = new TH2F(Form("eDelta_vs_xfp: Run %d", run_num[irun]), "", 100, 10., 25, 80, -0.2, 0.7);                                   
+	  histeDelta_xpfp[irun] = new TH2F(Form("eDelta_vs_xpfp: Run %d", run_num[irun]), "", 100, 0.01, 0.05, 80, -0.2, 0.7);                            
+	  histeDelta_yfp[irun] = new TH2F(Form("eDelta_vs_yfp: Run %d", run_num[irun]), "", 100, -10., 5, 80, -0.2, 0.7);                                  
+	  histeDelta_ypfp[irun] = new TH2F(Form("eDelta_vs_ypfp: Run %d", run_num[irun]), "", 100, -0.015, 0.015, 80, -0.2, 0.7);
 
 	}                                                                                                                        
                                                                                                                                                      
@@ -871,6 +883,13 @@ void calc_pElec_PDiff()
 
 
   //----------------------PLOT THE DIFFERENCE BETWEEN DATA AND SIMC Momentum Dev.-----
+  ofstream ofile;
+  ofile.open("momentum_fraction_diff.data");
+  
+  ofile << "#This file contains the momentum fraction difference between DATA/SIMC " << endl;
+  ofile << "#The momentum fraction is defined as: dP = (Pcalc - Pmeas)" << endl;
+  ofile << "#The mean of this distribution is fitted for data and simc, and the difference is taken " << endl;
+  ofile << "" << endl;
 
   TCanvas *yRes_diff_Canv = new TCanvas("yRes_diff", "", 500, 300);
   yRes_diff_Canv->cd();
@@ -887,7 +906,29 @@ void calc_pElec_PDiff()
   yRes_diff_err[2] = TMath::Sqrt(data_yRes_arr_err[2]*data_yRes_arr_err[2] + yRes_arr_err[2]*yRes_arr_err[2]);
   yRes_diff_err[3] = TMath::Sqrt(data_yRes_arr_err[3]*data_yRes_arr_err[3] + yRes_arr_err[3]*yRes_arr_err[3]);
  
+  ofile << "#!Run[i,0]/    Pf_data[f,1]/     Pf_data_err[f,2]/     Pf_simc[f3]/     Pf_simc_err[f,4]/" << endl;
+  ofile << run[0] << "    " <<  data_yRes_arr[0] << "    " << data_yRes_arr_err[0] << "    " << yRes_arr[0] << "     " << yRes_arr_err[0] << endl;
+  ofile << run[1] << "    " <<  data_yRes_arr[1] << "    " << data_yRes_arr_err[1] << "    " << yRes_arr[1] << "     " << yRes_arr_err[1] << endl;
+  ofile << run[2] << "    " <<  data_yRes_arr[2] << "    " << data_yRes_arr_err[2] << "    " << yRes_arr[2] << "     " << yRes_arr_err[2] << endl;
+  ofile << run[3] << "    " <<  data_yRes_arr[3] << "    " << data_yRes_arr_err[3] << "    " << yRes_arr[3] << "     " << yRes_arr_err[3] << endl;
 
+  ofile << "" << endl;
+  ofile << "#SIMC-DATA"<<endl;
+  ofile << "#Run 3288: mean: " << yRes_diff[0] << " err: " << yRes_diff_err[0] << endl;
+  ofile << "#Run 3371: mean: " << yRes_diff[1] << " err: " << yRes_diff_err[1] << endl;
+  ofile << "#Run 3374: mean: " << yRes_diff[2] << " err: " << yRes_diff_err[2] << endl;
+  ofile << "#Run 3377: mean: " << yRes_diff[3] << " err: " << yRes_diff_err[3] << endl;
+
+  ofile << "" << endl;
+  ofile << "#Momentum Correction Factor: " << endl;
+  ofile << "#del = (simc - data)" << endl;
+  ofile << "#corr_factor = 1 - (del/Pcentral)" << endl;
+  ofile << "#3288: "<< 1. - (yRes_diff[0]/eP0[0]) << "   +/-  " <<  yRes_diff_err[0]/eP0[0] << "  [GeV]  " <<  endl;
+  ofile << "#3371: "<< 1. - (yRes_diff[1]/eP0[1]) << "   +/-  " <<  yRes_diff_err[1]/eP0[1] << "  [GeV]  " <<  endl;
+  ofile << "#3374: "<< 1. - (yRes_diff[2]/eP0[2]) << "   +/-  " <<  yRes_diff_err[2]/eP0[2] << "  [GeV]  " <<  endl;
+  ofile << "#3377: "<< 1. - (yRes_diff[3]/eP0[3]) << "   +/-  " <<  yRes_diff_err[3]/eP0[3] << "  [GeV]  " <<  endl;
+
+  ofile.close();
 
   TGraphErrors* gr_compare = new TGraphErrors(4,data_xRes_arr,yRes_diff, ex_data, yRes_diff_err);
   gr_compare->SetTitle(" ([SIMC-DATA] Fractional Momentum Deviation vs. D2 H(e,e'p) Runs");
@@ -905,5 +946,7 @@ void calc_pElec_PDiff()
 
 
   yRes_diff_Canv->SaveAs("SIMC_DATA_shmsP_Diff.pdf");
+
+  
   
 }

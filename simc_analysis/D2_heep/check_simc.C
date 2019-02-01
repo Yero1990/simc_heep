@@ -85,6 +85,7 @@ TString electron_arm;
   //********* Create 1D Histograms **************
  
 //Kinematics Quantities
+  TH1F *MM2 = new TH1F("MM2", "Missing Mass Squared, MM2", MM2_nbins, MM2_xmin, MM2_xmax );
 TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
 TH1F *pm = new TH1F("pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
 TH1F *Q_2 = new TH1F("Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
@@ -143,6 +144,7 @@ TH1F *eypfp = new TH1F("eypfp", electron_arm + " Y'_{fp}", eypfp_nbins, eypfp_xm
 TH2F *emiss_vs_pmiss = new TH2F("emiss_vs_pmiss", " E_{miss} vs. P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax, Em_nbins, Em_xmin, Em_xmax);
 TH2F *edelta_vs_eyptar = new TH2F("edelta_vs_eyptar", electron_arm + " #delta vs. Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, edelta_nbins, edelta_xmin, edelta_xmax);
 
+ TH2F *W_vs_MM2 = new TH2F("W_vs_MM2", "W vs. MM2", MM2_nbins, MM2_xmin, MM2_xmax, W_nbins, W_xmin, W_xmax);
 
 //Create 2D Histograms at the Focal Plane Quantities
 TH2F *h_xfp_vs_yfp = new TH2F("h_xfp_vs_yfp", "X_{fp} vs Y_{fp}", hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
@@ -197,9 +199,20 @@ TH2F *W_vs_hdelta = new TH2F("W_vs_hdelta", "W vs hdelta", hdelta_nbins, hdelta_
  TH2F *Em_vs_hyptar = new TH2F("Em_vs_hyptar", "Em vs hY'_{tar}", hyptar_nbins, hyptar_xmin, hyptar_xmax, Em_nbins, Em_xmin, Em_xmax);                                                                  
  TH2F *Em_vs_hdelta = new TH2F("Em_vs_hdelta", "Em vs hdelta", hdelta_nbins, hdelta_xmin, hdelta_xmax, Em_nbins, Em_xmin, Em_xmax); 
 
+
+ //Define (Calculated - Measured Quantities) for Angle Offsets Check                                                                                           
+ TH2F *d_etheta_vs_exfp = new TH2F("d_etheta_vs_exfp", electron_arm + "d#theta_{e} vs. X_{fp}",    exfp_nbins,  exfp_xmin,  exfp_xmax, 100, -0.04, 0.04);      
+ TH2F *d_etheta_vs_expfp = new TH2F("d_etheta_vs_expfp", electron_arm + "d#theta_{e} vs. X'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, 100, -0.04, 0.04);     
+ TH2F *d_etheta_vs_eyfp = new TH2F("d_etheta_vs_eyfp", electron_arm + "d#theta_{e} vs. Y_{fp}",    eyfp_nbins,  eyfp_xmin,  eyfp_xmax, 100, -0.04, 0.04);      
+ TH2F *d_etheta_vs_eypfp = new TH2F("d_etheta_vs_eypfp", electron_arm + "d#theta_{e} vs. Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, 100, -0.04, 0.04);     
+   
+
+
+
 /************Define Histos to APPLY CUTS*********************************/
  
 //Kinematics Quantities
+ TH1F *cut_MM2 = new TH1F("cut_MM2", "Missing Mass Squared, MM2", MM2_nbins, MM2_xmin, MM2_xmax );
 TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV
 TH1F *cut_pm = new TH1F("cut_pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
 TH1F *cut_Q_2 = new TH1F("cut_Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
@@ -258,6 +271,7 @@ TH1F *cut_eypfp = new TH1F("cut_eypfp", electron_arm + " Y'_{fp}", eypfp_nbins, 
 //Cross-Check correlations
 TH2F *cut_emiss_vs_pmiss = new TH2F("cut_emiss_vs_pmiss", " E_{miss} vs. P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax, Em_nbins, Em_xmin, Em_xmax);
 TH2F *cut_edelta_vs_eyptar = new TH2F("cut_edelta_vs_eyptar", electron_arm + " #delta vs. Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, edelta_nbins, edelta_xmin, edelta_xmax);
+ TH2F *cut_W_vs_MM2 = new TH2F("cut_W_vs_MM2", "W vs. MM2", MM2_nbins, MM2_xmin, MM2_xmax, W_nbins, W_xmin, W_xmax);
 
 
 //Create 2D Histograms at the Focal Plane Quantities
@@ -291,7 +305,13 @@ TH2F *cut_W_vs_hxptar = new TH2F("cut_W_vs_hxptar", "cut_W vs hX'_{tar}", hxptar
 TH2F *cut_W_vs_hyptar = new TH2F("cut_W_vs_hyptar", "cut_W vs hY'_{tar}", hyptar_nbins, hyptar_xmin, hyptar_xmax, W_nbins, W_xmin, W_xmax);
 TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nbins, hdelta_xmin, hdelta_xmax, W_nbins, W_xmin, W_xmax);
 
- 
+//Define (Calculated - Measured Quantities) for Angle Offsets Check                                                                                           
+ TH2F *cut_d_etheta_vs_exfp = new TH2F("cut_d_etheta_vs_exfp", electron_arm + "d#theta_{e} vs. X_{fp}",    exfp_nbins,  exfp_xmin,  exfp_xmax, 100, -0.04, 0.04);                               
+ TH2F *cut_d_etheta_vs_expfp = new TH2F("cut_d_etheta_vs_expfp", electron_arm + "d#theta_{e} vs. X'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, 100, -0.04, 0.04);                              
+ TH2F *cut_d_etheta_vs_eyfp = new TH2F("cut_d_etheta_vs_eyfp", electron_arm + "d#theta_{e} vs. Y_{fp}",    eyfp_nbins,  eyfp_xmin,  eyfp_xmax, 100, -0.04, 0.04);                               
+ TH2F *cut_d_etheta_vs_eypfp = new TH2F("cut_d_etheta_vs_eypfp", electron_arm + "d#theta_{e} vs. Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, 100, -0.04, 0.04);                              
+   
+
 
   Float_t  Normfac;
   Float_t  h_delta;
@@ -437,6 +457,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   
   
   //Define Additional Kinematic Variables
+  Double_t MM_2;
   Double_t Eb = 10.6005;  //GeV Beam Energy
   Double_t W2;             //Invarianrt Mass Squared
   Double_t X;              //B-jorken X
@@ -454,12 +475,15 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   //Determine Full Weight Quantities (Assume one for heep check)
   Double_t FullWeight;
 
-
+  Double_t th_e_calc;
+  Double_t detheta;
 
   //Define Boolean for Kin. Cuts
   Bool_t c_Em;
   Bool_t c_hdelta;
   Bool_t c_edelta;
+  Bool_t c_MM2;
+
   //=======================
   // E N T R Y    L O O P
   //=======================
@@ -475,7 +499,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     SNT->GetEntry(i);
 
     
-  
+    
+
     //-----Define Additional Kinematic Variables--------
     Ein = Ein / 1000.;   //This beam energy has Eloss, therefore, it is slightly smaller than 10.6005 (10.5992)
     W2 = W*W;
@@ -490,21 +515,30 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     th_qv2 = theta_p - theta_pq;
     th_pq =  th_q - theta_p;
   
+    th_e_calc = acos((Eb - Pf * cos(theta_p))/kf );  //calculated electron angle in radians                    
+    detheta = (th_e_calc - theta_e);                                                                                                                                      
+    MM_2 = Em*Em - Pm*Pm;
+
+    //cout << "th_e_calc = " << th_e_calc << endl;                                                                                                        
+    //cout << "th_e = " << theta_e << endl;                                                                                                                                 
 
 
     //Define cuts
-    c_Em = Em < 0.03;
+    c_Em = Em < 0.04;
     c_hdelta = h_delta>-8.&&h_delta<8.;
     c_edelta = e_delta>-10.&&e_delta<22.;
+    c_MM2 = MM_2>-0.0009&&MM_2<0.0004;
+
     //Full Weight
     FullWeight = (Normfac*Weight*charge_factor*e_trkEff*h_trkEff*t_LT)/nentries;
 
 
     //APPLY CUTS: BEGIN CUTS LOOP
     //if (c_Em&&c_hdelta&&e_delta>-10&&e_delta<22.)
-    if(c_Em&&c_hdelta)  //only use for initial heep check
+    if(c_hdelta&&c_edelta)  //only use for initial heep check
 	{
 	  //Kinematics
+	  cut_MM2->Fill(MM_2, FullWeight);
 	  cut_Emiss->Fill(Em, FullWeight);
 	  cut_pm->Fill(Pm, FullWeight);
 	  cut_Q_2->Fill(Q2, FullWeight);
@@ -568,7 +602,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 	  cut_hxptar_vs_exptar->Fill(e_xptar, h_xptar, FullWeight);
 	  cut_hyptar_vs_eyptar->Fill(e_yptar, h_yptar, FullWeight);
 	  cut_hdelta_vs_edelta->Fill(e_delta, h_delta, FullWeight);
-
+	  cut_W_vs_MM2->Fill(MM_2, W, FullWeight);
 	  
 	  //Heep cross check
 	  cut_emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
@@ -595,12 +629,20 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 	  cut_W_vs_hxptar->Fill(h_xptar, W, FullWeight);
 	  cut_W_vs_hyptar->Fill(h_yptar, W, FullWeight);
 	  cut_W_vs_hdelta->Fill(h_delta, W, FullWeight);
+
+
+	  cut_d_etheta_vs_exfp->Fill(e_xfp, detheta, FullWeight);                                                                                              
+          cut_d_etheta_vs_expfp->Fill(e_xpfp, detheta, FullWeight);                                                                                                  
+          cut_d_etheta_vs_eyfp->Fill(e_yfp, detheta, FullWeight);                                                                                             
+          cut_d_etheta_vs_eypfp->Fill(e_ypfp, detheta, FullWeight); 
+
 	  
 	}//End CUTS LOOP
       
       
       
       //Kinematics
+	MM2->Fill(MM_2, FullWeight);
       Emiss->Fill(Em, FullWeight);
       pm->Fill(Pm, FullWeight);
       Q_2->Fill(Q2, FullWeight);
@@ -658,6 +700,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       //Fill 2D HMS Focal Plane Quantities
       h_xfp_vs_yfp->Fill(h_yfp, h_xfp, FullWeight);
       e_xfp_vs_yfp->Fill(e_yfp, e_xfp, FullWeight);
+      
+      W_vs_MM2->Fill(MM_2, W, FullWeight);
 
       //Fill 2D reconstructed variables
       hxptar_vs_exptar->Fill(e_xptar, h_xptar, FullWeight);
@@ -712,6 +756,12 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       Em_vs_hxptar->Fill(h_xptar, Em, FullWeight);
       Em_vs_hyptar->Fill(h_yptar, Em, FullWeight);
       Em_vs_hdelta->Fill(h_delta, Em, FullWeight);
+
+
+      d_etheta_vs_exfp->Fill(e_xfp, detheta, FullWeight);                  
+      d_etheta_vs_expfp->Fill(e_xpfp, detheta, FullWeight);                                        
+      d_etheta_vs_eyfp->Fill(e_yfp, detheta, FullWeight);                                                            
+      d_etheta_vs_eypfp->Fill(e_ypfp, detheta, FullWeight); 
 
   } //end entry loop
 

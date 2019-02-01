@@ -62,7 +62,7 @@ void run_simc_h2(Int_t simc=0)
 
 	gSystem->Exec("rm infiles/current.data"); 
 	
-	cout << "copy: " << input_path.c_str() << " to .infiles/current.data " << endl; 
+	cout << "copy: " << input_path.c_str() << " to ./infiles/current.data " << endl; 
 	//copy input file name to current.data
 	gSystem->CopyFile(input_path.c_str(), "./infiles/current.data"); 
 	
@@ -116,7 +116,8 @@ void run_simc_h2(Int_t simc=0)
 	    //Execute command to change root file name
 	    gSystem->Exec(CMD.c_str());
 	  }  
-	    ofile << ikin_file << endl;;
+
+	    ofile << ikin_file << endl;
 	    ofile.close();
 	    
 	
@@ -153,7 +154,8 @@ void get_normfac(string ifile)
 
   //write to file
   ofstream ofile;
-  ofile.open("normfact.data", std::fstream::app);
+  //ofile.open("normfact.data", std::fstream::app);
+  ofile.open("normfact.data", std::fstream::out);
   ofile << found << endl;
   ofile.close();
   

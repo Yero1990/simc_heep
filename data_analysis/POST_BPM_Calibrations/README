@@ -56,4 +56,33 @@ Heep Check Steps for Deuteron Data
    Pmeas. is a little off.
 
 
+January 24, 2018
+
+Emain from Mark Jones regarding the "00000" matrix term and Emiss Alignment:
+--------------------------------------------
+     I thought about it more. Fitting the delta "00000" term and fitting  the pcentral_offset are not the same thing. 
+     So we cannot simply switch the delta "00000" term with the pcentral_offset.  Only at delta = 0 does this work. At other 
+     delta this does not work and that is why you see emiss at different places. SO there is nothing wrong in hcana.
+
+     What needs to be done is replay the runs using pcentral_offset that is equal to the delta "00000" term. Now the emiss 
+     will not line up for the different runs which are at different delta. at delta=0 the emiss should match SIMC emiss.
+     Redo the matrix fit without the "00000" term.  THis should get the emiss peaks to line up and you have the proper pcentral_offset.
+
+---------------------------------------------
+
+	The procedure to align Emiss is as follows: 
+
+	    * Use the "00000" term from the 1st SHMS delta Optimization as 'ppcentral_offset' in shmsflags.param (NOT in the matrix file)
+	      (Emiss will NOT line up at zero for delta different from zero)
+
+	    * Re-do the matrix optimization without "00000" term. The new matrix should take care of aligning Emiss near zero.
+
+
+After determining the SHMS momentum correction factor and aligning Emiss, How does W look?
+ **  If W still appears a little off between DATA/SIMC, this is most likely due to the angle offset, dth_e, which W depends on.
+     In this case, then the derivative (dW /dth_e), should tell the angle correction dth_e ( eyptar_offset) in order to align W.
+
+     As an alternate method, one can also computue the electron angle using the formula: Eb = Pp * cos(th_p) + E'*cos(th_e_calc) 
+     	   	     	     	     	  	       		      	    		 ---> Solve for th_e, and take the difference between (th_e_meas - th_e)
+											     The offset should match that found using dW/dth
 

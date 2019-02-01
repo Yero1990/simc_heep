@@ -1,0 +1,44 @@
+*************
+SHMS Offsets
+*************
+
+Brief: SHMS Angle offsets "xptar_offset and yptar offset" are studied.
+       After Correcting for HMS momentum, Optimizing SHMS delta and 
+       aligning Emiss peak between data/simc, to fine tune SHMS elec momentum,
+       W still appears a little off.
+
+       Recall: W -> W(Eb, E', th_e)
+
+       If the electron momentum and beam energy are assumed to be well known,
+       then only th_e could cause the observed W shift. In this case,
+
+       dW /dth_e = - 2 * Eb * E' * sin(th_e/2) * cos(th_e/2) / Mp
+
+       where dW = W_simc - W_data   (obtained from mean of W fits)
+       
+       Where one can solve for dth_e, which is the eyptar_offset
+
+
+As an alternate method to determine this offset, one can use the formula:
+       
+       Eb = Pp * cos(th_p) + E'*cos(th_e_calc), where E' and th_p and Pp are event-by-event
+
+       Pp: proton measured momentum H.gtr.p
+       th_p: proton scattering angle
+       E': electron measured momentum P.gtr.p
+       th_e_calc: calculated electron momentum
+
+       Solving for th_e_calc:   th_e_calc =  arc-cos [ (Eb - Pp * cos(th_p))/E' ]
+
+       Finally, one can look at: (th_e_calc - th_e_meas), to determine the angle offset from the mean
+       This should be equivalent to the method using dW / dth_e
+
+Method 1:  dW /dth_e derivative:
+           The root files containing thw histogram objects with the final momentum correction in the SHMS is
+	   located in: ../shms_DeltaOptimized/final_SHMS_Momentum/
+
+	   --> Fit the W peak between data/simc. The difference must be DUE to the angle offset.
+	   --> Use the python script to estimate the angle variation, dth_e  
+
+Method 2:  (Calculated - Measured) angle difference
+       	   The formula for the calculated angle is used and compared to measured angle to determine the offset.

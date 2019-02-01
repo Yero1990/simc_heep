@@ -24,6 +24,8 @@ void analyze_heepData(int run, string eArm="")
     
   //Read DATA ROOTfiles  
   TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);        
+  //  TString filename =Form("../../hallc_replay/ROOTfiles/SHMS_matrix_corr/coin_replay_heep_check_%d_20000.root",run); 
+  
 
   //HMS electron Heep Check data
   //TString filename =Form("../../hallc_replay/ROOTfiles/good_Heep_hmsElec/g%d_coin.root",run);        
@@ -46,6 +48,7 @@ void analyze_heepData(int run, string eArm="")
   TH1F *etottrknorm = new TH1F("etot_tracknorm", "SHMS Total Normalized Track Energy", 100, 0.5, 2.3);
 
   //Kinematics Quantities
+  TH1F *MM2 = new TH1F("MM2", "Missing Mass Squared, MM2", MM2_nbins, MM2_xmin, MM2_xmax );
   TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
   TH1F *Emissv2 = new TH1F("Emissv2","missing energy", Em_nbins, Em_xmin, Em_xmax); 
   TH1F *pm = new TH1F("pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
@@ -104,7 +107,8 @@ void analyze_heepData(int run, string eArm="")
   //Cross-Check correlations
   TH2F *emiss_vs_pmiss = new TH2F("emiss_vs_pmiss", " E_{miss} vs. P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax, Em_nbins, Em_xmin, Em_xmax);
   TH2F *edelta_vs_eyptar = new TH2F("edelta_vs_eyptar", electron_arm + " #delta vs. Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, edelta_nbins, edelta_xmin, edelta_xmax);
-  
+   TH2F *W_vs_MM2 = new TH2F("W_vs_MM2", "W vs. MM2", MM2_nbins, MM2_xmin, MM2_xmax, W_nbins, W_xmin, W_xmax);
+
   
   //Create 2D Histograms at the Focal Plane Quantities
   TH2F *h_xfp_vs_yfp = new TH2F("h_xfp_vs_yfp", "X_{fp} vs Y_{fp}", hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
@@ -158,7 +162,13 @@ void analyze_heepData(int run, string eArm="")
   TH2F *Em_vs_hyptar = new TH2F("Em_vs_hyptar", "Em vs hY'_{tar}", hyptar_nbins, hyptar_xmin, hyptar_xmax, Em_nbins, Em_xmin, Em_xmax);
   TH2F *Em_vs_hdelta = new TH2F("Em_vs_hdelta", "Em vs hdelta", hdelta_nbins, hdelta_xmin, hdelta_xmax, Em_nbins, Em_xmin, Em_xmax);
  
-  TH2F *dP_vs_reacty = new TH2F("dP_vs_reacty", "dP vs hreacsty", 100, -0.5, 0.5, 100 , -0.5, 0.5);
+  //Define (Calculated - Measured Quantities) for Angle Offsets Check
+  TH2F *d_etheta_vs_exfp = new TH2F("d_etheta_vs_exfp", electron_arm + "d#theta_{e} vs. X_{fp}",    exfp_nbins,  exfp_xmin,  exfp_xmax, 100, -0.04, 0.04);
+  TH2F *d_etheta_vs_expfp = new TH2F("d_etheta_vs_expfp", electron_arm + "d#theta_{e} vs. X'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, 100, -0.04, 0.04); 
+  TH2F *d_etheta_vs_eyfp = new TH2F("d_etheta_vs_eyfp", electron_arm + "d#theta_{e} vs. Y_{fp}",    eyfp_nbins,  eyfp_xmin,  eyfp_xmax, 100, -0.04, 0.04); 
+  TH2F *d_etheta_vs_eypfp = new TH2F("d_etheta_vs_eypfp", electron_arm + "d#theta_{e} vs. Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, 100, -0.04, 0.04); 
+
+
 
 
   /************Define Histos to APPLY CUTS*********************************/
@@ -166,6 +176,7 @@ void analyze_heepData(int run, string eArm="")
   TH1F *cut_etottrknorm = new TH1F("cut_etot_tracknorm", "SHMS Total Normalized Track Energy", 100, 0.5, 2.3);
 
   //Kinematics Quantities
+  TH1F *cut_MM2 = new TH1F("cut_MM2", "Missing Mass Squared, MM2", MM2_nbins, MM2_xmin, MM2_xmax );
   TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV
   TH1F *cut_Emissv2 = new TH1F("cut_Emissv2","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV    
   TH1F *cut_pm = new TH1F("cut_pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
@@ -225,7 +236,8 @@ void analyze_heepData(int run, string eArm="")
   //Cross-Check correlations
   TH2F *cut_emiss_vs_pmiss = new TH2F("cut_emiss_vs_pmiss", " E_{miss} vs. P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax, Em_nbins, Em_xmin, Em_xmax);
   TH2F *cut_edelta_vs_eyptar = new TH2F("cut_edelta_vs_eyptar", electron_arm + " #delta vs. Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, edelta_nbins, edelta_xmin, edelta_xmax);
-  
+   TH2F *cut_W_vs_MM2 = new TH2F("cut_W_vs_MM2", "W vs. MM2", MM2_nbins, MM2_xmin, MM2_xmax, W_nbins, W_xmin, W_xmax);
+
   
   //Create 2D Histograms at the Focal Plane Quantities
   TH2F *cut_h_xfp_vs_yfp = new TH2F("cut_h_xfp_vs_yfp", "X_{fp} vs Y_{fp}", hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
@@ -277,6 +289,13 @@ void analyze_heepData(int run, string eArm="")
   TH2F *cut_Em_vs_hxptar = new TH2F("cut_Em_vs_hxptar", "cut_Em vs hX'_{tar}", hxptar_nbins, hxptar_xmin, hxptar_xmax, Em_nbins, Em_xmin, Em_xmax);
   TH2F *cut_Em_vs_hyptar = new TH2F("cut_Em_vs_hyptar", "cut_Em vs hY'_{tar}", hyptar_nbins, hyptar_xmin, hyptar_xmax, Em_nbins, Em_xmin, Em_xmax);
   TH2F *cut_Em_vs_hdelta = new TH2F("cut_Em_vs_hdelta", "cut_Em vs hdelta", hdelta_nbins, hdelta_xmin, hdelta_xmax, Em_nbins, Em_xmin, Em_xmax);
+
+
+  //Define (Calculated - Measured Quantities) for Angle Offsets Check                                                                                     
+  TH2F *cut_d_etheta_vs_exfp = new TH2F("cut_d_etheta_vs_exfp", electron_arm + "d#theta_{e} vs. X_{fp}",    exfp_nbins,  exfp_xmin,  exfp_xmax, 100, -0.04, 0.04);       
+  TH2F *cut_d_etheta_vs_expfp = new TH2F("cut_d_etheta_vs_expfp", electron_arm + "d#theta_{e} vs. X'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, 100, -0.04, 0.04);    
+  TH2F *cut_d_etheta_vs_eyfp = new TH2F("cut_d_etheta_vs_eyfp", electron_arm + "d#theta_{e} vs. Y_{fp}",    eyfp_nbins,  eyfp_xmin,  eyfp_xmax, 100, -0.04, 0.04);    
+  TH2F *cut_d_etheta_vs_eypfp = new TH2F("cut_d_etheta_vs_eypfp", electron_arm + "d#theta_{e} vs. Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, 100, -0.04, 0.04);      
   
 
   //Set Variable Names and Branches
@@ -303,7 +322,8 @@ void analyze_heepData(int run, string eArm="")
   Double_t  Ep;
   Double_t  epCoinTime;
   Double_t  pindex;
-  
+  Double_t MM_2;
+
   T->SetBranchAddress("CTime.epCoinTime_ROC2", &epCoinTime);
 
   T->SetBranchAddress(Form("%s.kin.primary.scat_ang_rad", eArm.c_str()),&theta_e);
@@ -392,21 +412,25 @@ void analyze_heepData(int run, string eArm="")
   T->SetBranchAddress("P.cal.etottracknorm",&pcal_etottracknorm);
   T->SetBranchAddress("P.ngcer.npeSum",&pngcer_npesum);
   
- 
+  
+  //Calculated Quantities to be use in loop
+  Double_t etheta_calc; //calculated electron angle
+  Double_t detheta;
+
   //Define Boolean for Kin. Cuts
   Bool_t c_Em;
   Bool_t c_hdelta;
   Bool_t c_edelta;
   Bool_t c_ecal;
   Bool_t c_ctime;
-
+  Bool_t c_MM2;
 
   //Set Minimum Emiss Cut depending on RUn Number
   Double_t Em_min;
-  if (run==3288){Em_min = 0.04;}
-  if (run==3371){Em_min = 0.05;}  //hP_corr_only:-0.08;}
-  if (run==3374){Em_min = 0.03;}
-  if (run==3377){Em_min = 0.03;}
+  if (run==3288){Em_min = 0.04;}  
+  if (run==3371){Em_min = 0.04;}  
+  if (run==3374){Em_min = 0.04;} 
+  if (run==3377){Em_min = 0.04;}  
 
 
   //======================
@@ -434,25 +458,29 @@ void analyze_heepData(int run, string eArm="")
     c_Em = Em < Em_min;      //-0.125, -0.115, -0.14, -0.14 --> 3288, 3371, 3374, 3377 (Determined using EPICS momenta data D2 hEEP)                       
                              //-0.11, -0.08, -0.13, -0.13 --->Corrected HMS P, Em cuts
 
-    
-    //c_Em = Em < -0.1;   hms e-data: g7                    
-    //c_Em = Em < -0.02;   hms e-data: g8                    
-    //c_Em = Em < -0.05;   hms e-data: g9
-    
+
+    //Calculated Quantities
+    etheta_calc =  acos((10.6005 - Pf * cos(theta_p))/kf );
+    detheta = (etheta_calc - theta_e);
+    MM_2 = Em*Em - Pm*Pm;
+  
+    //Define Cuts
     c_hdelta = h_delta>-8.&&h_delta<8.;  //good HMS delta range (well known recon. matrix)
     c_ecal = pcal_etottracknorm > 0.85 &&  pcal_etottracknorm < 1.2;   //reject pions
     c_ctime = epCoinTime>8.5 && epCoinTime<13.5;
     c_edelta = e_delta > -10 && e_delta < 22.;
-   
+    c_MM2 = MM_2>-0.0009&&MM_2<0.0004;
+
 
     //APPLY CUTS: BEGIN CUTS LOOP
-    if (c_Em&&c_hdelta&&c_ctime&&pindex>-1&&c_ecal)   //pindex > -1  ---> select good tracks
+    if (c_hdelta&&c_edelta)   //pindex > -1  ---> select good tracks
     {     
 
 	  cut_epCT->Fill(epCoinTime);
 	  cut_etottrknorm->Fill(pcal_etottracknorm);
 
 	  //Kinematics
+	  cut_MM2->Fill(MM_2);
 	  cut_Emiss->Fill(Em);
 	  cut_Emissv2->Fill(Emv2);
 	  cut_pm->Fill(Pm);
@@ -517,7 +545,8 @@ void analyze_heepData(int run, string eArm="")
 	  cut_hyptar_vs_eyptar->Fill(e_yptar, h_yptar);
 	  cut_hdelta_vs_edelta->Fill(e_delta, h_delta);
 
-	  
+	  cut_W_vs_MM2->Fill(MM_2, W);
+
 	  //Heep cross check
 	  cut_emiss_vs_pmiss->Fill(Pm, Em);
 	  cut_edelta_vs_eyptar->Fill(e_yptar, e_delta);
@@ -564,6 +593,13 @@ void analyze_heepData(int run, string eArm="")
 	  cut_Em_vs_hyptar->Fill(h_yptar, Em);
 	  cut_Em_vs_hdelta->Fill(h_delta, Em);
 	  
+
+	  cut_d_etheta_vs_exfp->Fill(e_xfp, detheta);
+	  cut_d_etheta_vs_expfp->Fill(e_xpfp, detheta);
+	  cut_d_etheta_vs_eyfp->Fill(e_yfp, detheta);
+	  cut_d_etheta_vs_eypfp->Fill(e_ypfp, detheta);
+
+
 	}//End CUTS LOOP
       
       
@@ -571,6 +607,7 @@ void analyze_heepData(int run, string eArm="")
       etottrknorm->Fill(pcal_etottracknorm);
 
       //Kinematics
+      MM2->Fill(MM_2);
       Emiss->Fill(Em);
       Emissv2->Fill(Emv2);
       pm->Fill(Pm);
@@ -635,6 +672,8 @@ void analyze_heepData(int run, string eArm="")
       hxptar_vs_exptar->Fill(e_xptar, h_xptar);
       hyptar_vs_eyptar->Fill(e_yptar, h_yptar);
       hdelta_vs_edelta->Fill(e_delta, h_delta);
+	
+      W_vs_MM2->Fill(MM_2, W);
 
       //Heep cross check
       emiss_vs_pmiss->Fill(Pm, Em);
@@ -682,7 +721,12 @@ void analyze_heepData(int run, string eArm="")
       Em_vs_hyptar->Fill(h_yptar, Em);
       Em_vs_hdelta->Fill(h_delta, Em);
       
-    
+      d_etheta_vs_exfp->Fill(e_xfp, detheta);                                                                                                                             
+      d_etheta_vs_expfp->Fill(e_xpfp, detheta);                                                                                                                           
+      d_etheta_vs_eyfp->Fill(e_yfp, detheta);                                                                                                                             
+      d_etheta_vs_eypfp->Fill(e_ypfp, detheta);                                                                                                                           
+                                                         
+
   } //end entry loop
   
    

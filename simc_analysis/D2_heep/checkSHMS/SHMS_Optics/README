@@ -21,7 +21,7 @@ Code: fitOptics.C
 
 Description: This code calculates the (delta_calc - delta_meas) vs. focal plane times and
 other relevant quatities. The root file containing the graphical cuts are read in, and the
-cuts are applied when filling the matrix to do the fitting. All 5 D2 elastics are used to fit
+cuts are applied when filling the matrix to do the fitting. All 4 D2 elastics are used to fit
 the data simultaneously, as each of these runs covers different regions of the focal plane, which 
 we want to correct their correlations with delta. 
 
@@ -65,7 +65,12 @@ delta = D0 + D1*xfp + D2*xpfp + D3*yfp + D4*ypfp,   where D0 = 0.667153399, and 
 There may even be cross terms, like 11000, which represents ----> Coefficient * xfp * xpfp, for example, since the focal plane variables
 can be correlated within themselves. 
 
-
+The D0 term represents the delta offset in fraction (and D0*100 in %), so to get the momentum correction factor, do:
+   corr_factor =  1 + D0 
+   
+   example: D0 = -0.0175647222
+   corr_dactor = 1 + D0 = 0.982435
+   Pcorr = 8.7 * corr_factor = 8.547186919
 
 -----------------------------------
 HOW TO USE THE CODE: set_cuts.C

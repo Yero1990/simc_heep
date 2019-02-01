@@ -35,7 +35,11 @@ Double_t Em_xmax = 0.1;
 //Pmiss
 Double_t Pm_nbins = nbins;
 Double_t Pm_xmin = -0.02;
-Double_t Pm_xmax = 0.06;
+Double_t Pm_xmax = 0.15;
+
+Double_t MM2_nbins = nbins;
+Double_t MM2_xmin = -0.01;
+Double_t MM2_xmax = 0.01;
 
 //Q2
 Double_t Q2_nbins = nbins;
@@ -46,10 +50,10 @@ Double_t om_nbins = nbins;
 //W_inv
 Double_t W_nbins = nbins;
 Double_t W_xmin = 0.85;
-Double_t W_xmax = 1.05;
+Double_t W_xmax = 1.05;//1.05;
 
 //theta_elec
-  Double_t the_nbins = nbins;
+Double_t the_nbins = nbins;
 
 //theta_prot
 Double_t thp_nbins = nbins;
@@ -88,7 +92,7 @@ Double_t q_nbins = nbins;
 //th_pq
 Double_t thpq_nbins = nbins;
 Double_t thpq_xmin = -0.05;
-Double_t thpq_xmax = 1.0;
+Double_t thpq_xmax = 1.2;
 
 
 
@@ -271,7 +275,7 @@ Double_t eypfp_xmin = -0.02;
 Double_t eypfp_xmax = 0.02;
 
 Double_t edelta_xmin = 3.;
-Double_t edelta_xmax = 9.;
+Double_t edelta_xmax = 10.;
 
 Double_t kf_xmin = 8;
 Double_t kf_xmax = 9.5;
@@ -344,6 +348,7 @@ Double_t q_xmax = 2.4;
 
 Double_t Ep_xmin = 2.5;
 Double_t Ep_xmax = 3.5;
+
 
 
 
