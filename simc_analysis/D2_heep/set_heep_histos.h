@@ -37,6 +37,18 @@ Double_t Pm_nbins = nbins;
 Double_t Pm_xmin = -0.02;
 Double_t Pm_xmax = 0.15;
 
+Double_t Pmx_nbins = nbins;
+Double_t Pmx_xmin = -0.15;
+Double_t Pmx_xmax = 0.15;
+
+Double_t Pmy_nbins = nbins;
+Double_t Pmy_xmin = -0.15;
+Double_t Pmy_xmax = 0.15;
+
+Double_t Pmz_nbins = nbins;
+Double_t Pmz_xmin = -0.15;
+Double_t Pmz_xmax = 0.15;
+
 Double_t MM2_nbins = nbins;
 Double_t MM2_xmin = -0.01;
 Double_t MM2_xmax = 0.01;
@@ -168,7 +180,6 @@ Double_t exfp_nbins = nbins;
 Double_t eyfp_nbins = nbins;
 Double_t expfp_nbins = nbins;
 Double_t eypfp_nbins = nbins;
-
 
 /*
 //Run 3288
@@ -354,5 +365,3 @@ Double_t Ep_xmax = 3.5;
 
 
 #endif
-
-    

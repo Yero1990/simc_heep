@@ -1,0 +1,34 @@
+********************
+H(e,e'p) Alignment
+********************
+
+
+
+March 6, 2019:
+
+Aftre looking at the D2 80 MeV setting, we determined that the SHMS momentum
+was not correctly set from the "00000" offsets in delta optimization.
+It was decided to take out this correction, and the yptar offset, to start from
+the point at which the SHMS delta was calibrated. 
+
+** From this point, we checked HMS momentum again (Pcala-Pmeas) and it seems OK.
+
+** Then we assumed that the difference in Emiss between DATA/SIMC was attributed to the SHMS e' momentum.
+
+** Then, E'corr = E' + dE',  where dE' = -dEm,  dEm = Em_simc - Em_data
+
+** Then, it was noticed that W was still not aligned. The SHMS momentum was checked to make sure it was NOT the cause of this offset.
+   We assume that offset was then dues to the spectrometer angle not being well determined (NOT yptar, as we had corrected for in the past).
+   As, when we take dW / dth, it is derivative with respect to spectrometer central angle, and therfore,
+   the central angle must be corrected. The yptar corrections still needs to be determined. 
+
+
+To follow the sequence of these studies in orders, from the current directory:
+
+1) cd EmAlign/before    --> to see the Un-Aligned Emiss plots
+2) cd HMS_Pcheck/       --> to see the hms momentum is trusted (data/simc comparison)
+3) cd EmAlign/after     --> to see the aligned Emiss after correcting for SHMS momentum 
+      			    (the fit to Emiss and txt file with the Emiss offsets 
+			    applied as shms correction can be found in EmAlign/before)
+4) cd SHMS_Pcheck       --> See plots indicating SHMS momentum is understood after Em alignment.
+5) cd shmsAngleOffset   --> See plots indicating W is aligned after correcting SHMS central angle.

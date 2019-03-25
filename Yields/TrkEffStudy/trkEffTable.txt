@@ -1,0 +1,25 @@
+#Table containing SHMS tracking efficiency relevant parameters 
+#settings as well as W yields and SHMS tracking efficiency
+
+#The data / simc W yields were obtained by integrating W (100, 0.85, 1.05), with the CUTS: |hdelta| < 8%, pdelta(-10,22)%, Pmiss <  40 MeV
+
+#This is using best chi2 method (psel_using_scin = 0, psel_using_prune=0)
+#! Run[i,0]/  setting[s,1]/    pmin_hit[s,0]/  pmin_combos[s,1]/    pspace_point_criterion[s,2]/   pstub_max_xpdiff[s,3]/     pxt_track_criterion[s,4]/      pyt_track_criterion[s,5]/         pxpt_track_criterion[s,6]/      pypt_track_criterion[s,7]/        dataW_yield[f,8]/            shms_etrkEff[f,10]/         dataW_to_shms_etrkEff[f,11]/                                                 
+   3288       nominal 	       5,5	       4,4		    1.2,1.2			   0.2                        20.0			     5.0			       0.4			       1.0				 132406      	              0.9856             	   		
+   3371       nominal 	       5,5	       4,4		    1.2,1.2			   0.2                        20.0			     5.0			       0.4			       1.0				 18794		              0.9842             	   		
+   3374       nominal 	       5,5	       4,4		    1.2,1.2			   0.2                        20.0			     5.0			       0.4			       1.0				 137343		              0.9833             	   		
+   3377       nominal 	       5,5	       4,4		    1.2,1.2			   0.2                        20.0			     5.0			       0.4			       1.0				 244023		              0.9812             	   			       
+   3288       setting1	       5,5	       4,4		    1.2,1.2			   0.2                        100.0			     20.0			       1.0			       1.0							      0.9940                                                         
+   3371       setting1	       5,5	       4,4		    1.2,1.2			   0.2                        100.0			     20.0			       1.0			       1.0							      0.9932	                   
+   3374       setting1	       5,5	       4,4		    1.2,1.2			   0.2                        100.0			     20.0			       1.0			       1.0							      0.9934			   
+   3377       setting1	       5,5	       4,4		    1.2,1.2			   0.2                        100.0			     20.0			       1.0			       1.0				 26410			      0.9934	                   26585.464063                                            
+   3377	      setting2         4,4             3,3                  1.2,1.2			   0.2                        100.0			     20.0                              1.0			       1.0				 22350			      0.88			   25397.727273                                                                                    
+   3377	      setting3         4,4             3,3                  1.2,1.2			   0.2                        20			     5.0                               0.4			       1.0				 25780			      0.9815			   26265.919511			                                                                                      
+#This is using prune method (psel_using_scin = 0, psel_using_prune=1), pSmallAngleApprox=1
+   3377	      setting4         5,5             4,4                  1.2,1.2			   0.2                        20			     5.0                               0.4			       1.0				 25900			      0.9815			   26388.181355
+   3377	      setting5         4,4             3,3                  1.2,1.2			   0.2                        20			     5.0                               0.4			       1.0				 21800			      0.8785			   24815.025612
+
+			                                                                                      
+#This is using prune method (psel_using_scin = 0, psel_using_prune=1), pSmallAngleApprox=0
+   3377	      setting6         4,4             3,3                  1.2,1.2			   0.2                        20			     5.0                               0.4			       1.0				 21800			      0.8785			   24815.026
+   3377	      setting7         4,4             3,3                  1.2,1.2			   0.2                        100			     20.0                              1.0			       1.0				 22430			      0.8870			   25287.486

@@ -1,6 +1,6 @@
 #include "../simc_analysis/D2_heep/set_heep_histos.h"
 
-void analyze_heepData(int run, string eArm="")
+void analyze_heepData(int run, string eArm="P")
 {
   
   TString hadron_arm;
@@ -23,7 +23,12 @@ void analyze_heepData(int run, string eArm="")
   //gROOT->SetBatch(kTRUE);
     
   //Read DATA ROOTfiles  
-  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);        
+  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);     
+  
+  //Tracking Efficiencies Studies ROOTfiles
+  //TString filename =Form("../../hallc_replay/ROOTfiles/DEUTERON/TrkEffStudies/nominal/coin_replay_heep_check_%d_-1.root",run);        
+  // TString filename =Form("../../hallc_replay/ROOTfiles/DEUTERON/TrkEffStudies/setting1/coin_replay_trkEffStudy_%d_-1.root",run);        
+
   //  TString filename =Form("../../hallc_replay/ROOTfiles/SHMS_matrix_corr/coin_replay_heep_check_%d_20000.root",run); 
   
 
@@ -45,19 +50,30 @@ void analyze_heepData(int run, string eArm="")
      
   //Detector Histograms
   TH1F *epCT = new TH1F("epCT","e-Proton Coincidence Time", 100, 0, 20);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
-  TH1F *etottrknorm = new TH1F("etot_tracknorm", "SHMS Total Normalized Track Energy", 100, 0.5, 2.3);
+  TH1F *etotnorm = new TH1F("etot_tracknorm", "SHMS Total Normalized Track Energy", 100, 0.5, 2.3);
 
   //Kinematics Quantities
   TH1F *MM2 = new TH1F("MM2", "Missing Mass Squared, MM2", MM2_nbins, MM2_xmin, MM2_xmax );
   TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
   TH1F *Emissv2 = new TH1F("Emissv2","missing energy", Em_nbins, Em_xmin, Em_xmax); 
-  TH1F *pm = new TH1F("pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
+  TH1F *pm = new TH1F("pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax); 
+
+  TH1F *pmX_lab = new TH1F("pmX_Lab","Pmiss X (Lab) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
+  TH1F *pmY_lab = new TH1F("pmY_Lab","Pmiss Y (Lab) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
+  TH1F *pmZ_lab = new TH1F("pmZ_Lab","Pmiss Z (Lab) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
+  TH1F *pmX_q = new TH1F("pmX_q","Pmiss X (w.r.t q-vec) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
+  TH1F *pmY_q = new TH1F("pmY_q","Pmiss Y (w.r.t q-vec) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
+  TH1F *pmZ_q = new TH1F("pmZ_q","Pmiss Z (w.r.t. q-vec) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
+  
+
   TH1F *Q_2 = new TH1F("Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
   TH1F *omega = new TH1F("omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
   TH1F *W_inv = new TH1F("W_inv", "Invariant Mass, W", W_nbins, W_xmin, W_xmax);     //min width = 19.9 MeV (0.0199) (bin width = 25 MeV)
   TH1F *theta_elec = new TH1F("theta_elec", "Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
   TH1F *theta_prot = new TH1F("theta_prot", "Proton Scatt. Angle", thp_nbins, thp_xmin, thp_xmax);
-  
+  TH1F *theta_elec_calc = new TH1F("theta_elec_calc", "Calculated Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
+  TH1F *theta_elec_res = new TH1F("theta_elec_res", "Electron Scatt. Angle Residual", 100, -1, 1);
+
   //Additional Kinematics Variables
   TH1F *W_2 = new TH1F("W2", "Invariant Mass W2", W2_nbins, W2_xmin, W2_xmax);
   TH1F *xbj = new TH1F("xbj", "x-Bjorken", xbj_nbins, xbj_xmin, xbj_xmax);
@@ -163,29 +179,40 @@ void analyze_heepData(int run, string eArm="")
   TH2F *Em_vs_hdelta = new TH2F("Em_vs_hdelta", "Em vs hdelta", hdelta_nbins, hdelta_xmin, hdelta_xmax, Em_nbins, Em_xmin, Em_xmax);
  
   //Define (Calculated - Measured Quantities) for Angle Offsets Check
-  TH2F *d_etheta_vs_exfp = new TH2F("d_etheta_vs_exfp", electron_arm + "d#theta_{e} vs. X_{fp}",    exfp_nbins,  exfp_xmin,  exfp_xmax, 100, -0.04, 0.04);
-  TH2F *d_etheta_vs_expfp = new TH2F("d_etheta_vs_expfp", electron_arm + "d#theta_{e} vs. X'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, 100, -0.04, 0.04); 
-  TH2F *d_etheta_vs_eyfp = new TH2F("d_etheta_vs_eyfp", electron_arm + "d#theta_{e} vs. Y_{fp}",    eyfp_nbins,  eyfp_xmin,  eyfp_xmax, 100, -0.04, 0.04); 
-  TH2F *d_etheta_vs_eypfp = new TH2F("d_etheta_vs_eypfp", electron_arm + "d#theta_{e} vs. Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, 100, -0.04, 0.04); 
+  TH2F *d_etheta_vs_exfp = new TH2F("d_etheta_vs_exfp", electron_arm + "d#theta_{e} vs. X_{fp}",    exfp_nbins,  exfp_xmin,  exfp_xmax, 100, -0.01, 0.01);
+  TH2F *d_etheta_vs_expfp = new TH2F("d_etheta_vs_expfp", electron_arm + "d#theta_{e} vs. X'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, 100, -0.01, 0.01); 
+  TH2F *d_etheta_vs_eyfp = new TH2F("d_etheta_vs_eyfp", electron_arm + "d#theta_{e} vs. Y_{fp}",    eyfp_nbins,  eyfp_xmin,  eyfp_xmax, 100, -0.01, 0.01); 
+  TH2F *d_etheta_vs_eypfp = new TH2F("d_etheta_vs_eypfp", electron_arm + "d#theta_{e} vs. Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, 100, -0.01, 0.01); 
 
 
 
 
   /************Define Histos to APPLY CUTS*********************************/
   TH1F *cut_epCT = new TH1F("cut_epCT","e-Proton Coincidence Time", 100, 0, 20);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
-  TH1F *cut_etottrknorm = new TH1F("cut_etot_tracknorm", "SHMS Total Normalized Track Energy", 100, 0.5, 2.3);
+  TH1F *cut_etotnorm = new TH1F("cut_etot_tracknorm", "SHMS Total Normalized Track Energy", 100, 0.5, 2.3);
 
   //Kinematics Quantities
   TH1F *cut_MM2 = new TH1F("cut_MM2", "Missing Mass Squared, MM2", MM2_nbins, MM2_xmin, MM2_xmax );
   TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV
   TH1F *cut_Emissv2 = new TH1F("cut_Emissv2","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV    
   TH1F *cut_pm = new TH1F("cut_pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
+  
+  TH1F *cut_pmX_lab = new TH1F("cut_pmX_Lab","Pmiss X (Lab) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
+  TH1F *cut_pmY_lab = new TH1F("cut_pmY_Lab","Pmiss Y (Lab) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
+  TH1F *cut_pmZ_lab = new TH1F("cut_pmZ_Lab","Pmiss Z (Lab) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
+  TH1F *cut_pmX_q = new TH1F("cut_pmX_q","Pmiss X (w.r.t q-vec) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
+  TH1F *cut_pmY_q = new TH1F("cut_pmY_q","Pmiss Y (w.r.t q-vec) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
+  TH1F *cut_pmZ_q = new TH1F("cut_pmZ_q","Pmiss Z (w.r.t. q-vec) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
+  
+
   TH1F *cut_Q_2 = new TH1F("cut_Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
   TH1F *cut_omega = new TH1F("cut_omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
   TH1F *cut_W_inv = new TH1F("cut_W_inv", "Invariant Mass, W", W_nbins, W_xmin, W_xmax);     //min width = 19.9 MeV (0.0199) (bin width = 25 MeV)
   TH1F *cut_theta_elec = new TH1F("cut_theta_elec", "Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
   TH1F *cut_theta_prot = new TH1F("cut_theta_prot", "Proton Scatt. Angle", thp_nbins, thp_xmin, thp_xmax);
-  
+  TH1F *cut_theta_elec_calc = new TH1F("cut_theta_elec_calc", "Calculated Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
+  TH1F *cut_theta_elec_res = new TH1F("cut_theta_elec_res", "Electron Scatt. Angle Residual", 100, -1, 1);
+
   //Additional Kinematics Variables
   TH1F *cut_W_2 = new TH1F("cut_W2", "Invariant Mass W2", W2_nbins, W2_xmin, W2_xmax);
   TH1F *cut_xbj = new TH1F("cut_xbj", "x-Bjorken", xbj_nbins, xbj_xmin, xbj_xmax);
@@ -292,16 +319,18 @@ void analyze_heepData(int run, string eArm="")
 
 
   //Define (Calculated - Measured Quantities) for Angle Offsets Check                                                                                     
-  TH2F *cut_d_etheta_vs_exfp = new TH2F("cut_d_etheta_vs_exfp", electron_arm + "d#theta_{e} vs. X_{fp}",    exfp_nbins,  exfp_xmin,  exfp_xmax, 100, -0.04, 0.04);       
-  TH2F *cut_d_etheta_vs_expfp = new TH2F("cut_d_etheta_vs_expfp", electron_arm + "d#theta_{e} vs. X'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, 100, -0.04, 0.04);    
-  TH2F *cut_d_etheta_vs_eyfp = new TH2F("cut_d_etheta_vs_eyfp", electron_arm + "d#theta_{e} vs. Y_{fp}",    eyfp_nbins,  eyfp_xmin,  eyfp_xmax, 100, -0.04, 0.04);    
-  TH2F *cut_d_etheta_vs_eypfp = new TH2F("cut_d_etheta_vs_eypfp", electron_arm + "d#theta_{e} vs. Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, 100, -0.04, 0.04);      
+  TH2F *cut_d_etheta_vs_exfp = new TH2F("cut_d_etheta_vs_exfp", electron_arm + "d#theta_{e} vs. X_{fp}",    exfp_nbins,  exfp_xmin,  exfp_xmax, 100, -0.01, 0.01);   
+  TH2F *cut_d_etheta_vs_expfp = new TH2F("cut_d_etheta_vs_expfp", electron_arm + "d#theta_{e} vs. X'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, 100, -0.01, 0.01);    
+  TH2F *cut_d_etheta_vs_eyfp = new TH2F("cut_d_etheta_vs_eyfp", electron_arm + "d#theta_{e} vs. Y_{fp}",    eyfp_nbins,  eyfp_xmin,  eyfp_xmax, 100, -0.01, 0.01);    
+  TH2F *cut_d_etheta_vs_eypfp = new TH2F("cut_d_etheta_vs_eypfp", electron_arm + "d#theta_{e} vs. Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, 100, -0.01, 0.01);     
   
 
   //Set Variable Names and Branches
  
   //------Kinematics
+  Double_t  Eb = 10.6005;
   Double_t  theta_e;
+  Double_t  theta_e_calc;
   Double_t  W;
   Double_t  Q2;
   Double_t  X;
@@ -313,6 +342,12 @@ void analyze_heepData(int run, string eArm="")
   Double_t  Em;
   Double_t  Emv2;
   Double_t  Pm;
+  Double_t  Pmx_lab;
+  Double_t  Pmy_lab;
+  Double_t  Pmz_lab;
+  Double_t  Pmx_q;
+  Double_t  Pmy_q;
+  Double_t  Pmz_q;
   Double_t  thbq;
   Double_t  thxq;
   Double_t  xangle;
@@ -339,6 +374,16 @@ void analyze_heepData(int run, string eArm="")
 
   T->SetBranchAddress(Form("%s.kin.secondary.emiss", hArm.c_str()),&Em);
   T->SetBranchAddress(Form("%s.kin.secondary.pmiss", hArm.c_str()),&Pm);
+
+  T->SetBranchAddress("H.kin.secondary.Prec_x",&Pmx_lab);   //x-component of recoil momentum (Pmiss_x in Hall or Lab Coordinates)
+  T->SetBranchAddress("H.kin.secondary.Prec_y",&Pmy_lab);   //y
+  T->SetBranchAddress("H.kin.secondary.Prec_z",&Pmz_lab);   //z
+  
+  T->SetBranchAddress("H.kin.secondary.pmiss_x",&Pmx_q);   //x-component of recoil momentum (Pmiss_x with respect to the q-vector)
+  T->SetBranchAddress("H.kin.secondary.pmiss_y",&Pmy_q);   //y
+  T->SetBranchAddress("H.kin.secondary.pmiss_z",&Pmz_q);   //z
+
+
   T->SetBranchAddress(Form("%s.kin.secondary.th_bq", hArm.c_str()),&thbq);      //Polar angle of recoil system with q (rad)
   T->SetBranchAddress(Form("%s.kin.secondary.th_xq", hArm.c_str()),&thxq);     //Polar angle of detected particle with q
   T->SetBranchAddress(Form("%s.kin.secondary.xangle", hArm.c_str()),&xangle);  //Angle of detected particle with scattered electron (Used to determine hadron angle)
@@ -406,12 +451,14 @@ void analyze_heepData(int run, string eArm="")
 
 
   //------SHMS Detector Quantities
-  Double_t  pcal_etottracknorm;
+  Double_t  pcal_etotnorm;
   Double_t  pngcer_npesum;
+  Double_t  pdc_ntrack;
 
-  T->SetBranchAddress("P.cal.etottracknorm",&pcal_etottracknorm);
+  T->SetBranchAddress("P.cal.etotnorm",&pcal_etotnorm);
   T->SetBranchAddress("P.ngcer.npeSum",&pngcer_npesum);
-  
+  T->SetBranchAddress("P.dc.ntrack",&pdc_ntrack);
+
   
   //Calculated Quantities to be use in loop
   Double_t etheta_calc; //calculated electron angle
@@ -425,14 +472,14 @@ void analyze_heepData(int run, string eArm="")
   Bool_t c_ctime;
   Bool_t c_MM2;
 
-  //Set Minimum Emiss Cut depending on RUn Number
+  //Set Minimum Emiss Cut depending on Run Number
   Double_t Em_min;
   if (run==3288){Em_min = 0.04;}  
   if (run==3371){Em_min = 0.04;}  
   if (run==3374){Em_min = 0.04;} 
   if (run==3377){Em_min = 0.04;}  
 
-
+ 
   //======================
   // E V E N T   L O O P 
   //======================
@@ -458,38 +505,50 @@ void analyze_heepData(int run, string eArm="")
     c_Em = Em < Em_min;      //-0.125, -0.115, -0.14, -0.14 --> 3288, 3371, 3374, 3377 (Determined using EPICS momenta data D2 hEEP)                       
                              //-0.11, -0.08, -0.13, -0.13 --->Corrected HMS P, Em cuts
 
+    theta_e_calc = asin( Pf*sin(theta_p) / (Eb + MP - Ep) );
+    detheta = theta_e_calc -theta_e;
 
     //Calculated Quantities
     etheta_calc =  acos((10.6005 - Pf * cos(theta_p))/kf );
-    detheta = (etheta_calc - theta_e);
+    //detheta = (etheta_calc - theta_e);
     MM_2 = Em*Em - Pm*Pm;
   
     //Define Cuts
     c_hdelta = h_delta>-8.&&h_delta<8.;  //good HMS delta range (well known recon. matrix)
-    c_ecal = pcal_etottracknorm > 0.85 &&  pcal_etottracknorm < 1.2;   //reject pions
+    c_ecal = pcal_etotnorm >= 0.6;
     c_ctime = epCoinTime>8.5 && epCoinTime<13.5;
     c_edelta = e_delta > -10 && e_delta < 22.;
     c_MM2 = MM_2>-0.0009&&MM_2<0.0004;
 
 
     //APPLY CUTS: BEGIN CUTS LOOP
-    if (c_hdelta&&c_edelta)   //pindex > -1  ---> select good tracks
+    if (c_hdelta&&c_edelta&&c_Em&&c_ecal)   //pindex > -1  ---> select good tracks
     {     
 
 	  cut_epCT->Fill(epCoinTime);
-	  cut_etottrknorm->Fill(pcal_etottracknorm);
+	  cut_etotnorm->Fill(pcal_etotnorm);
 
 	  //Kinematics
 	  cut_MM2->Fill(MM_2);
 	  cut_Emiss->Fill(Em);
 	  cut_Emissv2->Fill(Emv2);
 	  cut_pm->Fill(Pm);
+	  
+	  cut_pmX_lab->Fill(Pmx_lab);
+	  cut_pmY_lab->Fill(Pmy_lab);
+	  cut_pmZ_lab->Fill(Pmz_lab);
+	  
+	  cut_pmX_q->Fill(Pmx_q);
+	  cut_pmY_q->Fill(Pmy_q);
+	  cut_pmZ_q->Fill(Pmz_q);
+
 	  cut_Q_2->Fill(Q2);
 	  cut_omega->Fill(nu);
 	  cut_W_inv->Fill(W);
 	  cut_theta_elec->Fill(theta_e/dtr);
 	  cut_theta_prot->Fill(theta_p/dtr);
-
+	  cut_theta_elec_calc->Fill(theta_e_calc/dtr);
+	  cut_theta_elec_res->Fill((theta_e_calc-theta_e)/dtr);
 	  
 	  //Additional Kinematics Variables
 	  cut_W_2->Fill(W2); 
@@ -595,7 +654,10 @@ void analyze_heepData(int run, string eArm="")
 	  
 
 	  cut_d_etheta_vs_exfp->Fill(e_xfp, detheta);
+	  
 	  cut_d_etheta_vs_expfp->Fill(e_xpfp, detheta);
+	  
+
 	  cut_d_etheta_vs_eyfp->Fill(e_yfp, detheta);
 	  cut_d_etheta_vs_eypfp->Fill(e_ypfp, detheta);
 
@@ -604,18 +666,29 @@ void analyze_heepData(int run, string eArm="")
       
       
       epCT->Fill(epCoinTime);
-      etottrknorm->Fill(pcal_etottracknorm);
+      etotnorm->Fill(pcal_etotnorm);
 
       //Kinematics
       MM2->Fill(MM_2);
       Emiss->Fill(Em);
       Emissv2->Fill(Emv2);
       pm->Fill(Pm);
+      
+      pmX_lab->Fill(Pmx_lab);
+      pmY_lab->Fill(Pmy_lab);
+      pmZ_lab->Fill(Pmz_lab);
+      
+      pmX_q->Fill(Pmx_q);
+      pmY_q->Fill(Pmy_q);
+      pmZ_q->Fill(Pmz_q);
+
       Q_2->Fill(Q2);
       omega->Fill(nu);
       W_inv->Fill(W);
       theta_elec->Fill(theta_e/dtr);
       theta_prot->Fill(theta_p/dtr);
+      theta_elec_calc->Fill(theta_e_calc/dtr);
+      theta_elec_res->Fill((theta_e_calc-theta_e)/dtr);
 
 
       //Additional Kinematics Variables
@@ -721,9 +794,9 @@ void analyze_heepData(int run, string eArm="")
       Em_vs_hyptar->Fill(h_yptar, Em);
       Em_vs_hdelta->Fill(h_delta, Em);
       
-      d_etheta_vs_exfp->Fill(e_xfp, detheta);                                                                                                                             
-      d_etheta_vs_expfp->Fill(e_xpfp, detheta);                                                                                                                           
-      d_etheta_vs_eyfp->Fill(e_yfp, detheta);                                                                                                                             
+      d_etheta_vs_exfp->Fill(e_xfp, detheta);                                                                  
+      d_etheta_vs_expfp->Fill(e_xpfp, detheta);                                                                                      
+      d_etheta_vs_eyfp->Fill(e_yfp, detheta);                         
       d_etheta_vs_eypfp->Fill(e_ypfp, detheta);                                                                                                                           
                                                          
 

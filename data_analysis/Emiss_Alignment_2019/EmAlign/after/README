@@ -1,0 +1,14 @@
+***************
+ March 6, 2019
+**************
+
+** After applying the Emiss offset to correct the SHMS momentum, now the
+Emiss in all four runs appear aligned.  The W, however, still appearas a little offset.
+
+** To verify that the SHMS momentum was NOT the cause of this W offset, 
+   the calculated - measured momentum was plotted. See ../../SHMS_Pcheck/
+   The fractional momentum difference between data/simc was < 0.5 %
+
+** This indicates that the shift in W is entirely due to the SHMS central angle 
+   being a little offset. The offsets were determined by fitting W, and 
+   using the derivative dW/dth_e. See directory ../../shmsAngleOffset

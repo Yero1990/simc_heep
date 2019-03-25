@@ -1,0 +1,11 @@
+The single tracking efficiency was done as follows:
+
+From report file, single_trk_eff = did / should, where
+a cut on etotnorm[0.6,1.6] was placed in should, and did was required ntrack==1
+
+** This tracking efficinecy was used in SIMC weight.
+
+** On data, a cut on pdc_ntrack==1 was placed, and the events weighted by
+F = ntrack ==1 / ntrack > 0, where each W event was weighted by 1/F
+Also, a cut on etotnorm[0.6,1.6] was placed
+

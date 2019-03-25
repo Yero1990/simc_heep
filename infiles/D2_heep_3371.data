@@ -22,9 +22,9 @@
      dEbeam  =  0.05                                   !  beam energy variation (%)
      electron_arm  =  5                                !  1=hms,2=sos,3=hrsr,4=hrsl,5=shms
      hadron_arm  =  1                                  !  1=hms,2=sos,3=hrsr,4=hrsl,5=shms
-     spec%e%P  =  8541.				       ! 8541.,  8541.829, 8542., 8542.311, 8546.443, 8547.187, 8700. e arm central momentum (MeV/c)
-     spec%e%theta  =  13.93                            ! e arm angle setting (degrees)
-     spec%p%P  = 3467.9035                      !3480.  p arm central momentum (MeV/c)
+     spec%e%P  = 8543.210 				       ! 8542.812,  8541.,  8541.829, 8542., 8542.311, 8546.443, 8547.187, 8700. e arm central momentum (MeV/c)
+     spec%e%theta  = 13.899                        ! 13.93  e arm angle setting (degrees)
+     spec%p%P  = 3467.904                      !3480.  p arm central momentum (MeV/c)
      spec%p%theta  = 33.545                     ! p arm angle setting (degrees)
 !     spec%e%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt. in e Arm            
 !     spec%p%sig_musc  = 1.0e-6, 1.0e-6                 ! add extra mult scatt in pArm                                                    
@@ -89,14 +89,14 @@
      spec%e%offset%y  =   -0.06		!  y offset (cm)
      spec%e%offset%z  =  0.		!  z offset (cm)
      spec%e%offset%xptar  =  0.	        !  xptar offset (mr)
-     spec%e%offset%yptar  =   0.0204    !  yptar offset (mr)
+     spec%e%offset%yptar  =   0.    !  yptar offset (mr)
 /
 
  &P_ARM_OFFSET
      spec%p%offset%x  =  0.083545		!  x offset (cm)
      spec%p%offset%y  =  0.236799		!  y offset (cm)
      spec%p%offset%z  =  0.		!  z offset (cm)
-     spec%p%offset%xptar  =  3.4353	!  xptar offset (mr)
+     spec%p%offset%xptar  =  0.	!  xptar offset (mr)
      spec%p%offset%yptar  =  0.	!  yptar offset (mr)
 / 
 

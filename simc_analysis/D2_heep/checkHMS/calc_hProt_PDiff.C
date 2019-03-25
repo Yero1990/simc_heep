@@ -94,10 +94,10 @@ void calc_hProt_PDiff()
   
   TCanvas *c4_simc[4];                                                                            
 
-  //Define SOme Cuts
+  //Define Some Cuts
   Bool_t c_simcEm;
-
-
+  Bool_t c_simc_edelta;
+  Bool_t c_simc_hdelta;
  
   Double_t FullWeight;
 
@@ -144,7 +144,7 @@ void calc_hProt_PDiff()
       T->SetBranchAddress("Weight", &Weight);
       T->SetBranchAddress("theta_e", &theta_e);
       T->SetBranchAddress("theta_p", &theta_p);
-
+      T->SetBranchAddress("e_delta", &e_delta);
       T->SetBranchAddress("h_pf", &hPf);   
       T->SetBranchAddress("e_pf", &ePf); 
       
@@ -202,8 +202,10 @@ void calc_hProt_PDiff()
 	T->GetEntry(i);
 
 	//Define CUts
-	c_simcEm = Em < 0.03;
-
+	c_simcEm = Em < 0.04;
+	c_simc_edelta = e_delta > -10. && e_delta < 22.;
+	c_simc_hdelta = h_delta > -8. && h_delta < 8.; 
+ 
 	//Calculate the cross-sect. weight
 	FullWeight = (Normfac*Weight)/T->GetEntries();
 	
@@ -213,7 +215,7 @@ void calc_hProt_PDiff()
 	hmsP_meas = hPf / 1000.;
 
 	//Fill Histograms
-	if (c_simcEm ){
+	if (c_simcEm&&c_simc_edelta&&c_simc_hdelta ){
 	hist_hPcalc[index]->Fill(hmsP_calc, FullWeight);      //Fill calculated momentum
 	hist_hPmeas[index]->Fill(hmsP_meas, FullWeight);      //Fill measure momentum
 	//	hist_hPDev[index]->Fill( (hmsP_calc - hmsP_meas)/ hmsP_meas, FullWeight);   //Fill Fractional  Deviation of Calculated from Measured Momentum
@@ -327,11 +329,14 @@ void calc_hProt_PDiff()
   TString n_hmsP_meas = "H.gtr.p";
   TString n_emiss = "H.kin.secondary.emiss";
   TString n_hdelta = "H.gtr.dp";
+  TString n_edelta = "P.gtr.dp";
 
   TString n_hxfp = "H.dc.x_fp";
   TString n_hxpfp = "H.dc.xp_fp"; 
   TString n_hyfp = "H.dc.y_fp";               
   TString n_hypfp = "H.dc.yp_fp"; 
+
+  
 
  
   Double_t xangle;
@@ -339,21 +344,24 @@ void calc_hProt_PDiff()
   Double_t hms_Pmeas;
   Double_t emiss;
   Double_t hdelta;
-
+  Double_t edelta;
   Double_t hxfp, hxpfp, hyfp, hypfp;
 
   
   //----DEFINE SOME CUTS
   //double Em_min[4] = {-0.125, -0.115, -0.14, -0.14}; //Emiss < Em_min Determined using EPICS momenta data D2 hEEP
   
-  double Em_min[4] = {-0.11, -0.08, -0.13, -0.135}; //Emiss < Em_min Determined after D2 Heep HMSP COrr. and SHMS CAL Calibration
-
+  //double Em_min[4] = {-0.11, -0.08, -0.13, -0.135}; //Emiss < Em_min Determined after D2 Heep HMSP COrr. and SHMS CAL Calibration
+  double Em_min[4] = {0.04, 0.04, 0.04, 0.04};
 
   //double Em_min[4] = {-0.12, -0.1, -0.13, -0.13}; //Emiss < Em_min Determined after Using dP/P = -0.001, dth = 0.0005 (yptar offset), dEb/Eb = 8e-4 rad momenta data D2 hEEP
 
   //double Em_min[4] = {-0.015, -0.045, -0.05, -0.12}; //Emiss < Em_min Determined using EPICS momenta hprotkg1,2,3,4
 
   Bool_t c_dataEm;
+  Bool_t c_data_edelta;
+  Bool_t c_data_hdelta;   
+         
 
   //-------------CREATE EMPTY HISTOGRAMS---------------------------------------------
   
@@ -414,7 +422,7 @@ void calc_hProt_PDiff()
 	T->SetBranchAddress(n_hmsP_meas, &hms_Pmeas);
 	T->SetBranchAddress(n_emiss, &emiss);
 	T->SetBranchAddress(n_hdelta, &hdelta);
-	
+	T->SetBranchAddress(n_edelta, &edelta);
 	T->SetBranchAddress(n_hxfp, &hxfp);
 	T->SetBranchAddress(n_hxpfp, &hxpfp);
 	T->SetBranchAddress(n_hyfp, &hyfp);
@@ -474,7 +482,8 @@ void calc_hProt_PDiff()
  
 	//Define the CUTS
 	c_dataEm = emiss < Em_min[index];
-      
+	c_data_edelta = edelta > -10. && edelta < 22.;
+	c_data_hdelta = hdelta > -8. && hdelta < 8.; 
 	//cout << "c_DATAEm = " << c_dataEm << " Emiss = " << emiss << endl;
 
 
@@ -485,7 +494,7 @@ void calc_hProt_PDiff()
 	hmsP_calc = 2.*Mp*Eb*(Eb + Mp)*TMath::Cos(htheta_p*TMath::Pi()/180.) / (Mp*Mp + 2.*Mp*Eb + Eb*Eb*TMath::Power(TMath::Sin(htheta_p*TMath::Pi()/180.),2)) ;
 
 	
-	if(TMath::Abs(htheta_p)<100 && TMath::Abs(hmsP_calc)<100 && TMath::Abs(hms_Pmeas)<100.&& c_dataEm)
+	if(TMath::Abs(htheta_p)<100 && TMath::Abs(hmsP_calc)<100 && TMath::Abs(hms_Pmeas)<100.&& c_dataEm && c_data_edelta && c_data_hdelta )
 	  {
 
 	    //Fill Histograms
@@ -617,7 +626,7 @@ void calc_hProt_PDiff()
   yRes_diff_err[2] = TMath::Sqrt(data_yRes_arr_err[2]*data_yRes_arr_err[2] + yRes_arr_err[2]*yRes_arr_err[2]);
   yRes_diff_err[3] = TMath::Sqrt(data_yRes_arr_err[3]*data_yRes_arr_err[3] + yRes_arr_err[3]*yRes_arr_err[3]);
 
-  ofile << "#!Run[i,0]/    Pf_data[f,1]/     Pf_data_err[f,2]/     Pf_simc[f3]/     Pf_simc_err[f,4]/" << endl;
+  ofile << "#!Run[i,0]/    Pf_data[f,1]/     Pf_data_err[f,2]/     Pf_simc[f,3]/     Pf_simc_err[f,4]/" << endl;
   ofile << run[0] << "    " <<  data_yRes_arr[0] << "    " << data_yRes_arr_err[0] << "    " << yRes_arr[0] << "     " << yRes_arr_err[0] << endl;
   ofile << run[1] << "    " <<  data_yRes_arr[1] << "    " << data_yRes_arr_err[1] << "    " << yRes_arr[1] << "     " << yRes_arr_err[1] << endl;
   ofile << run[2] << "    " <<  data_yRes_arr[2] << "    " << data_yRes_arr_err[2] << "    " << yRes_arr[2] << "     " << yRes_arr_err[2] << endl;
@@ -634,10 +643,10 @@ void calc_hProt_PDiff()
   ofile << "#Momentum Correction Factor: " << endl;
   ofile << "#del = (simc - data)" << endl;
   ofile << "#corr_factor = 1 - (del/Pcentral)" << endl;
-  ofile << "#3288: "<< 1. - (yRes_diff[0]/Pc[0]) << "   +/-  " <<  yRes_diff_err[0]/Pc[0] << "  [GeV]  " <<  endl;
-  ofile << "#3371: "<< 1. - (yRes_diff[1]/Pc[1]) << "   +/-  " <<  yRes_diff_err[1]/Pc[1] << "  [GeV]  " <<  endl;
-  ofile << "#3374: "<< 1. - (yRes_diff[2]/Pc[2]) << "   +/-  " <<  yRes_diff_err[2]/Pc[2] << "  [GeV]  " <<  endl;
-  ofile << "#3377: "<< 1. - (yRes_diff[3]/Pc[3]) << "   +/-  " <<  yRes_diff_err[3]/Pc[3] << "  [GeV]  " <<  endl;
+  ofile << "#3288: "<< 1. - (yRes_diff[0]/Pc[0]) << "   +/-  " <<  yRes_diff_err[0]/Pc[0] << "    " <<  endl;
+  ofile << "#3371: "<< 1. - (yRes_diff[1]/Pc[1]) << "   +/-  " <<  yRes_diff_err[1]/Pc[1] << "    " <<  endl;
+  ofile << "#3374: "<< 1. - (yRes_diff[2]/Pc[2]) << "   +/-  " <<  yRes_diff_err[2]/Pc[2] << "    " <<  endl;
+  ofile << "#3377: "<< 1. - (yRes_diff[3]/Pc[3]) << "   +/-  " <<  yRes_diff_err[3]/Pc[3] << "    " <<  endl;
 
   ofile.close();
 

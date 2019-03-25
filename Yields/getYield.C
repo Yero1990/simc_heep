@@ -45,8 +45,8 @@ void getYield()
     //TString simc_filename =  Form("../simc_analysis/D2_heep/Wcheck_simc_histos_%d.root", run[irun]);                                                                                                                                                             
     //TString data_filename = Form("../data_analysis/Wcheck_data_histos_%d.root",run[irun]);     
    
-    TString simc_filename =  Form("../data_analysis/EmANDdelta_CUTS/CUT1/Wcheck_simc_histos_%d.root", run[irun]);                                                                                                                                                             
-    TString data_filename = Form("../data_analysis/EmANDdelta_CUTS/CUT1/Wcheck_data_histos_%d.root",run[irun]);     
+    TString simc_filename =  Form("../simc_analysis/Wcheck_simc_histos_%d.root", run[irun]);                                                                                                                                                             
+    TString data_filename = Form("../data_analysis/Wcheck_data_histos_%d.root",run[irun]);     
   
    
                                                                                                                         
@@ -70,7 +70,7 @@ void getYield()
   //Change to simc file
   simc_file->cd();
   simc_file->GetObject("cut_W_inv", simcW);
-  //simc_file->GetObject("cut_W_inv", simcW);
+  //simc_file->GetObject("W_inv", simcW);
 
   simc_file->GetObject("Emiss", simcEm);
   simc_file->GetObject("hdelta", simc_hdelta);
@@ -85,7 +85,7 @@ void getYield()
   //Change to data file                                                                                                                   
   data_file->cd();                                                                                                                         
   data_file->GetObject("cut_W_inv", dataW);  
-  //data_file->GetObject("cut_W_inv", dataW);  
+  //data_file->GetObject("W_inv", dataW);  
 
   data_file->GetObject("Emiss", dataEm);
   data_file->GetObject("hdelta", data_hdelta);

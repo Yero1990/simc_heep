@@ -2,7 +2,7 @@
 
 #include "set_heep_histos.h"
 
-void check_simc(int run, string eArm)
+void check_simc(int run, string eArm="P")
 {
   //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
@@ -30,42 +30,65 @@ TString electron_arm;
   if(run==3288){
 
 
-    charge_factor =146.908;   //BCM4A
-    e_trkEff =  0.9856;       //shms e- trk eff
-    h_trkEff = 0.9864;        //hms had trk eff
-    c_LT = 0.9814;
-    t_LT = 0.945919;
+    charge_factor =152.241;   //BCM4A
+    t_LT = 0.924374;
+
+    //HMS/SHMS Efficiency Studies
+    h_trkEff = 0.9878;     //nominal
+
+    e_trkEff =  0.9704;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+    //e_trkEff =  0.9083;    //NEW Method(T.Horn): [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+
+    //single tracking efficiecny
+    //e_trkEff = 0.9193;
 
   }
   if(run==3371){
 
     
-    charge_factor = 50.172;   //BCM4A (in mC)
-    e_trkEff =  0.9842;       //shms e- trk eff
-    h_trkEff = 0.9864;        //hms had trk eff
-    c_LT = 0.9891;
-    t_LT = 0.946789;
+    charge_factor = 52.020;   //BCM4A (in mC)
+    t_LT = 0.944654;
+    
+    //HMS/SHMS Efficiency Studies
+    h_trkEff =  0.9872;    //nominal
+
+    e_trkEff =  0.9728;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+    //e_trkEff =  0.9225;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+
+    //single tracking efficiecny
+    //e_trkEff = 0.9308;
+
   }
   if(run==3374){
 
 
-    charge_factor = 50.705;   //BCM4A (in mC)
-    e_trkEff =  0.9833;       //shms e- trk eff
-    h_trkEff = 0.9883;        //hms had trk eff
-    c_LT = 0.937892;
-    t_LT = 0.846241;
+    charge_factor = 52.575;   //BCM4A (in mC)
+    t_LT = 0.845108;
 
+    //HMS/SHMS Efficiency Studies
+    h_trkEff =  0.9896;    //nominal
+      
+    e_trkEff =  0.9587;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+    //e_trkEff =  0.8658;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+
+    //single tracking efficiecny
+    //e_trkEff = 0.9061;
   }
 
   if(run==3377){
 
 
-    charge_factor = 39.969;   //BCM4A (in mC)
-    e_trkEff =  0.9811;       //shms e- trk eff
-    h_trkEff = 0.9888;        //hms had trk eff
-    c_LT = 0.8531;
-    t_LT = 0.807069;
-
+    charge_factor = 41.432;   //BCM4A (in mC)
+    t_LT = 0.764917;
+       
+    //HMS/SHMS Efficiency Studies
+    h_trkEff =  0.9905;    //nominal
+  
+    e_trkEff =  0.9432;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+    //e_trkEff =  0.8047;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+    
+    //single tracking efficiecny
+    //e_trkEff = 0.8931;
   }
   //Read SIMC ROOTfiles
     
@@ -86,34 +109,46 @@ TString electron_arm;
  
 //Kinematics Quantities
   TH1F *MM2 = new TH1F("MM2", "Missing Mass Squared, MM2", MM2_nbins, MM2_xmin, MM2_xmax );
-TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
-TH1F *pm = new TH1F("pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
-TH1F *Q_2 = new TH1F("Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
-TH1F *omega = new TH1F("omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
-TH1F *W_inv = new TH1F("W_inv", "Invariant Mass, W", W_nbins, W_xmin, W_xmax);     //min width = 19.9 MeV (0.0199) (bin width = 25 MeV)
-TH1F *theta_elec = new TH1F("theta_elec", "Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
-TH1F *theta_prot = new TH1F("theta_prot", "Proton Scatt. Angle", thp_nbins, thp_xmin, thp_xmax);
+  TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
+  TH1F *pm = new TH1F("pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
+  
+  TH1F *pmX_lab = new TH1F("pmX_Lab","Pmiss X (Lab) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
+  TH1F *pmY_lab = new TH1F("pmY_Lab","Pmiss Y (Lab) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
+  TH1F *pmZ_lab = new TH1F("pmZ_Lab","Pmiss Z (Lab) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
+  TH1F *pmX_q = new TH1F("pmX_q","Pmiss X (w.r.t q-vec) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
+  TH1F *pmY_q = new TH1F("pmY_q","Pmiss Y (w.r.t q-vec) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
+  TH1F *pmZ_q = new TH1F("pmZ_q","Pmiss Z (w.r.t. q-vec) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
+
+  TH1F *Q_2 = new TH1F("Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
+
+  TH1F *omega = new TH1F("omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
+
+  TH1F *W_inv = new TH1F("W_inv", "Invariant Mass, W", W_nbins, W_xmin, W_xmax);     //min width = 19.9 MeV (0.0199) (bin width = 25 MeV)
+  TH1F *theta_elec = new TH1F("theta_elec", "Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
+  TH1F *theta_prot = new TH1F("theta_prot", "Proton Scatt. Angle", thp_nbins, thp_xmin, thp_xmax);
 
 //Additional Kinematics Variables
 TH1F *W_2 = new TH1F("W2", "Invariant Mass W2", W2_nbins, W2_xmin, W2_xmax);
 TH1F *xbj = new TH1F("xbj", "x-Bjorken", xbj_nbins, xbj_xmin, xbj_xmax);
+
+
 TH1F *P_f = new TH1F("P_f", "Final Proton Momentum", Pf_nbins, Pf_xmin, Pf_xmax);
 TH1F *Ep_f = new TH1F("Ep_f", "Final Proton Energy", Ep_nbins, Ep_xmin, Ep_xmax);                                                   
 TH1F *k_f = new TH1F("kf", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
 TH1F *theta_q = new TH1F("theta_q", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
 TH1F *theta_q_v2 = new TH1F("theta_q_v2", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
 TH1F *q_vec = new TH1F("q", "q-vector, |q|", q_nbins, q_xmin, q_xmax);
+
 TH1F *thet_pq = new TH1F("theta_pq", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 TH1F *thet_pq_v2 = new TH1F("theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 
-
 //Target Reconstruction Variables
-TH1F *x_tar = new TH1F("x_tar", "x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
+TH1F *x_tar = new TH1F("x_tar", "x_Target (Lab)", xtar_nbins, xtar_xmin, xtar_xmax);
 
-TH1F *hy_tar = new TH1F("hy_tar", hadron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);
-TH1F *hz_tar = new TH1F("hz_tar", hadron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);
-TH1F *ey_tar = new TH1F("ey_tar", electron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);                
-TH1F *ez_tar = new TH1F("ez_tar", electron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);  
+TH1F *hy_tar = new TH1F("hy_tar", hadron_arm + " y_Target (Lab)", ytar_nbins, ytar_xmin, ytar_xmax);
+TH1F *hz_tar = new TH1F("hz_tar", hadron_arm + " z_Target (Lab)", ztar_nbins, ztar_xmin, ztar_xmax);
+TH1F *ey_tar = new TH1F("ey_tar", electron_arm + " y_Target (Lab)", ytar_nbins, ytar_xmin, ytar_xmax);                
+TH1F *ez_tar = new TH1F("ez_tar", electron_arm + " z_Target (Lab)", ztar_nbins, ztar_xmin, ztar_xmax);  
 
 //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
 TH1F *hytar = new TH1F("hytar", hadron_arm + " Y_{tar}", hytar_nbins, hytar_xmin, hytar_xmax);
@@ -215,8 +250,19 @@ TH2F *W_vs_hdelta = new TH2F("W_vs_hdelta", "W vs hdelta", hdelta_nbins, hdelta_
  TH1F *cut_MM2 = new TH1F("cut_MM2", "Missing Mass Squared, MM2", MM2_nbins, MM2_xmin, MM2_xmax );
 TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV
 TH1F *cut_pm = new TH1F("cut_pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
-TH1F *cut_Q_2 = new TH1F("cut_Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
+
+   TH1F *cut_pmX_lab = new TH1F("cut_pmX_Lab","Pmiss X (Lab) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
+  TH1F *cut_pmY_lab = new TH1F("cut_pmY_Lab","Pmiss Y (Lab) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
+  TH1F *cut_pmZ_lab = new TH1F("cut_pmZ_Lab","Pmiss Z (Lab) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
+  TH1F *cut_pmX_q = new TH1F("cut_pmX_q","Pmiss X (w.r.t q-vec) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
+  TH1F *cut_pmY_q = new TH1F("cut_pmY_q","Pmiss Y (w.r.t q-vec) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
+  TH1F *cut_pmZ_q = new TH1F("cut_pmZ_q","Pmiss Z (w.r.t. q-vec) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
+  
+
+
+ TH1F *cut_Q_2 = new TH1F("cut_Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
 TH1F *cut_omega = new TH1F("cut_omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
+
 TH1F *cut_W_inv = new TH1F("cut_W_inv", "Invariant Mass, W", W_nbins, W_xmin, W_xmax);     //min width = 19.9 MeV (0.0199) (bin width = 25 MeV)
 TH1F *cut_theta_elec = new TH1F("cut_theta_elec", "Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
 TH1F *cut_theta_prot = new TH1F("cut_theta_prot", "Proton Scatt. Angle", thp_nbins, thp_xmin, thp_xmax);
@@ -233,15 +279,14 @@ TH1F *cut_theta_q_v2 = new TH1F("cut_theta_q_v2", "q-vector Angle, #theta_{q}", 
 TH1F *cut_thet_pq = new TH1F("cut_theta_pq", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 TH1F *cut_thet_pq_v2 = new TH1F("cut_theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 
-
 //Target Reconstruction Variables
- TH1F *cut_x_tar = new TH1F("cut_x_tar", "x_Target", xtar_nbins, xtar_xmin, xtar_xmax);
+ TH1F *cut_x_tar = new TH1F("cut_x_tar", "x_Target (Lab)", xtar_nbins, xtar_xmin, xtar_xmax);
 
- TH1F *cut_hy_tar = new TH1F("cut_hy_tar", hadron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax); 
- TH1F *cut_hz_tar = new TH1F("cut_hz_tar", hadron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);       
+ TH1F *cut_hy_tar = new TH1F("cut_hy_tar", hadron_arm + " y_Target (Lab)", ytar_nbins, ytar_xmin, ytar_xmax); 
+ TH1F *cut_hz_tar = new TH1F("cut_hz_tar", hadron_arm + " z_Target (Lab)", ztar_nbins, ztar_xmin, ztar_xmax);       
                                                                                                                                                     
- TH1F *cut_ey_tar = new TH1F("cut_ey_tar", electron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);            
- TH1F *cut_ez_tar = new TH1F("cut_ez_tar", electron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);  
+ TH1F *cut_ey_tar = new TH1F("cut_ey_tar", electron_arm + " y_Target (Lab)", ytar_nbins, ytar_xmin, ytar_xmax);            
+ TH1F *cut_ez_tar = new TH1F("cut_ez_tar", electron_arm + " z_Target (Lab)", ztar_nbins, ztar_xmin, ztar_xmax);  
 
 //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
 TH1F *cut_hytar = new TH1F("cut_hytar", hadron_arm + " Y_{tar}", hytar_nbins, hytar_xmin, hytar_xmax);
@@ -420,12 +465,12 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   SNT->SetBranchAddress("theta_pq", &theta_pq);
   SNT->SetBranchAddress("phi_pq", &phi_pq);
   SNT->SetBranchAddress("corrsing", &corrsing);
-  SNT->SetBranchAddress("Pmx", &Pmx);
-  SNT->SetBranchAddress("Pmy", &Pmy);
+  SNT->SetBranchAddress("Pmx", &Pmx);  //Missing Momentum Components in Lab Coordinate System (+x beam left)
+  SNT->SetBranchAddress("Pmy", &Pmy); //+y is up
   SNT->SetBranchAddress("Pmz", &Pmz);
-  SNT->SetBranchAddress("PmPar", &PmPar);
-  SNT->SetBranchAddress("PmPer", &PmPer);
-  SNT->SetBranchAddress("PmOop", &PmOop);
+  SNT->SetBranchAddress("PmPar", &PmPar);  //Missing Momentum Components in q-vector coordinates (parallel to q-vec)
+  SNT->SetBranchAddress("PmPer", &PmPer);  //(Perpendicular to q-vec)
+  SNT->SetBranchAddress("PmOop", &PmOop);  //(Out of plane to q-vec)
   SNT->SetBranchAddress("fry", &fry);
   SNT->SetBranchAddress("radphot", &radphot);
   SNT->SetBranchAddress("sigcc", &sigcc);
@@ -463,6 +508,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   Double_t X;              //B-jorken X
   Double_t Pf;             //Final Proton Momentum 
   Double_t ki;             //Incident e- momentum
+
   Double_t kf;             //Final electron momentum
   Double_t Ep;             //proton final energy
   Double_t Ee;             //electron final energy
@@ -470,8 +516,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   Double_t th_qv2;
   Double_t th_pq;          //version 2 of theta_pq
   Double_t Emv2;
-  Double_t e_ztar;    //alternative z-vertex calculations (Using hcana formula)
-  Double_t h_ztar; 
+  
+
   //Determine Full Weight Quantities (Assume one for heep check)
   Double_t FullWeight;
 
@@ -504,24 +550,21 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     //-----Define Additional Kinematic Variables--------
     Ein = Ein / 1000.;   //This beam energy has Eloss, therefore, it is slightly smaller than 10.6005 (10.5992)
     W2 = W*W;
-    ki = sqrt(Eb*Eb - me*me);    //use beam energy without Eloss corrections, as they are NOT done in data as well                       
+    ki = sqrt(Ein*Ein - me*me);    //use beam energy without Eloss corrections, as they are NOT done in data as well                       
+  
     kf = e_pf/1000.;  //sP0*(1. + e_delta/100.);
     Ee = sqrt(me*me + kf*kf);
+
     Pf = h_pf/1000.;  //hP0*(1. + h_delta/100.);
 
     Ep = sqrt(MP*MP + Pf*Pf);                                               
     X = Q2 / (2.*MP*nu);
     th_q = acos( (ki - kf*cos(theta_e))/q ); //th_q = theta_p + theta_pq;
     th_qv2 = theta_p - theta_pq;
-    th_pq =  th_q - theta_p;
-  
-    th_e_calc = acos((Eb - Pf * cos(theta_p))/kf );  //calculated electron angle in radians                    
-    detheta = (th_e_calc - theta_e);                                                                                                                                      
+    th_pq =  th_q - theta_p;  
     MM_2 = Em*Em - Pm*Pm;
-
-    //cout << "th_e_calc = " << th_e_calc << endl;                                                                                                        
-    //cout << "th_e = " << theta_e << endl;                                                                                                                                 
-
+   
+ 
 
     //Define cuts
     c_Em = Em < 0.04;
@@ -535,14 +578,24 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 
     //APPLY CUTS: BEGIN CUTS LOOP
     //if (c_Em&&c_hdelta&&e_delta>-10&&e_delta<22.)
-    if(c_hdelta&&c_edelta)  //only use for initial heep check
+    if(c_hdelta&&c_edelta&&c_Em)  //only use for initial heep check
 	{
 	  //Kinematics
 	  cut_MM2->Fill(MM_2, FullWeight);
 	  cut_Emiss->Fill(Em, FullWeight);
 	  cut_pm->Fill(Pm, FullWeight);
+
+	  cut_pmX_lab->Fill(Pmx, FullWeight);
+	  cut_pmY_lab->Fill(Pmy, FullWeight);
+	  cut_pmZ_lab->Fill(Pmz, FullWeight);
+	  
+	  cut_pmX_q->Fill(PmPer, FullWeight);
+	  cut_pmY_q->Fill(PmOop, FullWeight);
+	  cut_pmZ_q->Fill(PmPar, FullWeight);
+
 	  cut_Q_2->Fill(Q2, FullWeight);
 	  cut_omega->Fill(nu, FullWeight);
+		
 	  cut_W_inv->Fill(W, FullWeight);
 	  cut_theta_elec->Fill(theta_e/dtr, FullWeight);
 	  cut_theta_prot->Fill(theta_p/dtr, FullWeight);
@@ -559,6 +612,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 	  cut_q_vec->Fill(q, FullWeight);
 	  cut_thet_pq->Fill(theta_pq/dtr, FullWeight);
 	  cut_thet_pq_v2->Fill(th_pq/dtr, FullWeight);
+
 
 	  //Reconstructed Target Quantities (Lab Frame)
 	  cut_x_tar->Fill(-tar_x, FullWeight);
@@ -645,6 +699,15 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 	MM2->Fill(MM_2, FullWeight);
       Emiss->Fill(Em, FullWeight);
       pm->Fill(Pm, FullWeight);
+
+      pmX_lab->Fill(Pmx, FullWeight);
+      pmY_lab->Fill(Pmy, FullWeight);
+      pmZ_lab->Fill(Pmz, FullWeight);
+      
+      pmX_q->Fill(PmPer, FullWeight);
+      pmY_q->Fill(PmOop, FullWeight);
+      pmZ_q->Fill(PmPar, FullWeight);
+
       Q_2->Fill(Q2, FullWeight);
       omega->Fill(nu, FullWeight);
       W_inv->Fill(W, FullWeight);
@@ -663,7 +726,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       q_vec->Fill(q, FullWeight);
       thet_pq->Fill(theta_pq/dtr, FullWeight);
       thet_pq_v2->Fill(th_pq/dtr, FullWeight);
-      
+      	  
+
       //Reconstructed Target Quantities (Lab Frame)
       x_tar->Fill(-tar_x, FullWeight);
       hy_tar->Fill(h_yv, FullWeight);                                                                                                                                     
