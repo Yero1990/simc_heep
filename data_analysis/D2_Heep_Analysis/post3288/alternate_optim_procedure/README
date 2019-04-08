@@ -1,0 +1,20 @@
+************************
+SHMS Delta Optimization
+************************
+
+March 10, 2019
+
+The original optimization of shms delta before seemed to work for the H(e,e'p) elastics
+but NOT for the 80 MeV setting. As the Emiss in 80 MeV seemed NOT aligned.
+In this procedure, the shms delta was optimized, and then EMiss was aligned to obtain the
+momentum offset.  Now, we will invert the procedure.
+
+Alternate Method:
+
+1) Determine the SHMS momentum correction from the Emiss alignment of the delta = 0 elastic
+   run coincidence 3288. [Using the original Non-Optimized SHMS Matrix] 
+    Apply this single correction to the remaining elastic runs. 
+
+2) Fit the SHMS delta matrix ONLY using the xfp / x'fp 1st and 2nd order terms. Mark
+   suspects that there migh be a ytar/yptar dependence that should NOT be corrected for
+   in the 80 MeV setting. 

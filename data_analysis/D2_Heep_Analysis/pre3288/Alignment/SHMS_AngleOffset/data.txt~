@@ -1,0 +1,3 @@
+#This data file has the D2 H(e,e'p) Kinematics after HMS/SHMS Momentum Corrections, but before any angle Offset determinations
+#! Run[i,0]/   hmsP[f,1]/   hmsAng[f,2]/   shmsP[f,4]/    shmsAng[f,5]/      beamE[f,6]/    dataW[f,7]/   dataW_err[f,8]/    simcW[f,9]/     simcW_err[f,10]/                                  
+   3248	       2.929192    37.29 	   8.532738	  12.2	     10.6005       9.37633e-01   8.91344e-05   

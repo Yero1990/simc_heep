@@ -1,0 +1,52 @@
+************************
+Pre- 3288 Heep Elastics
+************************
+
+---------------
+March 29, 2018
+---------------
+
+The H(e,e'p) elastics before run 3288 (SHMS Q3 issue), consisted of 
+a single kinemtic setting which is that of 3288:
+
+As a staring point for the momentum corrections, I used the
+corrections determined post 3288. These were:
+
+gpbeam = 10.6005
+gtargmass_amu = 1.00794
+hpartmass = 0.938272
+ppartmass = 0.00051099
+htheta_lab = -37.29    <----- the HMS angle is actually a little different from 3288
+ptheta_lab = 12.2      <----- the SHMS angle is also a little different than 3288
+hpcentral = 2.9382*0.9969341636
+ppcentral = 8.543210
+
+An HMS check verified that the HMS optics were OK. 
+The SHMS check revealed that the SHMS delta needed optimization.
+
+After the 1st optimization, the missing energy improved dramatically.  And a SIMC/DATA comparison in /optim1 revealed that
+THE HMS delta was OK. However, the missing energy and W were still a bit off.  This indicated that the SHMS central momentum/angle
+needed correction. It seems that the issue is arising from the SHMS momentum.
+
+Electron Momentum Correction factor, assuming dW is all due to E':
+
+dW = -Eb / E' * dE'  ---> dE' = -dW * E' / Eb
+
+E'_corr = E' + dE' = E' - dW * E' / Eb =  E' (1 -  dW/Eb),  where dW =  W_simc -W_data
+
+From Optim 1: 
+          mean          err
+dataEm : -5.78712e-03   3.69258e-05 
+simcEm :  4.38368e-03   2.18562e-05
+
+dataW :  9.25519e-01   1.09969e-04 
+simcW :  9.43636e-01   1.05211e-04
+
+dW = 9.43636e-01 -  9.25519e-01 = 0.018117 GeV  (~18 MeV)
+dE' = -0.018117 * 8.543210 / 10.6005 =  -0.014601  (~14.6 MeV)
+
+dEm = 4.38368e-03 - (-5.78712e-03) = 0.010171  =? dE'  
+
+The discrepancy between dEm and dE' indicates that the SHMS momentum is NOT the only culprit causing shift in W.
+Since it only takes ~ 10 MeV correction to align Missing Energy, where does the other correction come in?  It has to
+be the electron angle.

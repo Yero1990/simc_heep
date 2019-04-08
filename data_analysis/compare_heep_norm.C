@@ -1,7 +1,7 @@
 //Script to make comparison between SIMC and Commissioning Data from HallC Spring 2018
 //Compare Target Reconstruction/FOCAL PLANE/ Kinematics Variables
 
-void compare_heep(int run)
+void compare_heep_norm(int run)
 {
 
   gROOT->SetBatch(kTRUE);  

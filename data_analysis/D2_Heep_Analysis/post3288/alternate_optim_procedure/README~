@@ -1,0 +1,12 @@
+************************
+SHMS Delta Optimization
+************************
+
+March 10, 2019
+
+The original optimization of shms delta before seemed to work for the H(e,e'p) elastics
+but NOT for the 80 MeV setting. As the Emiss in 80 MeV seemed NOT aligned.
+In this procedure, the shms delta was optimized, and then EMiss was aligned to obtain the
+momentum offset.  Now, we will invert the procedure.
+
+Alternate Method:

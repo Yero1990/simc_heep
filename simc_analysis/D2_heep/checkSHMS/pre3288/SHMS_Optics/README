@@ -1,0 +1,101 @@
+************************
+Fitting the SHMS Optics 
+************************
+
+**Plotting (shms_cal_delta - shms_meas_delta) vs. SHMS focal plane quantities,
+there appears to be correlations across the focal plane. To remove these
+correlations, a 5-D fit of xfp, yfp, xpfp, ypfp and P_cent need to be done
+on the data. Before this fit is done, a TGraphical Cut needs to be applied on 
+each of the correlations observed, to select only those events of interest.
+
+
+Apply Graphical Cuts:
+** Run the code: set_cuts.C  
+
+This code reads in the histogram objects (created by calc_pElec_PDiff_v2.C) and the user can 
+make polygon cuts on the graph. This graphs are stored as  ' *_cut.root* ' which are then read 
+by the code fitOptics.C  
+
+
+Code: fitOptics.C 
+
+Description: This code calculates the (delta_calc - delta_meas) vs. focal plane times and
+other relevant quatities. The root file containing the graphical cuts are read in, and the
+cuts are applied when filling the matrix to do the fitting. All 4 D2 elastics are used to fit
+the data simultaneously, as each of these runs covers different regions of the focal plane, which 
+we want to correct their correlations with delta. 
+
+Once the fit is done, another loop over the runs is made in which the matrix correction factors are read in
+and a fit function is calculated per events from these factors. The fit fucntion is then subtracted from the
+correlations observerd, to check whether the correlations were removed. Then, once determined that the coefficients
+are working (removed correlations), the coefficients can be put in the actual matrix file, and the data replayed once more.
+
+
+
+Optics matrix format:
+----------------------------------------------------------------------
+xptar           ytar           yptar            delta                                                                 
+0.277714223    -0.046726452    0.0303003269     0.667153399 01000
+----------------------------------------------------------------------
+                                          0    1      0    0     0 
+The five digits to the right represent:  xfp, x'fp,  yfp, y'fp, xtar
+
+The 0: means the term is raied to the zero power
+The 1: means the term is raied to the 1st  power
+and so on . . .
+
+Since this system is initially, over-determined (More equations than unknowns), one of the target variables, xtar (horizontal target pos)
+is fixed, beforehand. 
+
+The coefficinets under each of the first four columns represent focal plane quantities coefficients. For example, if only a delta optimization is
+used, then, the file would look like:
+-------------------------------------------------------------------
+!xptar           ytar           yptar            delta                                                                 
+0.00000000       0.00000000     0.00000000       0.667153399 00000
+0.00000000       0.00000000     0.00000000      -0.535358399 10000
+0.00000000       0.00000000     0.00000000        0.84346399 01000
+0.00000000       0.00000000     0.00000000       -0.27153399 00100
+0.00000000       0.00000000     0.00000000       1.367153399 00010
+0.00000000       0.00000000     0.00000000       0.347153399 11000  ---> cross term xfp * xpfp
+0.00000000       0.00000000     0.00000000      -0.715003399 20000   ---> second order terms (xfp)^2 
+
+
+delta = D0 + D1*xfp + D2*xpfp + D3*yfp + D4*ypfp,   where D0 = 0.667153399, and so on . . .
+
+There may even be cross terms, like 11000, which represents ----> Coefficient * xfp * xpfp, for example, since the focal plane variables
+can be correlated within themselves. 
+
+The D0 term represents the delta offset in fraction (and D0*100 in %), so to get the momentum correction factor, do:
+   corr_factor =  1 + D0 
+   
+   example: D0 = -0.0175647222
+   corr_dactor = 1 + D0 = 0.982435
+   Pcorr = 8.7 * corr_factor = 8.547186919
+
+-----------------------------------
+HOW TO USE THE CODE: set_cuts.C
+-----------------------------------
+
+** root -l "set_cuts(run, fp)"     
+--> run: run number,   fp: 0, 1, 2, 3  (0:xfp, 1:xpfp, 2:yfp, 3:ypfp)
+
+ex.  root -l "set_cuts(3288, 1)"
+
+Then, you will be prompted with:
+
+--------
+   No cut  =  eDelta_vs_xpfp_cut: Run 3288
+   Enter (-1 quit, -10 delete cut) 
+--------
+and an empty TCanvas.  To display the plot and star making a polygon cut, 
+type: 0  
+and hit enter.
+
+Draw lines by clicking the plot region where you want to make the cut. When
+connecting the final line, rather than a single click, do a double click.
+
+Then type: -1 
+to save the cut and exit.
+
+Do the same for the remaining focal plane quantities.
+

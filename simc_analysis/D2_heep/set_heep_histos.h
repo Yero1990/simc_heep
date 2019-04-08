@@ -127,16 +127,16 @@ Double_t hytar_xmin = -5.;
 Double_t hytar_xmax = 5.;
 
 Double_t hxptar_nbins = nbins;
-Double_t hxptar_xmin = -0.1;
-Double_t hxptar_xmax = 0.1;
+Double_t hxptar_xmin = -0.2;
+Double_t hxptar_xmax = 0.2;
 
 Double_t hyptar_nbins = nbins;
-Double_t hyptar_xmin = -0.1;
-Double_t hyptar_xmax = 0.1;
+Double_t hyptar_xmin = -0.05;
+Double_t hyptar_xmax = 0.05;
 
 Double_t hdelta_nbins = nbins;
-Double_t hdelta_xmin = -15.;
-Double_t hdelta_xmax = 15.;
+Double_t hdelta_xmin = -9.;
+Double_t hdelta_xmax = 9.;
 
 //Hadron arm Focal Plane Quantities
 
@@ -164,12 +164,12 @@ Double_t eytar_xmin = -4.;
 Double_t eytar_xmax = 4.;
 
 Double_t exptar_nbins = nbins;
-Double_t exptar_xmin = -0.1;
-Double_t exptar_xmax = 0.1;
+Double_t exptar_xmin = -0.06;
+Double_t exptar_xmax = 0.06;
 
 Double_t eyptar_nbins = nbins;
 Double_t eyptar_xmin = -0.03;
-Double_t eyptar_xmax = 0.03;
+Double_t eyptar_xmax = 0.02;
 
 
 Double_t edelta_nbins = nbins;
@@ -181,7 +181,7 @@ Double_t eyfp_nbins = nbins;
 Double_t expfp_nbins = nbins;
 Double_t eypfp_nbins = nbins;
 
-/*
+
 //Run 3288
 Double_t exfp_xmin = -15.;
 Double_t exfp_xmax = 10.;
@@ -195,8 +195,8 @@ Double_t expfp_xmax = 0.04;
 Double_t eypfp_xmin = -0.03;
 Double_t eypfp_xmax = 0.03;
 
-Double_t edelta_xmin = -6.;
-Double_t edelta_xmax = 3.;
+Double_t edelta_xmin = -5.;  //-5
+Double_t edelta_xmax = 5.;   //5
 
 Double_t Q2_xmin = 2.5;
 Double_t Q2_xmax = 5;
@@ -224,7 +224,7 @@ Double_t thq_xmax = 42.;
 
 Double_t q_xmin = 2.6;
 Double_t q_xmax = 4.;
-*/
+
 
 /*
 //Run 3371
@@ -316,7 +316,7 @@ Double_t Ep_xmin = 2.5;
 Double_t Ep_xmax = 3.5;
 */
 
-
+/*
 //Run: 3376/3377
 Double_t exfp_xmin = 10.;
 Double_t exfp_xmax = 25.;
@@ -360,7 +360,7 @@ Double_t q_xmax = 2.4;
 Double_t Ep_xmin = 2.5;
 Double_t Ep_xmax = 3.5;
 
-
+*/
 
 
 

@@ -1,0 +1,10 @@
+SHMS Angle Offsets, using dW/dth_e derivative:  dth_e = the_simc - the_data 
+3248: -0.00028764786297067683 +/- -6.787945293423395e-06 
+
+Offsets in Degrees
+3248: -0.016481008534177218 +/- -0.0003889206168788517 
+
+Central Angle Correction [theta_cent + dtheta_meas]
+3248: 12.183518991465823 
+
+dth_average: -0.00028764786297067683 [-0.016481008534177218 deg]

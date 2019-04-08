@@ -1,0 +1,61 @@
+The Emiss / W appeared mis-aligned after the first optimization.
+The shifts in W/Emiss between data/simc were estimated.
+
+In the mean time, a second optimization of delta was in progress.
+After the secon optimization completes, the EMiss/W shifts 
+between data/simc should be checked again, and compared to
+the 1st optimization to make sure it is the same.
+
+Then, we can proceed with the momentum/angle corrections
+
+
+
+Electron Momentum Correction factor, assuming dW is all due to E':
+
+dW = -Eb / E' * dE'  ---> dE' = -dW * E' / Eb
+
+E'_corr = E' + dE' = E' - dW * E' / Eb =  E' (1 -  dW/Eb),  where dW =  W_simc -W_data
+
+------------------------------------------------
+From Optim 1: 
+          mean          err
+dataEm : -5.78712e-03   3.69258e-05 
+simcEm :  4.38368e-03   2.18562e-05
+
+dataW :  9.25519e-01   1.09969e-04 
+simcW :  9.43636e-01   1.05211e-04
+
+dW = 9.43636e-01 -  9.25519e-01 = 0.018117 GeV  (~18.1 MeV)
+dE' = -0.018117 * 8.543210 / 10.6005 =  -0.014601  (~14.6 MeV)
+
+dEm = 4.38368e-03 - (-5.78712e-03) = 0.010171  =? dE'  
+------------------------------------------------
+
+------------------------------------------------
+From Optim 2: 
+          mean          err
+dataEm : -6.08843e-03   4.43664e-05 
+simcEm :  4.38368e-03   2.18562e-05
+
+dataW : 9.25418e-01   8.69796e-05 
+simcW :  9.43636e-01   1.05211e-04
+
+dW = 9.43636e-01 - 9.25418e-01 = 0.018218 (~18.2 MeV)
+dE' = -0.018218  * 8.543210 / 10.6005 = -0.014682 (~ 14.6 MeV)
+
+
+dEm = 4.38368e-03 - (-6.08843e-03)  =   0.010472   != -dE'
+------------------------------------------------
+
+The Optimizations left Emiss/W unchanged in terms of alignment
+
+------------------
+Emiss Alignment:
+------------------
+Assuming the HMS Momentum is OK.  THen the Emiss shift is entirely due to the SHMS electron momentum.
+
+dEm = -dE'  or dE' = -dEm
+
+E'_corr = E' + dE' = 8.543210 - 0.010472 = 8.532738 GeV
+
+

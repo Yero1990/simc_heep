@@ -2,7 +2,7 @@
 
 #include "set_heep_histos.h"
 
-void check_simc(int run, string eArm="P")
+void check_simc(int run, string eArm="P", bool Qnorm=false)
 {
   //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
@@ -24,76 +24,86 @@ TString electron_arm;
   Double_t h_trkEff = 1.;           
   Double_t c_LT = 1.;
   Double_t t_LT = 1.;
-
- 
-
-  if(run==3288){
-
-
-    charge_factor =152.241;   //BCM4A
-    t_LT = 0.924374;
-
-    //HMS/SHMS Efficiency Studies
-    h_trkEff = 0.9878;     //nominal
-
-    e_trkEff =  0.9704;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-    //e_trkEff =  0.9083;    //NEW Method(T.Horn): [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-
-    //single tracking efficiecny
-    //e_trkEff = 0.9193;
-
-  }
-  if(run==3371){
-
-    
-    charge_factor = 52.020;   //BCM4A (in mC)
-    t_LT = 0.944654;
-    
-    //HMS/SHMS Efficiency Studies
-    h_trkEff =  0.9872;    //nominal
-
-    e_trkEff =  0.9728;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-    //e_trkEff =  0.9225;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-
-    //single tracking efficiecny
-    //e_trkEff = 0.9308;
-
-  }
-  if(run==3374){
-
-
-    charge_factor = 52.575;   //BCM4A (in mC)
-    t_LT = 0.845108;
-
-    //HMS/SHMS Efficiency Studies
-    h_trkEff =  0.9896;    //nominal
-      
-    e_trkEff =  0.9587;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-    //e_trkEff =  0.8658;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-
-    //single tracking efficiecny
-    //e_trkEff = 0.9061;
-  }
-
-  if(run==3377){
-
-
-    charge_factor = 41.432;   //BCM4A (in mC)
-    t_LT = 0.764917;
-       
-    //HMS/SHMS Efficiency Studies
-    h_trkEff =  0.9905;    //nominal
   
-    e_trkEff =  0.9432;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-    //e_trkEff =  0.8047;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-    
-    //single tracking efficiecny
-    //e_trkEff = 0.8931;
-  }
+  
+  if (Qnorm)
+    {
+      if(run==3288){
+	
+	
+	charge_factor =152.241;   //BCM4A
+	t_LT = 0.924374;
+	
+	//HMS/SHMS Efficiency Studies
+	h_trkEff = 0.9878;     //nominal
+	
+	e_trkEff =  0.9704;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+	//e_trkEff =  0.9083;    //NEW Method(T.Horn): [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+	
+	//single tracking efficiecny
+	//e_trkEff = 0.9193;
+	
+      }
+      if(run==3371){
+	
+	
+	charge_factor = 52.020;   //BCM4A (in mC)
+	t_LT = 0.944654;
+	
+	//HMS/SHMS Efficiency Studies
+	h_trkEff =  0.9869;    //nominal
+	
+	e_trkEff =  0.9734;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+	//e_trkEff =  0.9225;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+	
+	//single tracking efficiecny
+	//e_trkEff = 0.9308;
+	
+      }
+      if(run==3374){
+	
+	
+	charge_factor = 52.575;   //BCM4A (in mC)
+	t_LT = 0.845108;
+	
+	//HMS/SHMS Efficiency Studies
+	h_trkEff =  0.9896;    //nominal
+	
+	e_trkEff =  0.9618;    // all tracks [>=0.6]
+	//e_trkEff =  0.9629*(1.-0.018339);    //single tracks Method: [etotnorm: [0.6,1.6] * fraction of data with single tracks
+	//e_trkEff =  0.9086*0.018339;   //MULTIPLE Tracks [>1.6] * fraction of data with multiple tracks
+	
+	//e_trkEff =  0.8658;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+	
+	//single tracking efficiecny
+	//e_trkEff = 0.9061;
+      }
+      
+      if(run==3377){
+	
+	
+	charge_factor = 41.432;   //BCM4A (in mC)
+	t_LT = 0.764917;
+	
+	//HMS/SHMS Efficiency Studies
+	h_trkEff =  0.9908;    //nominal
+	
+	e_trkEff =  0.9463;    // all tracks [etotnorm >= 0.6]
+	
+	//e_trkEff =  0.8047;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
+	
+	//single tracking efficiecny
+	//e_trkEff = 0.8931;
+      }
+      
+    }
+  
   //Read SIMC ROOTfiles
     
   //Deuteron Heep Check Data
-  TString filename = Form("../../worksim_voli/D2_heep_%d.root",run);                                 
+  TString filename = Form("../../worksim_voli/D2_heep_%d.root",run);          
+  
+
   // TString filename = Form("../../worksim_voli/heep_g%dcoin.root",run);                                 
 
   
@@ -264,8 +274,10 @@ TH1F *cut_pm = new TH1F("cut_pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax)
 TH1F *cut_omega = new TH1F("cut_omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
 
 TH1F *cut_W_inv = new TH1F("cut_W_inv", "Invariant Mass, W", W_nbins, W_xmin, W_xmax);     //min width = 19.9 MeV (0.0199) (bin width = 25 MeV)
-TH1F *cut_theta_elec = new TH1F("cut_theta_elec", "Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
-TH1F *cut_theta_prot = new TH1F("cut_theta_prot", "Proton Scatt. Angle", thp_nbins, thp_xmin, thp_xmax);
+ TH1F *cut_theta_elec = new TH1F("cut_theta_elec", "Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
+ TH1F *cut_theta_prot = new TH1F("cut_theta_prot", "Proton Scatt. Angle", thp_nbins, thp_xmin, thp_xmax);
+ TH1F *cut_theta_elec_calc = new TH1F("cut_theta_elec_calc", "Calculated Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
+ TH1F *cut_theta_elec_res = new TH1F("cut_theta_elec_res", "Electron Scatt. Angle Residual", 100, -1, 1);
 
 //Additional Kinematics Variables
 TH1F *cut_W_2 = new TH1F("cut_W2", "Invariant Mass W2", W2_nbins, W2_xmin, W2_xmax);
@@ -327,6 +339,10 @@ TH2F *cut_e_xfp_vs_yfp = new TH2F("cut_e_xfp_vs_yfp", "X_{fp} vs Y_{fp}", eyfp_n
 TH2F *cut_hxptar_vs_exptar = new TH2F("cut_hxptar_vs_exptar", "HMS vs. SHMS, X'_{tar}", exptar_nbins, exptar_xmin, exptar_xmax, hxptar_nbins, hxptar_xmin, hxptar_xmax);
 TH2F *cut_hyptar_vs_eyptar = new TH2F("cut_hyptar_vs_eyptar", "HMS vs. SHMS, Y'_{tar}", eyptar_nbins, eyptar_xmin, eyptar_xmax, hyptar_nbins, hyptar_xmin, hyptar_xmax);
 TH2F *cut_hdelta_vs_edelta = new TH2F("cut_hdelta_vs_edelta", "HMS vs. SHMS, #delta", edelta_nbins, edelta_xmin, edelta_xmax, hdelta_nbins, hdelta_xmin, hdelta_xmax);
+
+//Solid Angle
+ TH2F *cut_exptar_vs_eyptar = new TH2F("cut_exptar_vs_eyptar", "SHMS d#Omega_{e}, #theta vs. #phi", eyptar_nbins, eyptar_xmin, eyptar_xmax, exptar_nbins, exptar_xmin, exptar_xmax);
+ TH2F *cut_hxptar_vs_hyptar = new TH2F("cut_hxptar_vs_hyptar", "HMS d#Omega_{p}, #theta vs. #phi", hyptar_nbins, hyptar_xmin, hyptar_xmax, hxptar_nbins, hxptar_xmin, hxptar_xmax); 
 
 //OPTICS CHECK (W correlations with electron Focal Plane / Target Quantities)
 TH2F *cut_W_vs_exfp = new TH2F("cut_W_vs_exfp", "cut_W vs eX_{fp}", exfp_nbins, exfp_xmin, exfp_xmax, W_nbins, W_xmin, W_xmax);
@@ -516,13 +532,12 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   Double_t th_qv2;
   Double_t th_pq;          //version 2 of theta_pq
   Double_t Emv2;
-  
+  Double_t theta_e_calc;
+  Double_t detheta;
+
 
   //Determine Full Weight Quantities (Assume one for heep check)
   Double_t FullWeight;
-
-  Double_t th_e_calc;
-  Double_t detheta;
 
   //Define Boolean for Kin. Cuts
   Bool_t c_Em;
@@ -567,10 +582,14 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
  
 
     //Define cuts
-    c_Em = Em < 0.04;
+    c_Em = Em < 0.02;
     c_hdelta = h_delta>-8.&&h_delta<8.;
-    c_edelta = e_delta>-10.&&e_delta<22.;
+    c_edelta = e_delta>-4.&&e_delta<4.;
     c_MM2 = MM_2>-0.0009&&MM_2<0.0004;
+
+    //Calculated Angles
+    theta_e_calc = asin( Pf*sin(theta_p) / (Ein + MP - Ep) );
+    detheta = theta_e_calc -theta_e;
 
     //Full Weight
     FullWeight = (Normfac*Weight*charge_factor*e_trkEff*h_trkEff*t_LT)/nentries;
@@ -578,7 +597,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 
     //APPLY CUTS: BEGIN CUTS LOOP
     //if (c_Em&&c_hdelta&&e_delta>-10&&e_delta<22.)
-    if(c_hdelta&&c_edelta&&c_Em)  //only use for initial heep check
+    if(c_Em&&c_hdelta&&c_edelta)  //only use for initial heep check
 	{
 	  //Kinematics
 	  cut_MM2->Fill(MM_2, FullWeight);
@@ -599,8 +618,9 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 	  cut_W_inv->Fill(W, FullWeight);
 	  cut_theta_elec->Fill(theta_e/dtr, FullWeight);
 	  cut_theta_prot->Fill(theta_p/dtr, FullWeight);
+	  cut_theta_elec_calc->Fill(theta_e_calc/dtr, FullWeight);
+	  cut_theta_elec_res->Fill(detheta/dtr, FullWeight);
 
-	  
 	  //Additional Kinematics Variables
 	  cut_W_2->Fill(W2, FullWeight); 
 	  cut_xbj->Fill(X, FullWeight); 
@@ -656,6 +676,10 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 	  cut_hxptar_vs_exptar->Fill(e_xptar, h_xptar, FullWeight);
 	  cut_hyptar_vs_eyptar->Fill(e_yptar, h_yptar, FullWeight);
 	  cut_hdelta_vs_edelta->Fill(e_delta, h_delta, FullWeight);
+	  
+	  cut_exptar_vs_eyptar->Fill(e_yptar, e_xptar, FullWeight);
+	  cut_hxptar_vs_hyptar->Fill(h_yptar, h_xptar, FullWeight);
+
 	  cut_W_vs_MM2->Fill(MM_2, W, FullWeight);
 	  
 	  //Heep cross check
