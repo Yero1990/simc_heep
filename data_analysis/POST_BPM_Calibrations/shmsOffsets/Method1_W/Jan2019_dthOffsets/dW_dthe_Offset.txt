@@ -1,8 +1,0 @@
-SHMS Angle Offsets, using dW/dth_e derivative:  dth_e = the_simc - the_data 
-3288: -0.00047497838646737175
-3371: -2.0404712903295506e-05
-3374: -0.00018152520184285627 
-3377: -7.204696769487861e-05
-dth_average: -0.00018723881722710052
-
--9.1e-5 radians avg of remaining 3

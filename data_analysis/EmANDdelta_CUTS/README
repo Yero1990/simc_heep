@@ -1,5 +1,0 @@
-CUT0: NO CUTS
-CUT3: Emiss < 0.04, |hdelta|<8%, sdelta(-10,22)%
-CUT2: Emiss < 0.04, |hdelta|<8%, sdelta(-10,22)%, eCal_Cut(0.85,1.2),Ctime(8.5,13.5)  
-CUT1: |hdelta|<8%, sdelta(-10,22)%
-

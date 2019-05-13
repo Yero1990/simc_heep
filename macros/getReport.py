@@ -42,13 +42,13 @@ hdid_h = []             #hadrons that did pass (used for trk eff)
 hshould_h = []          #hadrons that should have passed (used for trk eff.) 
 
 
-rfile = open('d2580.txt')
+rfile = open('h2_singles.txt')
 
 for irun in (rfile):
 
     irun = int(irun)
 
-    f = open('replay_coin_deep_check_%d_-1.report' % (irun))
+    f = open('replay_coin_heep_check_%d_-1.report' % (irun))
 
     for line in f:
         #Spec. Run /Mispointings / BPMs
@@ -114,7 +114,7 @@ for irun in (rfile):
             hshould_h.append(int(line.split(':')[1]))
 
 #Write to a table
-fTable = open('D2_KinTable.txt', 'w')
+fTable = open('H2_KinTable.txt', 'w')
 fTable.write('#!Run[i,0]/   BCM4A_Current[f,1]/    BCM4A_Charge[f,2]/    h3of4_rate[f,3]/    p3of4_rate[f,4]/     coin_rate[f,5]/    htrk_eff[f,6]/   htrk_eff_err[f,7]/  ptrk_eff[f,8]/   ptrk_eff_err[f,9]/    cpuLT[f,10]/    tLT[f,11]/    x_bpm[f,12]/    y_bpm[f,13]/   hMisP_X[f,14]/    hMisP_Y[f,15]/    pMisP_X[f,16]/    pMisP_Y[f,17]/   ptrig6_accepted[i,18]/     ptrig6_scaler[i,19]/    edtm_accepted[i,20]/   edtm_scaler[i,21]/    pdid_e[i,22]/    pshould_e[i,23]/    hdid_h[i,24]/   hshould_h[i,25]/ \n')
 
 output = '\n'.join('\t\t'.join(map(str,row)) for row in zip(run,pbcm4a_current,pbcm4a_charge,h3of4_rate,p3of4_rate,coin_rate,htrk_eff,htrk_eff_err,ptrk_eff,ptrk_eff_err,cpuLT,tLT,x_bpm,y_bpm,hMisP_X,hMisP_Y,pMisP_X,pMisP_Y,ptrig6_accepted,ptrig6_scaler,edtm_accepted,edtm_scaler,pdid_e,pshould_e,hdid_h,hshould_h))
