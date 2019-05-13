@@ -35,7 +35,7 @@ Double_t Em_xmax = 0.1;
 //Pmiss
 Double_t Pm_nbins = nbins;
 Double_t Pm_xmin = -0.02;
-Double_t Pm_xmax = 0.15;
+Double_t Pm_xmax = 0.08;
 
 Double_t Pmx_nbins = nbins;
 Double_t Pmx_xmin = -0.15;
@@ -62,7 +62,7 @@ Double_t om_nbins = nbins;
 //W_inv
 Double_t W_nbins = nbins;
 Double_t W_xmin = 0.85;
-Double_t W_xmax = 1.05;//1.05;
+Double_t W_xmax = 1.05;;
 
 //theta_elec
 Double_t the_nbins = nbins;
@@ -126,15 +126,15 @@ Double_t hytar_nbins = nbins;
 Double_t hytar_xmin = -5.;
 Double_t hytar_xmax = 5.;
 
-Double_t hxptar_nbins = nbins;
-Double_t hxptar_xmin = -0.2;
-Double_t hxptar_xmax = 0.2;
+Double_t hxptar_nbins = 70;
+Double_t hxptar_xmin = -0.1;
+Double_t hxptar_xmax = 0.1;
 
-Double_t hyptar_nbins = nbins;
+Double_t hyptar_nbins = 70;
 Double_t hyptar_xmin = -0.05;
 Double_t hyptar_xmax = 0.05;
 
-Double_t hdelta_nbins = nbins;
+Double_t hdelta_nbins = 70;
 Double_t hdelta_xmin = -9.;
 Double_t hdelta_xmax = 9.;
 
@@ -182,6 +182,22 @@ Double_t expfp_nbins = nbins;
 Double_t eypfp_nbins = nbins;
 
 
+//Collimator
+Double_t hXColl_nbins = 100;
+Double_t hXColl_xmin = -15.;  
+Double_t hXColl_xmax = 15.;   
+Double_t hYColl_nbins = 100;                                                                                                                                                       
+Double_t hYColl_xmin = -15.;                                                                                                                                                        
+Double_t hYColl_xmax = 15.;
+
+Double_t eXColl_nbins = 100;
+Double_t eXColl_xmin = -15.;
+Double_t eXColl_xmax = 15.;
+Double_t eYColl_nbins = 100;                                                                                                                                                       
+Double_t eYColl_xmin = -15.;                                                                                                                                                        
+Double_t eYColl_xmax = 15.;
+
+/*
 //Run 3288
 Double_t exfp_xmin = -15.;
 Double_t exfp_xmax = 10.;
@@ -224,7 +240,7 @@ Double_t thq_xmax = 42.;
 
 Double_t q_xmin = 2.6;
 Double_t q_xmax = 4.;
-
+*/
 
 /*
 //Run 3371
@@ -271,7 +287,7 @@ Double_t Ep_xmin = 2.5;
 Double_t Ep_xmax = 3.5;
 */
 
-/*
+
 //Run: 3374
 Double_t exfp_xmin = 0.;
 Double_t exfp_xmax = 15.;
@@ -314,7 +330,7 @@ Double_t q_xmax = 3.;
 
 Double_t Ep_xmin = 2.5;
 Double_t Ep_xmax = 3.5;
-*/
+
 
 /*
 //Run: 3376/3377
@@ -359,9 +375,18 @@ Double_t q_xmax = 2.4;
 
 Double_t Ep_xmin = 2.5;
 Double_t Ep_xmax = 3.5;
-
 */
 
+
+//Variables Used in Auxiliary Function
+TRotation       fToLabRot;              //Rotation matrix from TRANSPORT to lab
+Double_t        fThetaGeo;              //In-plane geographic central angle (rad)
+Double_t        fPhiGeo;                //Out-of-plane geographic central angle (rad)
+Double_t        fThetaSph, fPhiSph;     //Central angles in spherical coords. (rad)
+Double_t        fSinThGeo, fCosThGeo;   //Sine and cosine of central angles
+Double_t        fSinPhGeo, fCosPhGeo;   // in geographical coordinates
+Double_t        fSinThSph, fCosThSph;   //Sine and cosine of central angles in 
+Double_t        fSinPhSph, fCosPhSph;   // spherical coordinates
 
 
 #endif

@@ -112,6 +112,9 @@ void compare_heep(int run)
   TH1F *simc_th_prot = 0;
   TH1F *simc_q = 0;    //q-vector magnitude
   TH1F *simc_thpq = 0;
+  TH1F *simc_Pmx = 0;
+  TH1F *simc_Pmy = 0;
+  TH1F *simc_Pmz = 0;
 
   //Define data histos
   TH1F *data_Q2 =  0;
@@ -130,7 +133,9 @@ void compare_heep(int run)
   TH1F *data_th_prot = 0;
   TH1F *data_q = 0;    //q-vector magnitude
   TH1F *data_thpq = 0;
-
+  TH1F *data_Pmx = 0;
+  TH1F *data_Pmy = 0;
+  TH1F *data_Pmz = 0;
 
   //---------------------------------------------------------------
 
@@ -209,6 +214,10 @@ void compare_heep(int run)
   simc_file->GetObject("cut_hyptar", simc_hyptar);
   simc_file->GetObject("cut_hdelta", simc_hdelta);
 
+  simc_file->GetObject("cut_pmxL_v2", simc_Pmx);
+  simc_file->GetObject("cut_pmyL_v2", simc_Pmy);
+  simc_file->GetObject("cut_pmzL_v2", simc_Pmz);
+
   //Set SIMC Histo Aesthetics
   simc_eytar->SetLineColor(kRed);
   simc_eytar->SetLineWidth(2);
@@ -227,6 +236,13 @@ void compare_heep(int run)
   simc_hyptar->SetLineWidth(2);
   simc_hdelta->SetLineColor(kRed);
   simc_hdelta->SetLineWidth(2);
+
+  simc_Pmx->SetLineColor(kRed);
+  simc_Pmx->SetLineWidth(2);
+  simc_Pmy->SetLineColor(kRed);
+  simc_Pmy->SetLineWidth(2);
+  simc_Pmz->SetLineColor(kRed);
+  simc_Pmz->SetLineWidth(2);
 
   //change to data_file
   data_file->cd();
@@ -348,7 +364,7 @@ void compare_heep(int run)
   simc_file->GetObject("cut_kf", simc_kf);
   simc_file->GetObject("Emiss", simc_emiss);
 
-  simc_file->GetObject("cut_pm", simc_Pm);
+  simc_file->GetObject("cut_pm_v2", simc_Pm);
   simc_file->GetObject("cut_P_f", simc_Pf);
   simc_file->GetObject("cut_theta_prot", simc_th_prot);
   simc_file->GetObject("cut_q", simc_q);
@@ -407,6 +423,10 @@ void compare_heep(int run)
   data_file->GetObject("cut_q", data_q);
   data_file->GetObject("cut_theta_pq", data_thpq);
 
+  data_file->GetObject("cut_pmX_Lab", data_Pmx);
+  data_file->GetObject("cut_pmY_Lab", data_Pmy);
+  data_file->GetObject("cut_pmZ_Lab", data_Pmz);
+
   //Set data Histo Aesthetics
   data_Q2->SetFillColorAlpha(kBlue, 0.35);
   data_Q2->SetFillStyle(3004);
@@ -436,6 +456,13 @@ void compare_heep(int run)
   data_q->SetFillStyle(3004);
   data_thpq->SetFillColorAlpha(kBlue,0.35);
   data_thpq->SetFillStyle(3004);
+
+  data_Pmx->SetFillColorAlpha(kBlue,0.35);
+  data_Pmx->SetFillStyle(3004);
+  data_Pmy->SetFillColorAlpha(kBlue,0.35);
+  data_Pmy->SetFillStyle(3004);
+  data_Pmz->SetFillColorAlpha(kBlue,0.35);
+  data_Pmz->SetFillStyle(3004);
 
   //Overlay SIMC/data plots (*** VERY IMPORTANT ***: Range and #bins must be same)
 
@@ -630,12 +657,15 @@ void compare_heep(int run)
    auto leg_thp = new TLegend(0.1,0.8,0.28,0.9);
    auto leg_q = new TLegend(0.1,0.8,0.28,0.9);
    auto leg_thpq = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg_Pmx = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg_Pmy = new TLegend(0.1,0.8,0.28,0.9);
+   auto leg_Pmz = new TLegend(0.1,0.8,0.28,0.9);
 
 
    //Create A Canvas to store kinematic variable comparisons
    TCanvas *ck2 = new TCanvas("ck2", "Kinematics-2", 2000, 1000);
    
-   ck2->Divide(3,2);
+   ck2->Divide(4,2);
    ck2->cd(1);
    data_Pm->GetXaxis()->SetTitle("Missing Momentum, P_{miss} [GeV]");
    data_Pm->GetXaxis()->CenterTitle();
@@ -682,6 +712,33 @@ void compare_heep(int run)
    leg_thpq->AddEntry(simc_thpq,"SIMC");
    leg_thpq->Draw();
   
+   ck2->cd(6);
+   data_Pmx->GetXaxis()->SetTitle("Missing Momentum X-comp., Pm_{x} [GeV]");
+   data_Pmx->GetXaxis()->CenterTitle();
+   simc_Pmx->Draw();
+   data_Pmx->Draw("sameshist");
+   leg_Pmx->AddEntry(data_Pmx,"Data", "f");
+   leg_Pmx->AddEntry(simc_Pmx,"SIMC");
+   leg_Pmx->Draw();
+
+   ck2->cd(7);
+   data_Pmy->GetXaxis()->SetTitle("Missing Momentum Y-comp., Pm_{y} [GeV]");
+   data_Pmy->GetXaxis()->CenterTitle();
+   simc_Pmy->Draw();
+   data_Pmy->Draw("sameshist");
+   leg_Pmy->AddEntry(data_Pmy,"Data", "f");
+   leg_Pmy->AddEntry(simc_Pmy,"SIMC");
+   leg_Pmy->Draw();
+
+   ck2->cd(8);
+   data_Pmz->GetXaxis()->SetTitle("Missing Momentum Z-comp., Pm_{z} [GeV]");
+   data_Pmz->GetXaxis()->CenterTitle();
+   simc_Pmz->Draw();
+   data_Pmz->Draw("sameshist");
+   leg_Pmz->AddEntry(data_Pmz,"Data", "f");
+   leg_Pmz->AddEntry(simc_Pmz,"SIMC");
+   leg_Pmz->Draw();
+
    ck2->SaveAs(Form("Kinematics2_%d.pdf", run));                                                                   
 
 

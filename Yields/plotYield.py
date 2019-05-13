@@ -2,58 +2,43 @@ import LT.box as B
 import numpy as np
 import matplotlib.pyplot as plt
 
-x = [1,2,3,4]
-my_xticks = ['76.859', '44.447', '271.992', '588.849']
+x = [1,2,3]
+my_xticks = ['80.372', '45.306', '271.991']
 
 
 #HMS Delta/SHMS Delta CUTS
-f = B.get_file('yield_oldtrk.data')
+f = B.get_file('yield.data')
 Run = B.get_data(f, 'Run')
-dataY = B.get_data(f, 'dataY')
-dataY_err = B.get_data(f, 'dataY_err')
+dataY = B.get_data(f, 'dataY')    
+dataY_err = B.get_data(f, 'dataY_err')     #these are absolute errors, sqrt(N)
 simcY = B.get_data(f, 'simcY')
-simcY_err = B.get_data(f, 'simcY_err')
+simcY_err = B.get_data(f, 'simcY_err')      #these are absolute errors, sqrt(N)
 #data to simc yield ratio
 R = dataY / simcY    
-R_err = np.sqrt( (dataY_err/dataY)**2 + (simcY_err/simcY)**2  )  #relative error dR/R
+R_err = np.sqrt( dataY_err**2/simcY**2 + dataY**2*simcY_err**2/simcY**4 )
 
-B.plot_exp(x, R, R_err, color='blue', label='Original TrkEff Calculation')
-B.pl.xticks(x, my_xticks)  #label x-axis values
+B.plot_exp(x, R, R_err, color='red', label='After Target Boiling Corrections')
 
-#-----------------------------------------------------------------------------------------------
-f = B.get_file('yield_singleTrk.data')
+#----------
+#HMS Delta/SHMS Delta CUTS
+f = B.get_file('yield_before.data')
 Run = B.get_data(f, 'Run')
-dataY = B.get_data(f, 'dataY')
-dataY_err = B.get_data(f, 'dataY_err')
+dataY = B.get_data(f, 'dataY')    
+dataY_err = B.get_data(f, 'dataY_err')     #these are absolute errors, sqrt(N)
 simcY = B.get_data(f, 'simcY')
-simcY_err = B.get_data(f, 'simcY_err')
+simcY_err = B.get_data(f, 'simcY_err')      #these are absolute errors, sqrt(N)
 #data to simc yield ratio
 R = dataY / simcY    
-R_err = np.sqrt( (dataY_err/dataY)**2 + (simcY_err/simcY)**2  )  #relative error dR/R
+R_err = np.sqrt( dataY_err**2/simcY**2 + dataY**2*simcY_err**2/simcY**4 )
 
+B.plot_exp(x, R, R_err, color='blue', marker='^', label='Before Target Boiling Corrections')
 
-B.plot_exp(x, R, R_err, color='black', label='New TrkEff Calculation (ONLY single tracks)')
+#---------------------------
+
 B.pl.xticks(x, my_xticks)  #label x-axis values
-
-#-----------------------------------------------------------------------------------------------
-
-f = B.get_file('yield_newtrk_THorn.data')
-Run = B.get_data(f, 'Run')
-dataY = B.get_data(f, 'dataY')
-dataY_err = B.get_data(f, 'dataY_err')
-simcY = B.get_data(f, 'simcY')
-simcY_err = B.get_data(f, 'simcY_err')
-#data to simc yield ratio
-R = dataY / simcY    
-R_err = np.sqrt( (dataY_err/dataY)**2 + (simcY_err/simcY)**2  )  #relative error dR/R
-
-B.plot_exp(x, R, R_err, color='red', label='New TrkEff Calculation (T. Horn)')
-B.pl.xticks(x, my_xticks)  #label x-axis values
-
-
+B.pl.title('H(e,e\'p) Elastics  Yield Ratio')
 
 B.pl.grid(linestyle='-')
-
 B.pl.ylabel(r'Yield$_{data}$ / Yield$_{simc}$')
 B.pl.xlabel('SHMS 3/4 Rate [kHz]')
 plt.axhline(y=1, color='black', linestyle='--')

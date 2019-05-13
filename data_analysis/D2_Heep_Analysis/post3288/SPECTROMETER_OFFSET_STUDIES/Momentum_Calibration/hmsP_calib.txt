@@ -1,0 +1,10 @@
+----POST 3288 HMS Momentum Correction----
+chisq/dof =  21.1312210306
+offset  =  1.00308330407  +/-  9.59794670651e-05
+slope =  -0.00128301759494  +/-  3.55446187321e-05
+('HMS P Corr_Factor (80 MeV set1)  = ', 0.9994346586317678)   run 3289
+('HMS P Corr_Factor (580 MeV set1) = ', 1.0002683634649607)
+('HMS P Corr_Factor (750 MeV set1) = ', 1.0004005142772399)
+('HMS P Corr_Factor (580 MeV set2) = ', 1.0002683634649607)
+('HMS P Corr_Factor (750 MeV set2) = ', 1.0004005142772399)
+('HMS P Corr_Factor (750 MeV set3) = ', 1.0004005142772399)

@@ -22,7 +22,7 @@ void calc_hProt_PDiff()
 
   //Central Momentum Used
   // Double_t Pc[4] = {2.938,  3.48, 2.31, 1.8899};  //UnCorrected, EPICS
-  Double_t Pc[4] = {2.938*0.996742,  3.48*0.996524, 2.31*0.997783, 1.8899*0.998217};  //Corrected HMS Momentum
+  Double_t Pc[4] = {2.935545,  3.48*0.996524*1.0023, 2.31*0.997783*1.00239, 1.8899*0.998217*1.00249};  //Corrected HMS Momentum
 
   //Define some constants
   Double_t Mp = 0.938272;  //proton mass
@@ -202,7 +202,7 @@ void calc_hProt_PDiff()
 	T->GetEntry(i);
 
 	//Define CUts
-	c_simcEm = Em < 0.04;
+	c_simcEm = Em < 0.06;
 	c_simc_edelta = e_delta > -10. && e_delta < 22.;
 	c_simc_hdelta = h_delta > -8. && h_delta < 8.; 
  
@@ -352,7 +352,7 @@ void calc_hProt_PDiff()
   //double Em_min[4] = {-0.125, -0.115, -0.14, -0.14}; //Emiss < Em_min Determined using EPICS momenta data D2 hEEP
   
   //double Em_min[4] = {-0.11, -0.08, -0.13, -0.135}; //Emiss < Em_min Determined after D2 Heep HMSP COrr. and SHMS CAL Calibration
-  double Em_min[4] = {0.04, 0.04, 0.04, 0.04};
+  double Em_min[4] = {0.06, 0.06, 0.06, 0.06};
 
   //double Em_min[4] = {-0.12, -0.1, -0.13, -0.13}; //Emiss < Em_min Determined after Using dP/P = -0.001, dth = 0.0005 (yptar offset), dEb/Eb = 8e-4 rad momenta data D2 hEEP
 
@@ -403,7 +403,7 @@ void calc_hProt_PDiff()
                                                                            
 	//Open TFile (D2 proton heep data)
 	
-	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[index]);
+	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000.root",run[index]);
 	//string filename = Form("../../../../hallc_replay/ROOTfiles/good_Heep_hmsProt/UnCorrected/coin_replay_heep_check_%d_-1.root",run[index]);
 	
 	//Additional Proton data

@@ -1,0 +1,70 @@
+**********************
+Collimator Cut Study
+**********************
+
+May 1, 2019
+
+Motivation: In estimating the data/simc yield by integrating W over a certain
+            range (0.85, 1.05),  it was found that making a Missing Energy Cut,
+	    of say, < 40 MeV to cut out the radiative tail, also  cut out events
+	    in the main W peak for data, but NOT for simc. This caused the data
+	    yield to be artificially lower than it should be. This means that
+	    events with large missing energy were reconstructed at the W peak,
+	    and in a W vs. Emiss plot, this would show up as a horizontal (or
+	    uncorrelated) band which was present in data but NOT in simc.
+	    A collimator cut would eliminate this band, and a missing energy
+	    cut would therefore have no effect in the main W peak as it should.
+
+
+---------------------------------------------------------------------------------------
+
+Previous Observations: 
+   	   A yield ratio of ~95% for run 3288 was achieved by placing the following cuts:
+	   abs(h_delta)<8%,  e_delta: (-10, 22)%   c_esolid=abs(e_xptar)<0.026&&abs(e_yptar)<0.015
+	   This solid angle cut was to select electrons ONLY, in the SHMS.
+	   Werner advises to make collimator cuts as opposed to (x'tar,y'tar) cuts, as these are dynamical cuts on
+	   the Z target, whereas the collimator cuts are geometrical cuts, independent of Ztarget
+	   
+	   The corresponding collimator cuts for this configuration are: abs(eXColl)<6.8&&abs(eYColl)<5. cm
+
+
+---------------------------------------------------------------------------------------
+
+	   
+Plan:  Study the dependence of the data/simc yield on various HMS Collimator cut
+       settings,  while keeping relatively loose cut on SHMS Collimator.
+       Then do the same for SHMS Collimator.
+
+       SIMC HMS/SHMS Collimator were used as guidance for the cuts, as SIMC simulates 
+       ONLY H(e,e'p) events.  Data has other un-wanted reactione which show up beyond the 
+       collimator limits.
+
+The starting Cut Values from SIMC are:
+
+HMS Collimator:
+    X: (-13, 13) cm
+    Y: (-5, 5) cm
+
+The X will be reduced in increments of 1cm.
+The Y will be reduced in increments of 0.5 cm.
+
+   e.g.  X1: (-13,13)   Y1: (-5,5)
+   	 X2: (-12,12)	Y2: (-4.5,4.5)
+	 X3: (-11,11)	Y3: (-4, 4)
+	 X4: (-10,10)	Y4: (-3.5,3.5)
+	 X5: (-9, 9)    Y5: (-3, 3)
+
+-------------------------------------------------------------
+
+SHMS Collimator:
+     X: (-7, 7) cm
+     Y: (-5, 5) cm
+
+The X will be reduced in increments of 1cm.
+The Y will be reduced in increments of 0.5 cm.
+
+   e.g.  X1: (-7,7)   Y1: (-5,5)
+   	 X2: (-6,6)   Y2: (-4.5,4.5)
+	 X3: (-5,5)   Y3: (-4, 4)
+	 X4: (-4,4)   Y4: (-3.5,3.5)
+	 X5: (-3,3)   Y5: (-3, 3)

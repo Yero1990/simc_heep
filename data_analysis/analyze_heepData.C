@@ -26,47 +26,108 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
   Double_t c_LT = 1.;
   Double_t t_LT = 1.;
   Double_t pS = 1.;   //pre-Scale Factor
+  Double_t avg_current;  
+  Double_t set_current;
   Double_t FullWeight;
 
   if (Qnorm){                                                                                                                            
-    charge_factor = 38.146;   //BCM4A                                                                                                                                                                                   
-    c_LT = 0.390989;          //computer live time                                                                              
-    t_LT = 0.390225;          //total live time                                                                                                                                                                                                       
-    e_trkEff = 0.9746;       //shms e- trk eff                                                          
-    h_trkEff = 0.9907;        //hms had trk eff
-    pS = 2.;
+  
+     if(run==3288){
+	       
+       //charge_factor =152.241;   //BCM4A
+       //t_LT = 0.924374;	
+       //h_trkEff = 0.9876;     //new hcana	
+       //e_trkEff =  0.9700;    //new hcana
+       
+       //Using Scaler Reads Loop Method (Apply scaler read current cut manually)
+       avg_current = 54.8147; 
+       set_current = 54.;
+       charge_factor = 146.132;
+       t_LT = 0.920845;
+       h_trkEff = 0.987517;
+       e_trkEff = 0.969901;
+
+      }
+      if(run==3371){
+		
+	//charge_factor = 52.020;   //BCM4A (in mC)
+	//t_LT = 0.944654;
+	//h_trkEff =  0.9871;    //new hcana	
+	//e_trkEff =  0.9724;    //new hcana
+
+	avg_current = 59.7393; 
+	set_current = 60.;
+	charge_factor = 51.173;
+	t_LT = 0.942802;
+	h_trkEff = 0.987002;
+	e_trkEff = 0.97245;
+
+
+      }
+
+      if(run==3373){
+	pS = 65;
+	
+	charge_factor = 52.562;   //BCM4A (in mC)
+	t_LT = 0.861561;
+	
+	//HMS/SHMS Efficiency Studies	
+	e_trkEff =  0.9499;    //new hcana
+      
+      }
+
+      if(run==3374){
+		
+	//charge_factor = 52.575;   //BCM4A (in mC)
+	//t_LT = 0.845108;	
+	//h_trkEff =  0.9897;    //new hcana	
+	//e_trkEff =  0.9564;    //new hcana
+	
+	avg_current = 59.5961; 
+	set_current = 59.5; 
+	charge_factor = 52.5754;
+	t_LT = 0.844352;
+	h_trkEff = 0.989445;
+	e_trkEff = 0.956624;
+      }
+      
+      if(run==3377){
+	
+	//charge_factor = 41.432;   //BCM4A (in mC)
+	//t_LT = 0.764917;	
+	//h_trkEff =  0.9905;    //new hcana	
+	//e_trkEff =  0.9409;    //new hcana
+
+    	avg_current = 59.6417; 
+	set_current = 60.; 
+	charge_factor = 38.0881;
+	t_LT = 0.74047;
+	h_trkEff = 0.990597;
+	e_trkEff = 0.940027;
+
+      }
+
   }
 
 
-//PREVENT DISPLAY 
+  //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
     
   //Read DATA ROOTfiles  
-  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);     
-  
-  //Tracking Efficiencies Studies ROOTfiles
-  //TString filename =Form("../../hallc_replay/ROOTfiles/DEUTERON/TrkEffStudies/nominal/coin_replay_heep_check_%d_-1.root",run);        
-  // TString filename =Form("../../hallc_replay/ROOTfiles/DEUTERON/TrkEffStudies/setting1/coin_replay_trkEffStudy_%d_-1.root",run);        
-
-  //  TString filename =Form("../../hallc_replay/ROOTfiles/SHMS_matrix_corr/coin_replay_heep_check_%d_20000.root",run); 
-  
-
-  //HMS electron Heep Check data
-  //TString filename =Form("../../hallc_replay/ROOTfiles/good_Heep_hmsElec/g%d_coin.root",run);        
-
-  //HMS proton Heep Check data
-  //TString filename =Form("../../hallc_replay/ROOTfiles/good_Heep_hmsElec/g%d_coin.root",run);        
+  //TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);     
+  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_scaler_test_%d_-1.root",run);     
 
 
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *T = (TTree*)data_file->Get("T");
  
   //Create output root file where histograms will be stored
-  TFile *outROOT = new TFile(Form("Wcheck_data_histos_%d.root",run), "recreate");
+  TFile *outROOT = new TFile(Form("Wcheck_data_histos_%d_before.root",run), "recreate");
   
 
   //********* Create 1D Histograms **************
-     
+  TH1F::SetDefaultSumw2();
+
   //Detector Histograms
   TH1F *epCT = new TH1F("epCT","e-Proton Coincidence Time", 100, 0, 20);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
   TH1F *etotnorm = new TH1F("etot_tracknorm", "SHMS Total Normalized Track Energy", 100, 0.5, 2.3);
@@ -254,6 +315,10 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
   TH1F *cut_ey_tar = new TH1F("cut_ey_tar", electron_arm + " y_Target", ytar_nbins, ytar_xmin, ytar_xmax);      
   TH1F *cut_ez_tar = new TH1F("cut_ez_tar", electron_arm + " z_Target", ztar_nbins, ztar_xmin, ztar_xmax);  
   
+
+  //Ztar difference
+  TH1F *cut_ztar_diff = new TH1F("cut_ztar_diff", "Ztar Difference", ztar_nbins, ztar_xmin, ztar_xmax);
+
   //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
   TH1F *cut_hytar = new TH1F("cut_hytar", hadron_arm + " Y_{tar}", hytar_nbins, hytar_xmin, hytar_xmax);
   TH1F *cut_hxptar = new TH1F("cut_hxptar", hadron_arm + " X'_{tar}", hxptar_nbins, hxptar_xmin, hxptar_xmax);
@@ -342,8 +407,28 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
   TH2F *cut_d_etheta_vs_expfp = new TH2F("cut_d_etheta_vs_expfp", electron_arm + "d#theta_{e} vs. X'_{fp}", expfp_nbins, expfp_xmin, expfp_xmax, 100, -0.01, 0.01);    
   TH2F *cut_d_etheta_vs_eyfp = new TH2F("cut_d_etheta_vs_eyfp", electron_arm + "d#theta_{e} vs. Y_{fp}",    eyfp_nbins,  eyfp_xmin,  eyfp_xmax, 100, -0.01, 0.01);    
   TH2F *cut_d_etheta_vs_eypfp = new TH2F("cut_d_etheta_vs_eypfp", electron_arm + "d#theta_{e} vs. Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, 100, -0.01, 0.01);     
-  
 
+
+  //HMS / SHMS Collimator
+  TH1F* cut_hXColl = new TH1F("cut_hXColl", "HMS X Collimator", hXColl_nbins, hXColl_xmin, hXColl_xmax);
+  TH1F* cut_hYColl = new TH1F("cut_hYColl", "HMS Y Collimator", hYColl_nbins, hYColl_xmin, hYColl_xmax); 
+  TH1F* cut_eXColl = new TH1F("cut_eXColl", "SHMS X Collimator", eXColl_nbins, eXColl_xmin, eXColl_xmax);                                                                             
+  TH1F* cut_eYColl = new TH1F("cut_eYColl", "SHMS Y Collimator", eYColl_nbins, eYColl_xmin, eYColl_xmax);        
+
+  TH2F* cut_hXColl_vs_hYColl = new TH2F("cut_hXColl_vs_hYColl", "HMS Collimator", hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+  TH2F* cut_eXColl_vs_eYColl = new TH2F("cut_eXColl_vs_eYColl", "SHMS Collimator", eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+
+  //Un-Weighted Histograms (To Get the Statistical Error)
+  TH1F *cut_W_inv_UnWeight = new TH1F("cut_W_inv_UnWeight", "Invariant Mass, W", W_nbins, W_xmin, W_xmax);     //min width = 19.9 MeV (0.0199) (bin width = 25 MeV)
+
+
+  cut_W_inv_UnWeight->Sumw2();	  
+  cut_W_inv->Sumw2();
+  cut_pm->Sumw2();
+  cut_Q_2->Sumw2();
+  cut_omega->Sumw2();
+  cut_xbj->Sumw2();
+  
   //Set Variable Names and Branches
  
   //------Kinematics
@@ -377,6 +462,8 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
   Double_t  epCoinTime;
   Double_t  pindex;
   Double_t MM_2;
+
+  
 
   T->SetBranchAddress("CTime.epCoinTime_ROC2", &epCoinTime);
 
@@ -468,6 +555,13 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
   T->SetBranchAddress(Form("%s.react.y", eArm.c_str()),&etar_y);
   T->SetBranchAddress(Form("%s.react.z", eArm.c_str()),&etar_z);
 
+  //--------Collimator-------
+  Double_t hXColl, hYColl,  eXColl, eYColl;
+
+  T->SetBranchAddress(Form("%s.extcor.xsieve", hArm.c_str()),&hXColl);
+  T->SetBranchAddress(Form("%s.extcor.ysieve", hArm.c_str()),&hYColl);
+  T->SetBranchAddress(Form("%s.extcor.xsieve", eArm.c_str()),&eXColl);
+  T->SetBranchAddress(Form("%s.extcor.ysieve", eArm.c_str()),&eYColl);
 
   //------SHMS Detector Quantities
   Double_t  pcal_etotnorm;
@@ -478,22 +572,40 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
   T->SetBranchAddress("P.ngcer.npeSum",&pngcer_npesum);
   T->SetBranchAddress("P.dc.ntrack",&pdc_ntrack);
 
+  //-----BCM Current / EDTM-----------
+  Double_t pbcm4a_current;
+  Double_t pEDTM_tdcTimeRaw;
   
+  T->SetBranchAddress("P.bcm.bcm4a.AvgCurrent",&pbcm4a_current);
+  T->SetBranchAddress("T.coin.pEDTM_tdcTimeRaw",&pEDTM_tdcTimeRaw);
+
+
+
   //Calculated Quantities to be use in loop
   Double_t etheta_calc; //calculated electron angle
   Double_t detheta;
 
+ 
 
-  //SHMS Singles Full Weight
-  //Each data event will be corrected for by dividing it by charge, efficencys and live time
-  FullWeight = 1. / (charge_factor*e_trkEff*t_LT);
-  
-  //HMS/SHMS Coincidence Trigger Full Weight
-  //FullWeight = 1. / (charge_factor*e_trkEff*h_trkEff*t_LT);
+
+  //Proton Absorption Correction (Energy Loss Corrections)
+  Double_t pAbs_corr = 0.9534;   //95 % of all coincidence protons reached the HMS hodo to make a trigger (See proton absorption studies in my github)
+  //Double_t pAbs_corr = 1.0;   //For now,  use normalization factor without proton absorption. 
+
+  //Target Boiling Factor
+  //Double_t tgtBoil_corr = (1.-0.0006 * avg_current);  //The slope, -0.0006 [fractional yield_loss / uA] 
+  Double_t tgtBoil_corr = 1.; 
+
+  //Full Weight
+  FullWeight = 1. / (charge_factor*e_trkEff*h_trkEff*t_LT*pAbs_corr*tgtBoil_corr);
+  //FullWeight = 1.*pS / (charge_factor*e_trkEff*t_LT*pAbs_corr);
 
   
 
   //Define Boolean for Kin. Cuts
+  Bool_t c_exptar;
+  Bool_t c_eyptar;
+  Bool_t c_esolid;
   Bool_t c_Em;
   Bool_t c_hdelta;
   Bool_t c_edelta;
@@ -501,18 +613,43 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
   Bool_t c_ctime;
   Bool_t c_MM2;
 
-  //Set Minimum Emiss Cut depending on Run Number
-  Double_t Em_min;
+  //Define Boolean for BCM/EDTM Cuts
+  Bool_t c_bcm4a_current;
+  Bool_t c_pEDTM;
 
-  Em_min = 0.04;
+  //----------Study Variation in Yield with W cuts-------------------------
+  //W: r1-> (0.85,1.05),  r2-> (0.85, 1.0),  r3-> (0.85, 0.99),  r4-> (0.85, 0.98),  r5-> (0.85, 0.97), r6-> (0.85, 0.96)
+  TH1F *W_cut_r1 = new TH1F("W_cut_r1", "",  W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_r2 = new TH1F("W_cut_r2", "",  W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_r3 = new TH1F("W_cut_r3", "",  W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_r4 = new TH1F("W_cut_r4", "",  W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_r5 = new TH1F("W_cut_r5", "",  W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_r6 = new TH1F("W_cut_r6", "",  W_nbins, W_xmin, W_xmax);
 
-  if (run==3288){Em_min = 0.04;}  
-  if (run==3371){Em_min = 0.04;}  
-  if (run==3374){Em_min = 0.04;} 
-  if (run==3377){Em_min = 0.04;}  
-   
+  //---------------------------------------------------------------------------
 
- 
+
+  //-------Study Variation in Yield with Collimator Cuts----------
+  Bool_t hcoll_c1, hcoll_c2, hcoll_c3, hcoll_c4, hcoll_c5;
+  Bool_t ecoll_c1, ecoll_c2, ecoll_c3, ecoll_c4, ecoll_c5;
+  
+  TH2F *cut_W_vs_Emiss = new TH2F("cut_W_vs_Emiss", "W vs. Emiss", 100, -0.02, 0.1, 100, 0.85, 1.2);
+
+  TH1F *W_cut_hc0 = new TH1F("W_cut_hc0", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_hc1 = new TH1F("W_cut_hc1", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_hc2 = new TH1F("W_cut_hc2", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_hc3 = new TH1F("W_cut_hc3", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_hc4 = new TH1F("W_cut_hc4", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_hc5 = new TH1F("W_cut_hc5", "", W_nbins, W_xmin, W_xmax);
+    
+  TH1F *W_cut_ec0 = new TH1F("W_cut_ec0", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_ec1 = new TH1F("W_cut_ec1", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_ec2 = new TH1F("W_cut_ec2", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_ec3 = new TH1F("W_cut_ec3", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_ec4 = new TH1F("W_cut_ec4", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_ec5 = new TH1F("W_cut_ec5", "", W_nbins, W_xmin, W_xmax);
+  //---------------------------------------------------------------
+
   //======================
   // E V E N T   L O O P 
   //======================
@@ -535,28 +672,52 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
     theta_pq_v2 = th_q - theta_p;
     Ep = TMath::Sqrt(MP*MP + Pf*Pf);
     Emv2 = nu + MP - Ep;
-    c_Em = Em < Em_min;      //-0.125, -0.115, -0.14, -0.14 --> 3288, 3371, 3374, 3377 (Determined using EPICS momenta data D2 hEEP)                       
-                             //-0.11, -0.08, -0.13, -0.13 --->Corrected HMS P, Em cuts
-
+    c_Em = Em < 0.04;      
     theta_e_calc = asin( Pf*sin(theta_p) / (Eb + MP - Ep) );
     detheta = theta_e_calc -theta_e;
 
     //Calculated Quantities
     etheta_calc =  acos((10.6005 - Pf * cos(theta_p))/kf );
-    //detheta = (etheta_calc - theta_e);
     MM_2 = Em*Em - Pm*Pm;
-  
+    
+    
+
+
     //Define Cuts
     c_hdelta = h_delta>-8.&&h_delta<8.;  //good HMS delta range (well known recon. matrix)
     c_ecal = pcal_etotnorm>=0.6;
     c_ctime = epCoinTime>8.5 && epCoinTime<13.5;
-    c_edelta = e_delta > -10 && e_delta < 22.;
-    c_MM2 = MM_2>-0.0009&&MM_2<0.0004;
+    c_edelta = e_delta > -10. && e_delta < 22.;
+    c_MM2 = MM_2>-0.0009&&MM_2<0.0004;                                   
+   
+    c_bcm4a_current = abs(pbcm4a_current - set_current) < 5.;
+    c_pEDTM = pEDTM_tdcTimeRaw == 0.;
 
+    //Testing 3288 W Yield
+    c_exptar = abs(e_xptar)<0.026; //(Corresponds to |eXColl|<6.8cm)
+    c_eyptar = abs(e_yptar)<0.015; //Corresponds to |eYColl|<5.0 cm)
+    c_esolid = c_exptar&&c_eyptar;                
+  
+    //Collimator Cuts Study
+    hcoll_c1 = abs(hXColl)<13.&&abs(hYColl)<5.;
+    hcoll_c2 = abs(hXColl)<12.&&abs(hYColl)<4.5;
+    hcoll_c3 = abs(hXColl)<11.&&abs(hYColl)<4.;
+    hcoll_c4 = abs(hXColl)<10.&&abs(hYColl)<3.5;
+    hcoll_c5 = abs(hXColl)<9.&&abs(hYColl)<3.;
+    
+    ecoll_c1 = abs(eXColl)<7.&&abs(eYColl)<5.;
+    ecoll_c2 = abs(eXColl)<6.&&abs(eYColl)<4.5;
+    ecoll_c3 = abs(eXColl)<5.&&abs(eYColl)<4.;
+    ecoll_c4 = abs(eXColl)<4.&&abs(eYColl)<3.5;
+    ecoll_c5 = abs(eXColl)<3.&&abs(eYColl)<3.;
 
     //APPLY CUTS: BEGIN CUTS LOOP
-    if (c_edelta&&c_ecal&&pdc_ntrack>0)   
+    if (c_hdelta&&c_edelta&&c_ecal&&W>=0.85&&W<=1.05&&c_bcm4a_current&&c_pEDTM)   
     {     
+
+
+      //Fill UnWeighted
+      cut_W_inv_UnWeight->Fill(W);
 
 	  cut_epCT->Fill(epCoinTime, FullWeight);
 	  cut_etotnorm->Fill(pcal_etotnorm, FullWeight);
@@ -582,8 +743,9 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
 	  cut_theta_prot->Fill(theta_p/dtr, FullWeight);
 	  cut_theta_elec_calc->Fill(theta_e_calc/dtr, FullWeight);
 	  cut_theta_elec_res->Fill((theta_e_calc-theta_e)/dtr, FullWeight);
-	  
-	  //Additional Kinematics Variables
+
+
+	    //Additional Kinematics Variables
 	  cut_W_2->Fill(W2, FullWeight); 
 	  cut_xbj->Fill(X, FullWeight); 
 	  cut_P_f->Fill(Pf, FullWeight);
@@ -593,7 +755,8 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
 	  cut_q_vec->Fill(q3m, FullWeight);
 	  cut_thet_pq->Fill(thxq/dtr, FullWeight);
 	  cut_thet_pq_v2->Fill(theta_pq_v2/dtr, FullWeight);
-
+	  
+	  
 	  //Reconstructed Target Quantities (Lab Frame)
 	  cut_hx_tar->Fill(htar_x, FullWeight);
 	  cut_hy_tar->Fill(htar_y, FullWeight);
@@ -603,6 +766,7 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
           cut_ey_tar->Fill(etar_y, FullWeight);  
           cut_ez_tar->Fill(etar_z, FullWeight);                                              
 	  
+	  cut_ztar_diff->Fill((htar_z - etar_z), FullWeight);  
 	  //Hadron-Arm Target Reconstruction 
 	  cut_hytar->Fill(h_ytar, FullWeight);
 	  cut_hxptar->Fill(h_xptar, FullWeight);
@@ -638,6 +802,7 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
 	  cut_hdelta_vs_edelta->Fill(e_delta, h_delta, FullWeight);
 
 	  cut_W_vs_MM2->Fill(MM_2, W, FullWeight);
+	  cut_W_vs_Emiss->Fill(Em, W, FullWeight);
 
 	  //Heep cross check
 	  cut_emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
@@ -693,6 +858,17 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
 
 	  cut_d_etheta_vs_eyfp->Fill(e_yfp, detheta, FullWeight);
 	  cut_d_etheta_vs_eypfp->Fill(e_ypfp, detheta, FullWeight);
+
+	  //Collimator Plots
+	  cut_hXColl->Fill(hXColl, FullWeight);
+	  cut_hYColl->Fill(hYColl, FullWeight);   
+	  cut_eXColl->Fill(eXColl, FullWeight);
+	  cut_eYColl->Fill(eYColl, FullWeight);                                                                                                                                
+                                                                                                                                                                
+	  cut_hXColl_vs_hYColl->Fill(hYColl, hXColl, FullWeight);
+	  cut_eXColl_vs_eYColl->Fill(eYColl, eXColl, FullWeight);
+
+	  
 
 
 	}//End CUTS LOOP
@@ -784,7 +960,8 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
       //Heep cross check
       emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
       edelta_vs_eyptar->Fill(e_yptar, e_delta, FullWeight);
-     	 
+      
+
       //OPTICS CHECK (W / Em vs. electron arm)
       W_vs_exfp->Fill(e_xfp, W, FullWeight);
       W_vs_expfp->Fill(e_xpfp, W, FullWeight);
@@ -831,11 +1008,91 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
       d_etheta_vs_expfp->Fill(e_xpfp, detheta, FullWeight);                                                                                      
       d_etheta_vs_eyfp->Fill(e_yfp, detheta, FullWeight);                         
       d_etheta_vs_eypfp->Fill(e_ypfp, detheta, FullWeight);                                                                                                                           
-                                                         
+      
+      
+      //----W Cuts Study on Yield Ratio-----
+      if (c_edelta&&c_hdelta&&W>0.85&&W<1.05)   
+	{
+	  W_cut_r1->Fill(W, FullWeight);
+	}     
+      if (c_edelta&&c_hdelta&&W>0.85&&W<1.)   
+	{
+	  W_cut_r2->Fill(W, FullWeight);
+	}
+      if (c_edelta&&c_hdelta&&W>0.85&&W<0.99)   
+	{
+	  W_cut_r3->Fill(W, FullWeight);
+	}
+      if (c_edelta&&c_hdelta&&W>0.85&&W<0.98)   
+	{
+	  W_cut_r4->Fill(W, FullWeight);
+	}
+     if (c_edelta&&c_hdelta&&W>0.85&&W<0.97)   
+	{
+	  W_cut_r5->Fill(W, FullWeight);
+	}
+     if (c_edelta&&c_hdelta&&W>0.85&&W<0.96)   
+	{
+	  W_cut_r6->Fill(W, FullWeight);
+	}
+     //-------------------------------------
+    
+     //-----HMS Collimator Cut Study------------
+     if(c_edelta&&c_hdelta&&c_ecal)
+       {
+	 W_cut_hc0->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&c_ecal&&ecoll_c1&&hcoll_c1)
+       {
+	 W_cut_hc1->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&c_ecal&&ecoll_c1&&hcoll_c2)
+       {
+	 W_cut_hc2->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&c_ecal&&ecoll_c1&&hcoll_c3)
+       {
+	 W_cut_hc3->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&c_ecal&&ecoll_c1&&hcoll_c4)
+       {
+	 W_cut_hc4->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&c_ecal&&ecoll_c1&&hcoll_c5)
+       {
+	 W_cut_hc5->Fill(W, FullWeight);
+       }
+
+     //-----SHMS Collimator Cut Study------------
+     if(c_edelta&&c_hdelta&&c_ecal)
+       {
+	 W_cut_ec0->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&c_ecal&&ecoll_c1)
+       {
+	 W_cut_ec1->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&c_ecal&&ecoll_c2)
+       {
+	 W_cut_ec2->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&c_ecal&&ecoll_c3)
+       {
+	 W_cut_ec3->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&c_ecal&&ecoll_c4)
+       {
+	 W_cut_ec4->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&c_ecal&&ecoll_c5)
+       {
+	 W_cut_ec5->Fill(W, FullWeight);
+       }
 
   } //end entry loop
   
-   
+ 
+
   outROOT->Write();
   
 }

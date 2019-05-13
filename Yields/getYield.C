@@ -7,7 +7,7 @@ void getYield()
 
 
   ofstream ofile;
-  ofile.open("yield.data");
+  ofile.open("yield_before.data");
 
   ofile <<"#! Run[i,0]/    dataY[f,1]/     dataY_err[f,2]/     simcY[f,3]/     simcY_err[f,4]/" << endl;
   
@@ -41,12 +41,12 @@ void getYield()
   TCanvas *edelta_canv = new TCanvas("edelta_canv", "", 1500, 1500);
   edelta_canv->Divide(2,2);
 
-  for (int irun = 0; irun <4; irun++){
+  for (int irun = 0; irun <3; irun++){
     //TString simc_filename =  Form("../simc_analysis/D2_heep/Wcheck_simc_histos_%d.root", run[irun]);                                                                                                                                                             
     //TString data_filename = Form("../data_analysis/Wcheck_data_histos_%d.root",run[irun]);     
    
-    TString simc_filename =  Form("../simc_analysis/Wcheck_simc_histos_%d.root", run[irun]);                                                                                                                                                             
-    TString data_filename = Form("../data_analysis/Wcheck_data_histos_%d.root",run[irun]);     
+    TString simc_filename =  Form("../simc_analysis/D2_heep/Wcheck_simc_histos_%d.root", run[irun]);                                                                                                                                                             
+    TString data_filename = Form("../data_analysis/Wcheck_data_histos_%d_before.root",run[irun]);     
   
    
                                                                                                                         
@@ -58,6 +58,9 @@ void getYield()
   TH1F *dataW = 0;
   TH1F *simcW = 0; 
 
+  TH1F *dataW_unweight = 0;
+  TH1F *simcW_unweight = 0; 
+
   TH1F *dataEm = 0;
   TH1F *simcEm = 0;
 
@@ -67,9 +70,12 @@ void getYield()
   TH1F *data_edelta = 0;
   TH1F *simc_edelta = 0;  
 
+
   //Change to simc file
   simc_file->cd();
   simc_file->GetObject("cut_W_inv", simcW);
+  simc_file->GetObject("cut_W_inv_UnWeight", simcW_unweight);
+
   //simc_file->GetObject("W_inv", simcW);
 
   simc_file->GetObject("Emiss", simcEm);
@@ -79,13 +85,18 @@ void getYield()
   bin_min = simcW->GetXaxis()->FindBin(xmin[irun]);                                                                                                       
   bin_max = simcW->GetXaxis()->FindBin(xmax[irun]);
 
-  simcY = simcW->Integral(bin_min, bin_max);
-  simcY_err = sqrt(simcY);
+  simcY = simcW->IntegralAndError(bin_min, bin_max, simcY_err);
+  //simcY_err = sqrt( simcW_unweight->Integral(bin_min, bin_max) );
+  
+
+  cout << "SIMC Y = " << simcY << endl;
+  cout << "SIMC Y_err = " << simcY_err << endl;
+
 
   //Change to data file                                                                                                                   
   data_file->cd();                                                                                                                         
   data_file->GetObject("cut_W_inv", dataW);  
-  //data_file->GetObject("W_inv", dataW);  
+  data_file->GetObject("cut_W_inv_UnWeight", dataW_unweight);
 
   data_file->GetObject("Emiss", dataEm);
   data_file->GetObject("hdelta", data_hdelta);
@@ -94,12 +105,16 @@ void getYield()
   bin_min = dataW->GetXaxis()->FindBin(xmin[irun]);         
   bin_max = dataW->GetXaxis()->FindBin(xmax[irun]);   
 
-  dataY = dataW->Integral(bin_min, bin_max);
-  dataY_err = sqrt(dataY);
+  dataY = dataW->IntegralAndError(bin_min, bin_max, dataY_err);
+  //dataY_err = sqrt( dataW_unweight->Integral(bin_min, bin_max) );
+
+  
+  cout << "DATA Y = " << dataY << endl;
+  cout << "DATA Y_err = " << dataY_err << endl;
 
 
 
-  ofile << Form("%i   %d    %f    %d    %f", run[irun],  int(dataY),  dataY_err,  int(simcY),   simcY_err)  << endl;
+  ofile << Form("%i   %f    %f    %f    %f", run[irun],  dataY,  dataY_err,  simcY,   simcY_err)  << endl;
 
 
 

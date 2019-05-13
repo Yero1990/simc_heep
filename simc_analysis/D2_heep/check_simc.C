@@ -2,7 +2,17 @@
 
 #include "set_heep_histos.h"
 
+//Define Prototypes for Auxiliary Functions
+void GeoToSph( Double_t  th_geo, Double_t  ph_geo,
+	       Double_t& th_sph, Double_t& ph_sph);
+
+void SetCentralAngles(Double_t th_cent, Double_t ph_cent);
+
+void TransportToLab( Double_t p, Double_t xptar, Double_t yptar,
+		     TVector3& pvect );  
+
 void check_simc(int run, string eArm="P", bool Qnorm=false)
+
 {
   //PREVENT DISPLAY 
   //gROOT->SetBatch(kTRUE);
@@ -25,7 +35,41 @@ TString electron_arm;
   Double_t c_LT = 1.;
   Double_t t_LT = 1.;
   
+    
+  //Central in-plane (th) and out-of-plane (ph) (should be zero for both spectrometers)
+  Double_t h_th;    //the neg. sign indicates which side of the beam pipe the spec. is on (- means beam right)
+  Double_t h_ph = 0.;
   
+  Double_t e_th;
+  Double_t e_ph = 0.;
+
+  //Angles in Spherical Coordinates
+  Double_t eth_sph, eph_sph;                                                                                                                           
+  Double_t hth_sph, hph_sph; 
+
+
+
+  if(run==3288){
+  h_th = -37.338;
+  e_th = 12.194;
+
+  }
+
+  if(run==3371){
+    h_th = -33.545;   	      
+    e_th = 13.93;							 
+  }
+
+  if(run==3374){ 
+    h_th = -42.9;
+    e_th = 9.928;  
+  }
+
+  if(run==3377){ 
+    h_th =-47.605; 
+    e_th = 8.495;
+  }
+
   if (Qnorm)
     {
       if(run==3288){
@@ -35,14 +79,11 @@ TString electron_arm;
 	t_LT = 0.924374;
 	
 	//HMS/SHMS Efficiency Studies
-	h_trkEff = 0.9878;     //nominal
+	h_trkEff = 0.9876;     //nominal
 	
-	e_trkEff =  0.9704;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-	//e_trkEff =  0.9083;    //NEW Method(T.Horn): [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-	
-	//single tracking efficiecny
-	//e_trkEff = 0.9193;
-	
+	e_trkEff =  0.9700;    
+
+
       }
       if(run==3371){
 	
@@ -54,10 +95,7 @@ TString electron_arm;
 	h_trkEff =  0.9869;    //nominal
 	
 	e_trkEff =  0.9734;    //OLD Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-	//e_trkEff =  0.9225;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-	
-	//single tracking efficiecny
-	//e_trkEff = 0.9308;
+
 	
       }
       if(run==3374){
@@ -70,13 +108,7 @@ TString electron_arm;
 	h_trkEff =  0.9896;    //nominal
 	
 	e_trkEff =  0.9618;    // all tracks [>=0.6]
-	//e_trkEff =  0.9629*(1.-0.018339);    //single tracks Method: [etotnorm: [0.6,1.6] * fraction of data with single tracks
-	//e_trkEff =  0.9086*0.018339;   //MULTIPLE Tracks [>1.6] * fraction of data with multiple tracks
-	
-	//e_trkEff =  0.8658;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-	
-	//single tracking efficiecny
-	//e_trkEff = 0.9061;
+
       }
       
       if(run==3377){
@@ -89,11 +121,7 @@ TString electron_arm;
 	h_trkEff =  0.9908;    //nominal
 	
 	e_trkEff =  0.9463;    // all tracks [etotnorm >= 0.6]
-	
-	//e_trkEff =  0.8047;    //NEW Method: [etotnorm >= 0.6 && pngcer_npeSum>0.5]--> all tracks
-	
-	//single tracking efficiecny
-	//e_trkEff = 0.8931;
+
       }
       
     }
@@ -103,11 +131,6 @@ TString electron_arm;
   //Deuteron Heep Check Data
   TString filename = Form("../../worksim_voli/D2_heep_%d.root",run);          
   
-
-  // TString filename = Form("../../worksim_voli/heep_g%dcoin.root",run);                                 
-
-  
-
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *SNT = (TTree*)data_file->Get("SNT");
  
@@ -116,7 +139,8 @@ TString electron_arm;
   
 
   //********* Create 1D Histograms **************
- 
+  TH1F::SetDefaultSumw2();
+
 //Kinematics Quantities
   TH1F *MM2 = new TH1F("MM2", "Missing Mass Squared, MM2", MM2_nbins, MM2_xmin, MM2_xmax );
   TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
@@ -159,6 +183,7 @@ TH1F *hy_tar = new TH1F("hy_tar", hadron_arm + " y_Target (Lab)", ytar_nbins, yt
 TH1F *hz_tar = new TH1F("hz_tar", hadron_arm + " z_Target (Lab)", ztar_nbins, ztar_xmin, ztar_xmax);
 TH1F *ey_tar = new TH1F("ey_tar", electron_arm + " y_Target (Lab)", ytar_nbins, ytar_xmin, ytar_xmax);                
 TH1F *ez_tar = new TH1F("ez_tar", electron_arm + " z_Target (Lab)", ztar_nbins, ztar_xmin, ztar_xmax);  
+
 
 //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
 TH1F *hytar = new TH1F("hytar", hadron_arm + " Y_{tar}", hytar_nbins, hytar_xmin, hytar_xmax);
@@ -258,17 +283,28 @@ TH2F *W_vs_hdelta = new TH2F("W_vs_hdelta", "W vs hdelta", hdelta_nbins, hdelta_
  
 //Kinematics Quantities
  TH1F *cut_MM2 = new TH1F("cut_MM2", "Missing Mass Squared, MM2", MM2_nbins, MM2_xmin, MM2_xmax );
-TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV
-TH1F *cut_pm = new TH1F("cut_pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
-
-   TH1F *cut_pmX_lab = new TH1F("cut_pmX_Lab","Pmiss X (Lab) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
-  TH1F *cut_pmY_lab = new TH1F("cut_pmY_Lab","Pmiss Y (Lab) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
-  TH1F *cut_pmZ_lab = new TH1F("cut_pmZ_Lab","Pmiss Z (Lab) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
-  TH1F *cut_pmX_q = new TH1F("cut_pmX_q","Pmiss X (w.r.t q-vec) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
-  TH1F *cut_pmY_q = new TH1F("cut_pmY_q","Pmiss Y (w.r.t q-vec) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
-  TH1F *cut_pmZ_q = new TH1F("cut_pmZ_q","Pmiss Z (w.r.t. q-vec) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
+ TH1F *cut_Emiss = new TH1F("cut_Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  CUT_OUNTS/25 MeV
+ TH1F *cut_pm = new TH1F("cut_pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
+ TH1F *cut_pm_v2 = new TH1F("cut_pm_v2","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
+ 
+ cut_Emiss->Sumw2();
+ cut_pm->Sumw2();
+ cut_pm_v2->Sumw2();
+ 
+ TH1F *cut_pmX_lab = new TH1F("cut_pmX_Lab","Pmiss X (Lab) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
+ TH1F *cut_pmY_lab = new TH1F("cut_pmY_Lab","Pmiss Y (Lab) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
+ TH1F *cut_pmZ_lab = new TH1F("cut_pmZ_Lab","Pmiss Z (Lab) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
+ TH1F *cut_pmX_q = new TH1F("cut_pmX_q","Pmiss X (w.r.t q-vec) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
+ TH1F *cut_pmY_q = new TH1F("cut_pmY_q","Pmiss Y (w.r.t q-vec) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
+ TH1F *cut_pmZ_q = new TH1F("cut_pmZ_q","Pmiss Z (w.r.t. q-vec) ", Pmz_nbins, Pmz_xmin, Pmz_xmax);  
   
-
+  TH1F *cut_pmxL_v2 = new TH1F("cut_pmxL_v2","Pmx missing momentum", Pmx_nbins, Pmx_xmin, Pmx_xmax);            
+  TH1F *cut_pmyL_v2 = new TH1F("cut_pmyL_v2","Pmy missing momentum", Pmy_nbins, Pmy_xmin, Pmy_xmax);                                                                             
+  TH1F *cut_pmzL_v2 = new TH1F("cut_pmzL_v2","Pmz missing momentum", Pmz_nbins, Pmz_xmin, Pmz_xmax);                    
+   
+  TH1F *cut_pmxq_v2 = new TH1F("cut_pmxq_v2","Pmx missing momentum", Pmx_nbins, Pmx_xmin, Pmx_xmax);            
+  TH1F *cut_pmyq_v2 = new TH1F("cut_pmyq_v2","Pmy missing momentum", Pmy_nbins, Pmy_xmin, Pmy_xmax);                                                                             
+  TH1F *cut_pmzq_v2 = new TH1F("cut_pmzq_v2","Pmz missing momentum", Pmz_nbins, Pmz_xmin, Pmz_xmax);   
 
  TH1F *cut_Q_2 = new TH1F("cut_Q_2","Q2", Q2_nbins, Q2_xmin, Q2_xmax);
 TH1F *cut_omega = new TH1F("cut_omega","Energy Transfer, #omega", om_nbins, om_xmin, om_xmax);
@@ -278,8 +314,12 @@ TH1F *cut_W_inv = new TH1F("cut_W_inv", "Invariant Mass, W", W_nbins, W_xmin, W_
  TH1F *cut_theta_prot = new TH1F("cut_theta_prot", "Proton Scatt. Angle", thp_nbins, thp_xmin, thp_xmax);
  TH1F *cut_theta_elec_calc = new TH1F("cut_theta_elec_calc", "Calculated Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
  TH1F *cut_theta_elec_res = new TH1F("cut_theta_elec_res", "Electron Scatt. Angle Residual", 100, -1, 1);
+ 
+ cut_Q_2->Sumw2();
+ cut_omega->Sumw2();
+ cut_W_inv->Sumw2();
 
-//Additional Kinematics Variables
+ //Additional Kinematics Variables
 TH1F *cut_W_2 = new TH1F("cut_W2", "Invariant Mass W2", W2_nbins, W2_xmin, W2_xmax);
 TH1F *cut_xbj = new TH1F("cut_xbj", "x-Bjorken", xbj_nbins, xbj_xmin, xbj_xmax);
 TH1F *cut_P_f = new TH1F("cut_P_f", "Final Proton Momentum", Pf_nbins, Pf_xmin, Pf_xmax);
@@ -290,15 +330,25 @@ TH1F *cut_theta_q = new TH1F("cut_theta_q", "q-vector Angle, #theta_{q}", thq_nb
 TH1F *cut_theta_q_v2 = new TH1F("cut_theta_q_v2", "q-vector Angle, #theta_{q}", thq_nbins, thq_xmin, thq_xmax);
 TH1F *cut_thet_pq = new TH1F("cut_theta_pq", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
 TH1F *cut_thet_pq_v2 = new TH1F("cut_theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
+  
 
-//Target Reconstruction Variables
+ cut_xbj->Sumw2();
+ cut_P_f->Sumw2();
+ cut_k_f->Sumw2();
+ cut_q_vec->Sumw2();
+ cut_theta_q->Sumw2();
+ cut_thet_pq->Sumw2();
+
+ //Target Reconstruction Variables
  TH1F *cut_x_tar = new TH1F("cut_x_tar", "x_Target (Lab)", xtar_nbins, xtar_xmin, xtar_xmax);
 
  TH1F *cut_hy_tar = new TH1F("cut_hy_tar", hadron_arm + " y_Target (Lab)", ytar_nbins, ytar_xmin, ytar_xmax); 
- TH1F *cut_hz_tar = new TH1F("cut_hz_tar", hadron_arm + " z_Target (Lab)", ztar_nbins, ztar_xmin, ztar_xmax);       
-                                                                                                                                                    
+ TH1F *cut_hz_tar = new TH1F("cut_hz_tar", hadron_arm + " z_Target (Lab)", ztar_nbins, ztar_xmin, ztar_xmax);                                                                                                                                     
  TH1F *cut_ey_tar = new TH1F("cut_ey_tar", electron_arm + " y_Target (Lab)", ytar_nbins, ytar_xmin, ytar_xmax);            
  TH1F *cut_ez_tar = new TH1F("cut_ez_tar", electron_arm + " z_Target (Lab)", ztar_nbins, ztar_xmin, ztar_xmax);  
+
+ //Ztar difference                                                                                                                
+ TH1F *cut_ztar_diff = new TH1F("cut_ztar_diff", "Ztar Difference", ztar_nbins, ztar_xmin, ztar_xmax);     
 
 //Hadron arm Reconstructed Quantities ( xtar, ytar, xptar, yptar, delta)
 TH1F *cut_hytar = new TH1F("cut_hytar", hadron_arm + " Y_{tar}", hytar_nbins, hytar_xmin, hytar_xmax);
@@ -372,6 +422,15 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
  TH2F *cut_d_etheta_vs_eyfp = new TH2F("cut_d_etheta_vs_eyfp", electron_arm + "d#theta_{e} vs. Y_{fp}",    eyfp_nbins,  eyfp_xmin,  eyfp_xmax, 100, -0.04, 0.04);                               
  TH2F *cut_d_etheta_vs_eypfp = new TH2F("cut_d_etheta_vs_eypfp", electron_arm + "d#theta_{e} vs. Y'_{fp}", eypfp_nbins, eypfp_xmin, eypfp_xmax, 100, -0.04, 0.04);                              
    
+
+   //HMS / SHMS Collimator
+  TH1F* cut_hXColl = new TH1F("cut_hXColl", "HMS X Collimator", hXColl_nbins, hXColl_xmin, hXColl_xmax);
+  TH1F* cut_hYColl = new TH1F("cut_hYColl", "HMS Y Collimator", hYColl_nbins, hYColl_xmin, hYColl_xmax); 
+  TH1F* cut_eXColl = new TH1F("cut_eXColl", "SHMS X Collimator", eXColl_nbins, eXColl_xmin, eXColl_xmax);                                                                             
+  TH1F* cut_eYColl = new TH1F("cut_eYColl", "SHMS Y Collimator", eYColl_nbins, eYColl_xmin, eYColl_xmax);        
+                                                                                      
+  TH2F* cut_hXColl_vs_hYColl = new TH2F("cut_hXColl_vs_hYColl", "HMS Collimator", hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+  TH2F* cut_eXColl_vs_eYColl = new TH2F("cut_eXColl_vs_eYColl", "SHMS Collimator", eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
 
 
   Float_t  Normfac;
@@ -516,7 +575,26 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   SNT->SetBranchAddress("h_Thf", &h_Thf);
   SNT->SetBranchAddress("Ein_v", &Ein_v);
   
-  
+  //Declare Neccessary Variables to Determine the 4-Momentum of Recoil System
+  TLorentzVector fP0;           // Beam 4-momentum
+  TLorentzVector fP1;           // Scattered electron 4-momentum
+  TLorentzVector fA;            // Target 4-momentum
+  TLorentzVector fA1;           // Final system 4-momentum
+  TLorentzVector fQ;            // Momentum transfer 4-vector
+  TLorentzVector fX;            // Detected secondary particle 4-momentum (GeV)
+  TLorentzVector fB;            // Recoil system 4-momentum (GeV)
+
+  TVector3 Pf_vec;
+  TVector3 kf_vec;
+
+  //Declare necessary variables for rotaion from +z to +q
+  TVector3 qvec(0.,0.,0.);
+  TVector3 kfvec(0.,0.,0.);
+  TRotation rot_to_q;
+  TVector3 bq(0.,0.,0.);   //recoil system in lab frame (Pmx, Pmy, Pmz)
+  TVector3 p_miss_q(0.,0.,0.);   //recoil system in q-frame
+
+
   //Define Additional Kinematic Variables
   Double_t MM_2;
   Double_t Eb = 10.6005;  //GeV Beam Energy
@@ -534,16 +612,64 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   Double_t Emv2;
   Double_t theta_e_calc;
   Double_t detheta;
-
+  Double_t Pmx_v2, Pmy_v2, Pmz_v2, Pm_v2;
+  Double_t PmPer_v2, PmOop_v2, PmPar_v2;
+  Double_t hXColl; 
+  Double_t hYColl;
+  Double_t eXColl; 
+  Double_t eYColl;
+  Double_t e_ztar;
+  Double_t h_ztar;
+  Double_t h_xtar;
+  Double_t e_xtar;
 
   //Determine Full Weight Quantities (Assume one for heep check)
   Double_t FullWeight;
 
   //Define Boolean for Kin. Cuts
+  Bool_t c_exptar;
+  Bool_t c_eyptar;
+  Bool_t c_esolid;
   Bool_t c_Em;
   Bool_t c_hdelta;
   Bool_t c_edelta;
   Bool_t c_MM2;
+
+
+//----------Study Variation in Yield with W cuts-------------------------
+//W: r1-> (0.85,1.05),  r2-> (0.85, 1.0),  r3-> (0.85, 0.99),  r4-> (0.85, 0.98),  r5-> (0.85, 0.97), r6-> (0.85, 0.96)
+
+
+  TH1F *W_cut_r1 = new TH1F("W_cut_r1", "",  W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_r2 = new TH1F("W_cut_r2", "",  W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_r3 = new TH1F("W_cut_r3", "",  W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_r4 = new TH1F("W_cut_r4", "",  W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_r5 = new TH1F("W_cut_r5", "",  W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_r6 = new TH1F("W_cut_r6", "",  W_nbins, W_xmin, W_xmax);
+
+  //---------------------------------------------------------------------------
+
+  //-------Study Variation in Yield with Collimator Cuts----------
+  Bool_t hcoll_c1, hcoll_c2, hcoll_c3, hcoll_c4, hcoll_c5;
+  Bool_t ecoll_c1, ecoll_c2, ecoll_c3, ecoll_c4, ecoll_c5;
+
+  TH2F *cut_W_vs_Emiss = new TH2F("cut_W_vs_Emiss", "W vs. Emiss", 100, -0.02, 0.1, 100, 0.85, 1.2);
+
+  TH1F *W_cut_hc0 = new TH1F("W_cut_hc0", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_hc1 = new TH1F("W_cut_hc1", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_hc2 = new TH1F("W_cut_hc2", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_hc3 = new TH1F("W_cut_hc3", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_hc4 = new TH1F("W_cut_hc4", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_hc5 = new TH1F("W_cut_hc5", "", W_nbins, W_xmin, W_xmax);
+  
+  TH1F *W_cut_ec0 = new TH1F("W_cut_ec0", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_ec1 = new TH1F("W_cut_ec1", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_ec2 = new TH1F("W_cut_ec2", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_ec3 = new TH1F("W_cut_ec3", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_ec4 = new TH1F("W_cut_ec4", "", W_nbins, W_xmin, W_xmax);
+  TH1F *W_cut_ec5 = new TH1F("W_cut_ec5", "", W_nbins, W_xmin, W_xmax);
+  //---------------------------------------------------------------
+
 
   //=======================
   // E N T R Y    L O O P
@@ -580,37 +706,122 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     MM_2 = Em*Em - Pm*Pm;
    
  
+   //Calculate electron final momentum 3-vector
+    SetCentralAngles(e_th, e_ph);
+    TransportToLab(kf, e_xptar, e_yptar, kf_vec);
+
+
+    //Calculate 4-Vectors
+    fP0.SetXYZM(0.0, 0.0, ki, me);  //set initial e- 4-momentum
+    fP1.SetXYZM(kf_vec.X(), kf_vec.Y(), kf_vec.Z(), me);  //set final e- 4-momentum
+    fA.SetXYZM(0.0, 0.0, 0.0, MD);  //Set initial target at rest
+    fQ = fP0 - fP1;
+    fA1 = fA + fQ;   //final target (sum of final hadron four momenta)
+
+    //Get Detected Particle 4-momentum
+    SetCentralAngles(h_th, h_ph);
+    TransportToLab(Pf, h_xptar, h_yptar, Pf_vec);
+    fX.SetVectM(Pf_vec, MP);    //SET FOUR VECTOR OF detected particle
+    fB = fA1 - fX;   //4-MOMENTUM OF UNDETECTED PARTICLE 
+
+    Pmx_v2 = fB.X();
+    Pmy_v2 = fB.Y(); 
+    Pmz_v2 = fB.Z(); 
+
+    Pm_v2 = sqrt(Pmx_v2*Pmx_v2 + Pmy_v2*Pmy_v2 + Pmz_v2*Pmz_v2);
+
+    //--------Rotate the recoil system from +z to +q-------
+    qvec = fQ.Vect();
+    kfvec = fP1.Vect();
+
+    rot_to_q.SetZAxis( qvec, kfvec).Invert();
+
+    bq = fB.Vect();
+    
+    bq *= rot_to_q;
+    p_miss_q = -bq;
+
+    PmPar_v2 = p_miss_q.Z();
+    PmPer_v2 = p_miss_q.X();
+    PmOop_v2 = p_miss_q.Y();
+
 
     //Define cuts
-    c_Em = Em < 0.02;
+    c_Em = Em < 0.04;
     c_hdelta = h_delta>-8.&&h_delta<8.;
-    c_edelta = e_delta>-4.&&e_delta<4.;
+    c_edelta = e_delta>-10.&&e_delta<22.;
     c_MM2 = MM_2>-0.0009&&MM_2<0.0004;
 
+    //Testing 3288 W Yield
+    c_exptar = abs(e_xptar)<0.026;  //(Corresponds to |eXColl|<6.8cm)
+    c_eyptar = abs(e_yptar)<0.015;  //Corresponds to |eYColl|<5.0 cm)
+    c_esolid = c_exptar&&c_eyptar;
+    
+
+ 
     //Calculated Angles
     theta_e_calc = asin( Pf*sin(theta_p) / (Ein + MP - Ep) );
     detheta = theta_e_calc -theta_e;
 
+   
+    h_xtar = tar_x - h_xptar*tar_z*cos(h_th*dtr);
+    e_xtar = tar_x - e_xptar*tar_z*cos(e_th*dtr);  
+  
+
+    //Define Collimator
+    
+    //Collimator Geometry from Survey (Inner opening of octagon)
+    //HMS_XColl: +/- 11.646 cm  HMS_YColl: +/- 4.575 cm
+
+    hXColl = h_xtar + h_xptar*168.;   //in cm
+    hYColl = h_ytar + h_yptar*168.;
+    eXColl = e_xtar + e_xptar*253.;
+    eYColl = e_ytar + e_yptar*253.-(0.019+40.*.01*0.052)*e_delta+(0.00019+40*.01*.00052)*e_delta*e_delta; //correct for HB horizontal bend
+    
+   //Collimator Cuts Study
+    hcoll_c1 = abs(hXColl)<13.&&abs(hYColl)<5.;
+    hcoll_c2 = abs(hXColl)<12.&&abs(hYColl)<4.5;
+    hcoll_c3 = abs(hXColl)<11.&&abs(hYColl)<4.;
+    hcoll_c4 = abs(hXColl)<10.&&abs(hYColl)<3.5;
+    hcoll_c5 = abs(hXColl)<9.&&abs(hYColl)<3.;
+    
+    ecoll_c1 = abs(eXColl)<7.&&abs(eYColl)<5.;
+    ecoll_c2 = abs(eXColl)<6.&&abs(eYColl)<4.5;
+    ecoll_c3 = abs(eXColl)<5.&&abs(eYColl)<4.;
+    ecoll_c4 = abs(eXColl)<4.&&abs(eYColl)<3.5;
+    ecoll_c5 = abs(eXColl)<3.&&abs(eYColl)<3.;
+    
     //Full Weight
     FullWeight = (Normfac*Weight*charge_factor*e_trkEff*h_trkEff*t_LT)/nentries;
 
 
     //APPLY CUTS: BEGIN CUTS LOOP
-    //if (c_Em&&c_hdelta&&e_delta>-10&&e_delta<22.)
-    if(c_Em&&c_hdelta&&c_edelta)  //only use for initial heep check
+    //if (c_Em&&c_hdelta&%&e_delta>-10&&e_delta<22.)
+    if(c_hdelta&&c_edelta&&W>=0.85&&W<=1.05/*&&abs(hXColl)<11.646&&abs(hYColl)<4.575*/)  //only use for initial heep check
 	{
+
+
 	  //Kinematics
 	  cut_MM2->Fill(MM_2, FullWeight);
 	  cut_Emiss->Fill(Em, FullWeight);
 	  cut_pm->Fill(Pm, FullWeight);
+	  cut_pm_v2->Fill(Pm_v2, FullWeight);
 
-	  cut_pmX_lab->Fill(Pmx, FullWeight);
+	  cut_pmX_lab->Fill(-Pmx, FullWeight);
 	  cut_pmY_lab->Fill(Pmy, FullWeight);
 	  cut_pmZ_lab->Fill(Pmz, FullWeight);
 	  
+	  cut_pmxL_v2->Fill(Pmx_v2, FullWeight);
+	  cut_pmyL_v2->Fill(Pmy_v2, FullWeight);
+	  cut_pmzL_v2->Fill(Pmz_v2, FullWeight);
+
 	  cut_pmX_q->Fill(PmPer, FullWeight);
 	  cut_pmY_q->Fill(PmOop, FullWeight);
 	  cut_pmZ_q->Fill(PmPar, FullWeight);
+
+	  cut_pmxq_v2->Fill(PmPer_v2, FullWeight);
+	  cut_pmyq_v2->Fill(PmOop_v2, FullWeight);
+	  cut_pmzq_v2->Fill(PmPar_v2, FullWeight);
 
 	  cut_Q_2->Fill(Q2, FullWeight);
 	  cut_omega->Fill(nu, FullWeight);
@@ -635,13 +846,15 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 
 
 	  //Reconstructed Target Quantities (Lab Frame)
-	  cut_x_tar->Fill(-tar_x, FullWeight);
+	  cut_x_tar->Fill(tar_x, FullWeight);
 	  cut_hy_tar->Fill(h_yv, FullWeight);
 
 	  cut_hz_tar->Fill(h_zv, FullWeight);
 	  cut_ey_tar->Fill(e_yv, FullWeight);                                                             
-
           cut_ez_tar->Fill(e_zv, FullWeight); 
+	 
+
+	  cut_ztar_diff->Fill((h_zv - e_zv), FullWeight);
 
 	  //Hadron-Arm Target Reconstruction 
 	  cut_hytar->Fill(h_ytar, FullWeight);
@@ -681,7 +894,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 	  cut_hxptar_vs_hyptar->Fill(h_yptar, h_xptar, FullWeight);
 
 	  cut_W_vs_MM2->Fill(MM_2, W, FullWeight);
-	  
+	  cut_W_vs_Emiss->Fill(Em, W, FullWeight);
+
 	  //Heep cross check
 	  cut_emiss_vs_pmiss->Fill(Pm, Em, FullWeight);
 	  cut_edelta_vs_eyptar->Fill(e_yptar, e_delta, FullWeight);
@@ -714,7 +928,15 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
           cut_d_etheta_vs_eyfp->Fill(e_yfp, detheta, FullWeight);                                                                                             
           cut_d_etheta_vs_eypfp->Fill(e_ypfp, detheta, FullWeight); 
 
-	  
+	  //Collimator Plots
+	  cut_hXColl->Fill(hXColl, FullWeight);
+	  cut_hYColl->Fill(hYColl, FullWeight);   
+	  cut_eXColl->Fill(eXColl, FullWeight);
+	  cut_eYColl->Fill(eYColl, FullWeight);                                                                                                                                
+          
+	  cut_hXColl_vs_hYColl->Fill(hYColl, hXColl, FullWeight);
+	  cut_eXColl_vs_eYColl->Fill(eYColl, eXColl, FullWeight);
+	
 	}//End CUTS LOOP
       
       
@@ -753,7 +975,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       	  
 
       //Reconstructed Target Quantities (Lab Frame)
-      x_tar->Fill(-tar_x, FullWeight);
+      x_tar->Fill(tar_x, FullWeight);
       hy_tar->Fill(h_yv, FullWeight);                                                                                                                                     
       hz_tar->Fill(h_zv, FullWeight);                                                                                                                   
       ey_tar->Fill(e_yv, FullWeight);                                           
@@ -851,11 +1073,143 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
       d_etheta_vs_eyfp->Fill(e_yfp, detheta, FullWeight);                                                            
       d_etheta_vs_eypfp->Fill(e_ypfp, detheta, FullWeight); 
 
+      
+      if (c_edelta&&c_hdelta&&W>0.85&&W<1.05)   
+	{
+	  W_cut_r1->Fill(W, FullWeight);
+	}     
+      if (c_edelta&&c_hdelta&&W>0.85&&W<1.)   
+	{
+	  W_cut_r2->Fill(W, FullWeight);
+	}
+      if (c_edelta&&c_hdelta&&W>0.85&&W<0.99)   
+	{
+	  W_cut_r3->Fill(W, FullWeight);
+	}
+      if (c_edelta&&c_hdelta&&W>0.85&&W<0.98)   
+	{
+	  W_cut_r4->Fill(W, FullWeight);
+	}
+     if (c_edelta&&c_hdelta&&W>0.85&&W<0.97)   
+	{
+	  W_cut_r5->Fill(W, FullWeight);
+	}
+     if (c_edelta&&c_hdelta&&W>0.85&&W<0.96)   
+	{
+	  W_cut_r6->Fill(W, FullWeight);
+	}
+     
+         //-------------------------------------
+    
+     //-----HMS Collimator Cut Study------------
+     if(c_edelta&&c_hdelta)
+       {
+	 W_cut_hc0->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&ecoll_c1&&hcoll_c1)
+       {
+	 W_cut_hc1->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&ecoll_c1&&hcoll_c2)
+       {
+	 W_cut_hc2->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&ecoll_c1&&hcoll_c3)
+       {
+	 W_cut_hc3->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&ecoll_c1&&hcoll_c4)
+       {
+	 W_cut_hc4->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&ecoll_c1&&hcoll_c5)
+       {
+	 W_cut_hc5->Fill(W, FullWeight);
+       }
+
+     //-----SHMS Collimator Cut Study------------
+     if(c_edelta&&c_hdelta)
+       {
+	 W_cut_ec0->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&ecoll_c1)
+       {
+	 W_cut_ec1->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&ecoll_c2)
+       {
+	 W_cut_ec2->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&ecoll_c3)
+       {
+	 W_cut_ec3->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&ecoll_c4)
+       {
+	 W_cut_ec4->Fill(W, FullWeight);
+       }
+     if(c_edelta&&c_hdelta&&ecoll_c5)
+       {
+	 W_cut_ec5->Fill(W, FullWeight);
+       }
+
+      
+
+
   } //end entry loop
 
-  
+
+
   //Write to a ROOTfile
   outROOT->Write();
 
   
+}
+
+
+//Define Auxiliary Functions
+
+  void GeoToSph( Double_t  th_geo, Double_t  ph_geo,
+		 Double_t& th_sph, Double_t& ph_sph){
+
+  // Convert geographical to spherical angles. Units are rad.
+
+  static const Double_t twopi = 2.0*TMath::Pi();
+  Double_t ct = cos(th_geo), cp = cos(ph_geo);
+  Double_t tmp = ct*cp;
+  th_sph = acos( tmp );
+  tmp = sqrt(1.0 - tmp*tmp);
+  ph_sph = (fabs(tmp) < 1e-6 ) ? 0.0 : acos( sqrt(1.0-ct*ct)*cp/tmp );
+  if( th_geo/twopi-floor(th_geo/twopi) > 0.5 ) ph_sph = TMath::Pi() - ph_sph;
+  if( ph_geo/twopi-floor(ph_geo/twopi) > 0.5 ) ph_sph = -ph_sph;
+  }
+
+  void SetCentralAngles(Double_t th_cent, Double_t ph_cent)
+  {
+
+
+
+    fThetaGeo = TMath::DegToRad()*th_cent; fPhiGeo = TMath::DegToRad()*ph_cent;
+    GeoToSph( fThetaGeo, fPhiGeo, fThetaSph, fPhiSph );
+    fSinThGeo = TMath::Sin( fThetaGeo ); fCosThGeo = TMath::Cos( fThetaGeo );
+    fSinPhGeo = TMath::Sin( fPhiGeo );   fCosPhGeo = TMath::Cos( fPhiGeo );
+    Double_t st, ct, sp, cp;
+    st = fSinThSph = TMath::Sin( fThetaSph ); ct = fCosThSph = TMath::Cos( fThetaSph );
+    sp = fSinPhSph = TMath::Sin( fPhiSph );   cp = fCosPhSph = TMath::Cos( fPhiSph );
+    
+    Double_t norm = TMath::Sqrt(ct*ct + st*st*cp*cp);
+    TVector3 nx( st*st*sp*cp/norm, -norm, st*ct*sp/norm );
+    TVector3 ny( ct/norm,          0.0,   -st*cp/norm   );
+    TVector3 nz( st*cp,            st*sp, ct            );
+    
+    fToLabRot.SetToIdentity().RotateAxes( nx, ny, nz );
+  }
+
+
+void TransportToLab( Double_t p, Double_t xptar, Double_t yptar,
+		     TVector3& pvect) 
+{
+  TVector3 v( xptar, yptar, 1.0 );
+  v *= p/TMath::Sqrt( 1.0+xptar*xptar+yptar*yptar );
+  pvect = fToLabRot * v;
 }

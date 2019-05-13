@@ -30,7 +30,7 @@ void fitOptics()
   int num_recon_terms = 0;   //5 reconstructed terms
   
   //Open sample data cointaining the structure of the terms (1000, 01000, 00100, etc.)
-  ifstream infile("sample_optics.dat");
+  ifstream infile("sample_optics_v2.dat");
   
   int nfit_max=5000;      //maximum number of events in fit per run
   int nfit_max_total = 100000;
@@ -82,10 +82,12 @@ void fitOptics()
   Double_t Eb = 10.6005;
 
   //Double_t eP0[4] = {8.7, 8.7, 8.7, 8.7};   //central spec momentum (UnCOrrected, from EPICS)
-  Double_t eP0[4] = {8.547187, 8.547187, 8.547187, 8.547187};  //central spec. momentum (FIRST OPTIMIZATION, using "00000" term as ppcentral_offset)  
-  Double_t hP0[4] = {2.9284279, 3.4679035, 2.3048787, 1.8865303};  //central spec. momentum (Corrected HMS)
+  // Double_t eP0[4] = {8.547187, 8.547187, 8.547187, 8.547187};  //central spec. momentum (FIRST OPTIMIZATION, using "00000" term as ppcentral_offset)  
+  //Double_t hP0[4] = {2.9284279, 3.4679035, 2.3048787, 1.8865303};  //central spec. momentum (Corrected HMS)
 
-  
+  Double_t eP0[4] = {8.535956, 8.535956,8.535956,8.535956};  //shms central momentum corrected (before SHMS delta optimization)
+  Double_t hP0[4] = {2.935545, 3.4758797, 2.3103874, 1.891227};  //central spec. momentum (Corrected HMS)
+
   
   int run[4] = {3288, 3371, 3374, 3377};
   
@@ -188,7 +190,7 @@ void fitOptics()
   int nfit_total = 0; 
 
   //Double_t Em_cut_arr[4] = {-0.11, -0.08, -0.13, -0.13};   //Em cuts after HMS P correction: 3288, 3371, 3374, 3377
-  Double_t Em_cut_arr[4] = {0.03, 0.03, 0.04, 0.045};      //Em cuts after FIRST SHMS DELTA OPTIMIZATION
+  Double_t Em_cut_arr[4] = {0.03, 0.03, 0.03, 0.03};      //Em cuts after FIRST SHMS DELTA OPTIMIZATION
 
   //Loop over runs
   for(int irun=0; irun<4; irun++)

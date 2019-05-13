@@ -28,9 +28,9 @@ void calc_pElec_PDiff()
   Double_t Mp = 0.938272;  //proton mass
   Double_t Eb = 10.6005;
   //Double_t eP0[4] = {8.7, 8.7, 8.7, 8.7};  //central spec. momentum (UnCorrected SHMS Central Momentum)
-  Double_t eP0[4] = {8.544319,8.544319,8.544319,8.544319};  //shms central momentum corrected (before SHMS delta optimization)
+  Double_t eP0[4] = {8.535956, 8.535956,8.535956,8.535956};  //shms central momentum corrected (before SHMS delta optimization)
 
-  Double_t hP0[4] = {2.9284279, 3.4679035, 2.3048787, 1.8865303};  //central spec. momentum (Corrected HMS)
+  Double_t hP0[4] = {2.935545, 3.4758797, 2.3103874, 1.891227};  //central spec. momentum (Corrected HMS)
 
   //Define some variables to be determined inside the entry loop
   Double_t shms_delta_calc;
@@ -469,7 +469,7 @@ void calc_pElec_PDiff()
   //Em cut array
   //Double_t Em_cut_arr[4] = {-0.12, -0.06, -0.1, -0.1};   //Em cuts after HMS P correction: 3288, 3371, 3374, 3377
   //Double_t Em_cut_arr[4] = {0.03, 0.03, 0.04, 0.045};      //Em cuts after FIRST SHMS DELTA OPTIMIZATION
-  Double_t Em_cut_arr[4] = {0.05, 0.05, 0.05, 0.05};      //Em cuts after SECOND SHMS DELTA OPTIMIZATION
+  Double_t Em_cut_arr[4] = {0.03, 0.03, 0.03, 0.03};      //Em cuts after SECOND SHMS DELTA OPTIMIZATION
 
 //Define some variables to be determined inside the entry loop
   Double_t htheta_p;     //proton arm angle (event by event)
@@ -578,7 +578,7 @@ void calc_pElec_PDiff()
 	//string filename = Form("../../../../hallc_replay/ROOTfiles/D2_heep/delta_corr/pUnCorr/coin_replay_heep_check_%d_-1.root",run[irun]);
 	//string filename = Form("../../../../hallc_replay/ROOTfiles/DEUTERON/hmsCorrected/coin_replay_heep_check_%d_-1.root",run[irun]);
 	//string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[irun]);
-	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000.root",run[irun]);
+	string filename = Form("../../../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run[irun]);
 
 	TFile *f1 = new TFile(filename.c_str());
 	
