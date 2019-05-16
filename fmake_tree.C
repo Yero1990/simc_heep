@@ -50,13 +50,16 @@ int fmake_tree()
   
 
   // Tree variables and branch names
-  Float_t val[100];
-  Float_t Normfac;
-  
+  //Float_t val[100];
+  //Float_t Normfac;
+  Double_t val[100];
+  Double_t Normfac;
+
   TString tag_name[100]; // tag names
   TString var_branch[100]; // branch name string
   TString var_name[100]; 
-  TString var_type("/F"); // all variables of the same type
+  //TString var_type("/F"); // all variables of the same type
+  TString var_type("/D");
 
   // read file
   // header information

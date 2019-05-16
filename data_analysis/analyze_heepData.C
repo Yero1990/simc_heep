@@ -122,7 +122,7 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
   TTree *T = (TTree*)data_file->Get("T");
  
   //Create output root file where histograms will be stored
-  TFile *outROOT = new TFile(Form("Wcheck_data_histos_%d_before.root",run), "recreate");
+  TFile *outROOT = new TFile(Form("Wcheck_data_histos_%d.root",run), "recreate");
   
 
   //********* Create 1D Histograms **************
@@ -593,8 +593,8 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
   //Double_t pAbs_corr = 1.0;   //For now,  use normalization factor without proton absorption. 
 
   //Target Boiling Factor
-  //Double_t tgtBoil_corr = (1.-0.0006 * avg_current);  //The slope, -0.0006 [fractional yield_loss / uA] 
-  Double_t tgtBoil_corr = 1.; 
+  Double_t tgtBoil_corr = (1.-0.0006 * avg_current);  //The slope, -0.0006 [fractional yield_loss / uA] 
+  // Double_t tgtBoil_corr = 1.; 
 
   //Full Weight
   FullWeight = 1. / (charge_factor*e_trkEff*h_trkEff*t_LT*pAbs_corr*tgtBoil_corr);

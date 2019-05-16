@@ -7,7 +7,7 @@ void getYield()
 
 
   ofstream ofile;
-  ofile.open("yield_before.data");
+  ofile.open("yield.data");
 
   ofile <<"#! Run[i,0]/    dataY[f,1]/     dataY_err[f,2]/     simcY[f,3]/     simcY_err[f,4]/" << endl;
   
@@ -41,12 +41,12 @@ void getYield()
   TCanvas *edelta_canv = new TCanvas("edelta_canv", "", 1500, 1500);
   edelta_canv->Divide(2,2);
 
-  for (int irun = 0; irun <3; irun++){
+  for (int irun = 0; irun <4; irun++){
     //TString simc_filename =  Form("../simc_analysis/D2_heep/Wcheck_simc_histos_%d.root", run[irun]);                                                                                                                                                             
     //TString data_filename = Form("../data_analysis/Wcheck_data_histos_%d.root",run[irun]);     
    
     TString simc_filename =  Form("../simc_analysis/D2_heep/Wcheck_simc_histos_%d.root", run[irun]);                                                                                                                                                             
-    TString data_filename = Form("../data_analysis/Wcheck_data_histos_%d_before.root",run[irun]);     
+    TString data_filename = Form("../data_analysis/Wcheck_data_histos_%d.root",run[irun]);     
   
    
                                                                                                                         

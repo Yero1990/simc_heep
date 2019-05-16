@@ -197,7 +197,7 @@ Double_t eYColl_nbins = 100;
 Double_t eYColl_xmin = -15.;                                                                                                                                                        
 Double_t eYColl_xmax = 15.;
 
-/*
+
 //Run 3288
 Double_t exfp_xmin = -15.;
 Double_t exfp_xmax = 10.;
@@ -240,7 +240,7 @@ Double_t thq_xmax = 42.;
 
 Double_t q_xmin = 2.6;
 Double_t q_xmax = 4.;
-*/
+
 
 /*
 //Run 3371
@@ -287,7 +287,7 @@ Double_t Ep_xmin = 2.5;
 Double_t Ep_xmax = 3.5;
 */
 
-
+/*
 //Run: 3374
 Double_t exfp_xmin = 0.;
 Double_t exfp_xmax = 15.;
@@ -330,7 +330,7 @@ Double_t q_xmax = 3.;
 
 Double_t Ep_xmin = 2.5;
 Double_t Ep_xmax = 3.5;
-
+*/
 
 /*
 //Run: 3376/3377

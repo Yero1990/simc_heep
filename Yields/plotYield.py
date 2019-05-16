@@ -2,13 +2,14 @@ import LT.box as B
 import numpy as np
 import matplotlib.pyplot as plt
 
-x = [1,2,3]
-my_xticks = ['80.372', '45.306', '271.991']
+x = [45.306,80.372,271.991,634.447]
+my_xticks = ['45.306', '80.372', '271.991', '634.447']
 
 
 #HMS Delta/SHMS Delta CUTS
 f = B.get_file('yield.data')
 Run = B.get_data(f, 'Run')
+shms_rate = B.get_data(f, 'shms_rate')
 dataY = B.get_data(f, 'dataY')    
 dataY_err = B.get_data(f, 'dataY_err')     #these are absolute errors, sqrt(N)
 simcY = B.get_data(f, 'simcY')
@@ -17,7 +18,7 @@ simcY_err = B.get_data(f, 'simcY_err')      #these are absolute errors, sqrt(N)
 R = dataY / simcY    
 R_err = np.sqrt( dataY_err**2/simcY**2 + dataY**2*simcY_err**2/simcY**4 )
 
-B.plot_exp(x, R, R_err, color='red', label='After Target Boiling Corrections')
+B.plot_exp(shms_rate, R, R_err, color='red', label='After Target Boiling Corrections')
 
 #----------
 #HMS Delta/SHMS Delta CUTS
@@ -31,7 +32,7 @@ simcY_err = B.get_data(f, 'simcY_err')      #these are absolute errors, sqrt(N)
 R = dataY / simcY    
 R_err = np.sqrt( dataY_err**2/simcY**2 + dataY**2*simcY_err**2/simcY**4 )
 
-B.plot_exp(x, R, R_err, color='blue', marker='^', label='Before Target Boiling Corrections')
+B.plot_exp(shms_rate, R, R_err, color='blue', marker='^', label='Before Target Boiling Corrections')
 
 #---------------------------
 
