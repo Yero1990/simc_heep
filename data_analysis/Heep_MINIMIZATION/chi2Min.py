@@ -1,6 +1,6 @@
 #This code uses Chi2 Minimization procedure to simultaneously determine the
 #parameters p1 = dEb / Eb, p2 = dP /P, and p3 = d_th  which represent the
-#relative beam energy, spectrometer momentum and angle. For now, we focus 
+#relative beam energy, spectrometer momentum and angle uncertainties. For now, we focus 
 #on HMS. HMS elastics electrons and protons data are used. For electrons,
 #the invariant mass W is used to determine chi2. For protons, the difference
 #between calculated and measured momentum is used to determine chi2. The
@@ -79,18 +79,18 @@ test_list = []
 
 #Step size of Relative Variables, p1 = dEb /Eb, p2 = dP /P, p3 = d_th
 step_p1 = 0.0002     #(steps of 0.02%, for example) 
-step_p2 = 0.0005     #0.0001
-step_p3 = 0.0005     #0.0001
+step_p2 = 0.001     #0.0001
+step_p3 = 0.001     #0.0001
 
 #Parameters Range  
-p1_min = -0.001
-p1_max =  0.001
+p1_min = -0.0008
+p1_max =  0.0008
 
-p2_min = -0.002 
-p2_max =  0.002 
+p2_min = -0.005 
+p2_max =  0.005 
 
-p3_min = -0.002
-p3_max =  0.002
+p3_min = -0.004
+p3_max =  0.004
 
 
 #nsteps_p1 = (p1_max - p1_min) / step_p1 + 1   # +1 is to include the first step (otherwise, it will count after the first step)

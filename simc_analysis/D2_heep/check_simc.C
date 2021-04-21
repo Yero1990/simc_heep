@@ -129,21 +129,23 @@ TString electron_arm;
   //Read SIMC ROOTfiles
     
   //Deuteron Heep Check Data
-  TString filename = Form("../../worksim_voli/D2_heep_%d.root",run);          
-  
+  //TString filename = Form("../../worksim_voli/D2_heep_%d_ORIGINAL.root",run);          
+  TString filename = Form("../../../hallc_replay/ROOTfiles/SIMC/D2_heep_%d_rad_test.root",run);
   TFile *data_file = new TFile(filename, "READ"); 
   TTree *SNT = (TTree*)data_file->Get("SNT");
  
   //Create output root file where histograms will be stored
-  TFile *outROOT = new TFile(Form("Wcheck_simc_histos_%d.root",run), "recreate");
+  TFile *outROOT = new TFile(Form("Wcheck_simc_histos_%d_test_noSmear.root",run), "recreate");
   
 
   //********* Create 1D Histograms **************
-  TH1F::SetDefaultSumw2();
+  //TH1F::SetDefaultSumw2();
 
 //Kinematics Quantities
   TH1F *MM2 = new TH1F("MM2", "Missing Mass Squared, MM2", MM2_nbins, MM2_xmin, MM2_xmax );
   TH1F *Emiss = new TH1F("Emiss","missing energy", Em_nbins, Em_xmin, Em_xmax);       //min width = 21.6 (0.0216)MeV,  COUNTS/25 MeV
+  
+  Emiss->Sumw2();
   TH1F *pm = new TH1F("pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
   
   TH1F *pmX_lab = new TH1F("pmX_Lab","Pmiss X (Lab) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
@@ -287,9 +289,9 @@ TH2F *W_vs_hdelta = new TH2F("W_vs_hdelta", "W vs hdelta", hdelta_nbins, hdelta_
  TH1F *cut_pm = new TH1F("cut_pm","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
  TH1F *cut_pm_v2 = new TH1F("cut_pm_v2","missing momentum", Pm_nbins, Pm_xmin, Pm_xmax);  //min width = 32 MeV (0.032)
  
- cut_Emiss->Sumw2();
- cut_pm->Sumw2();
- cut_pm_v2->Sumw2();
+ //cut_Emiss->Sumw2();
+ //cut_pm->Sumw2();
+ //cut_pm_v2->Sumw2();
  
  TH1F *cut_pmX_lab = new TH1F("cut_pmX_Lab","Pmiss X (Lab) ", Pmx_nbins, Pmx_xmin, Pmx_xmax); 
  TH1F *cut_pmY_lab = new TH1F("cut_pmY_Lab","Pmiss Y (Lab) ", Pmy_nbins, Pmy_xmin, Pmy_xmax);  
@@ -315,9 +317,9 @@ TH1F *cut_W_inv = new TH1F("cut_W_inv", "Invariant Mass, W", W_nbins, W_xmin, W_
  TH1F *cut_theta_elec_calc = new TH1F("cut_theta_elec_calc", "Calculated Electron Scatt. Angle", the_nbins, the_xmin, the_xmax);
  TH1F *cut_theta_elec_res = new TH1F("cut_theta_elec_res", "Electron Scatt. Angle Residual", 100, -1, 1);
  
- cut_Q_2->Sumw2();
- cut_omega->Sumw2();
- cut_W_inv->Sumw2();
+ //cut_Q_2->Sumw2();
+ //cut_omega->Sumw2();
+ //cut_W_inv->Sumw2();
 
  //Additional Kinematics Variables
 TH1F *cut_W_2 = new TH1F("cut_W2", "Invariant Mass W2", W2_nbins, W2_xmin, W2_xmax);
@@ -332,12 +334,12 @@ TH1F *cut_thet_pq = new TH1F("cut_theta_pq", "(Proton, q-vector) Angle, #theta_{
 TH1F *cut_thet_pq_v2 = new TH1F("cut_theta_pq_v2", "(Proton, q-vector) Angle, #theta_{pq}", thpq_nbins, thpq_xmin, thpq_xmax);
   
 
- cut_xbj->Sumw2();
- cut_P_f->Sumw2();
- cut_k_f->Sumw2();
- cut_q_vec->Sumw2();
- cut_theta_q->Sumw2();
- cut_thet_pq->Sumw2();
+//cut_xbj->Sumw2();
+// cut_P_f->Sumw2();
+// cut_k_f->Sumw2();
+// cut_q_vec->Sumw2();
+// cut_theta_q->Sumw2();
+// cut_thet_pq->Sumw2();
 
  //Target Reconstruction Variables
  TH1F *cut_x_tar = new TH1F("cut_x_tar", "x_Target (Lab)", xtar_nbins, xtar_xmin, xtar_xmax);
@@ -502,7 +504,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   Double_t  SF_weight_recon;
   Double_t  h_Thf;
   Double_t  Ein_v;
-  
+  Double_t prob_abs;
 
   //Define SIMC TTree Variables
   SNT->SetBranchAddress("Normfac", &Normfac);
@@ -574,7 +576,8 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
   SNT->SetBranchAddress("SF_weight_recon", &SF_weight_recon);
   SNT->SetBranchAddress("h_Thf", &h_Thf);
   SNT->SetBranchAddress("Ein_v", &Ein_v);
-  
+  SNT->SetBranchAddress("probabs", &prob_abs);
+
   //Declare Neccessary Variables to Determine the 4-Momentum of Recoil System
   TLorentzVector fP0;           // Beam 4-momentum
   TLorentzVector fP1;           // Scattered electron 4-momentum
@@ -748,6 +751,7 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
 
     //Define cuts
     c_Em = Em < 0.04;
+
     c_hdelta = h_delta>-8.&&h_delta<8.;
     c_edelta = e_delta>-10.&&e_delta<22.;
     c_MM2 = MM_2>-0.0009&&MM_2<0.0004;
@@ -792,12 +796,12 @@ TH2F *cut_W_vs_hdelta = new TH2F("cut_W_vs_hdelta", "cut_W vs hdelta", hdelta_nb
     ecoll_c5 = abs(eXColl)<3.&&abs(eYColl)<3.;
     
     //Full Weight
-    FullWeight = (Normfac*Weight*charge_factor*e_trkEff*h_trkEff*t_LT)/nentries;
-
+    FullWeight = (Normfac*Weight*prob_abs*charge_factor*e_trkEff*h_trkEff*t_LT)/nentries;
+    cout << "FullWeight = "<< FullWeight << endl;
 
     //APPLY CUTS: BEGIN CUTS LOOP
-    //if (c_Em&&c_hdelta&%&e_delta>-10&&e_delta<22.)
-    if(c_hdelta&&c_edelta&&W>=0.85&&W<=1.05/*&&abs(hXColl)<11.646&&abs(hYColl)<4.575*/)  //only use for initial heep check
+    if (c_Em&&c_hdelta&&c_edelta)
+    //if(c_hdelta&&c_edelta&&W>=0.85&&W<=1.05/*&&abs(hXColl)<11.646&&abs(hYColl)<4.575*/)  //only use for initial heep check
 	{
 
 

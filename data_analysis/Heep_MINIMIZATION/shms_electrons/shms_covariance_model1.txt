@@ -1,0 +1,34 @@
+****COVARIANCE MATRIX*****
+
+3x3 matrix is as follows
+
+     |      0    |      1    |      2    |
+--------------------------------------------
+   0 |  4.923e-07   6.056e-07  -1.119e-07 
+   1 |  6.056e-07   7.464e-07  -1.383e-07 
+   2 | -1.119e-07  -1.383e-07   2.627e-08 
+
+---Optimized Parameters---
+total equations x total runs = 4x3 = 12 observations, # parameters = 3, dof = 9 
+initial chi2 = 35.6321 initial chi2/dof = 3.95912
+chi2 = 9.77274  chi2/dof = 1.08586
+dEb / Eb = -0.00181842
+dEf / Ef = -0.00219008
+dth_e = 0.00049339
+=== Uncertainty in Parameters (Diagonal Elements) ===
+sqrt[cov(0,0)] = dEb / Eb = 0.000701658
+sqrt[cov(1,1)] = dEf / Ef = 0.000863942
+sqrt[cov(2,2)] = dth_e [rad] = 0.000162091
+=== Uncertainty in Parameters (Off-Diagonal Elements) ===
+cov(0,1) = dEb_Eb * dEf_Ef = 6.05582e-07
+cov(0,2) = dEb_Eb * dth_e = -1.11914e-07
+cov(1,2) = dEf_Ef * dth_e = -1.38318e-07
+****CORRELATION MATRIX*****
+
+3x3 matrix is as follows
+
+     |      0    |      1    |      2    |
+--------------------------------------------
+   0 |          1       0.999      -0.984 
+   1 |      0.999           1     -0.9877 
+   2 |     -0.984     -0.9877           1 

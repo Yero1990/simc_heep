@@ -1,0 +1,85 @@
+3288: 
+
+************************
+ Electron Kinematics 
+*************************
+Beam Energy: 10.6005 GeV
+e- Scattered Energy = 8.44727 GeV
+e- Scattered Angle = 12.194 deg 
+Energy Transfer (E-E') = 2.15323 GeV
+Q2 = 4.04064 GeV2
+B-jorken X = 1
+Beam Momentum = 10.6005 GeV/c
+e-Scattered Momentum = 8.44727 GeV/c
+*************************
+ 
+*************************
+ Proton Kinematics 
+*************************
+p-Scattered Energy = 3.09151 GeV
+p-Scattered Momentum = 2.94568 GeV/c
+p-Scattered Angle = 37.2805 deg 
+*************************
+
+3371:
+*************************
+ Electron Kinematics 
+*************************
+Beam Energy: 10.6005 GeV
+e- Scattered Energy = 7.95675 GeV
+e- Scattered Angle = 13.93 deg 
+Energy Transfer (E-E') = 2.64375 GeV
+Q2 = 4.96111 GeV2
+B-jorken X = 1
+Beam Momentum = 10.6005 GeV/c
+e-Scattered Momentum = 7.95675 GeV/c
+*************************
+ 
+*************************
+ Proton Kinematics 
+*************************
+p-Scattered Energy = 3.58202 GeV
+p-Scattered Momentum = 3.45695 GeV/c
+p-Scattered Angle = 33.6484 deg 
+*************************
+
+3374:
+*************************
+ Electron Kinematics 
+*************************
+Beam Energy: 10.6005 GeV
+e- Scattered Energy = 9.06658 GeV
+e- Scattered Angle = 9.928 deg 
+Energy Transfer (E-E') = 1.53392 GeV
+Q2 = 2.87847 GeV2
+B-jorken X = 1
+Beam Momentum = 10.6005 GeV/c
+e-Scattered Momentum = 9.06658 GeV/c
+*************************
+ 
+*************************
+ Proton Kinematics 
+*************************
+p-Scattered Energy = 2.47219 GeV
+p-Scattered Momentum = 2.28722 GeV/c
+p-Scattered Angle = 43.1129 deg 
+*************************
+
+3377:
+Beam Energy: 10.6005 GeV
+e- Scattered Energy = 9.43145 GeV
+e- Scattered Angle = 8.495 deg 
+Energy Transfer (E-E') = 1.16905 GeV
+Q2 = 2.19377 GeV2
+B-jorken X = 1
+Beam Momentum = 10.6005 GeV/c
+e-Scattered Momentum = 9.43145 GeV/c
+*************************
+ 
+*************************
+ Proton Kinematics 
+*************************
+p-Scattered Energy = 2.10732 GeV
+p-Scattered Momentum = 1.88691 GeV/c
+p-Scattered Angle = 47.5929 deg 
+*************************

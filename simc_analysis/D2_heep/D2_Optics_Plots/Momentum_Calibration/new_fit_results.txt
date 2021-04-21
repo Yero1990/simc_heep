@@ -1,0 +1,9 @@
+chisq/dof =  73.7658267138
+offset  =  1.00058357741  +/-  0.000110197399774
+slope =  -0.00122324606912  +/-  4.06859812565e-05
+('HMS P Corr_Factor (80 MeV)  = ', 0.9971049102412173)
+('HMS P Corr_Factor (580 MeV set1) = ', 0.9978997755369339)
+('HMS P Corr_Factor (750 MeV set1) = ', 0.9980257698820536)
+('HMS P Corr_Factor (580 MeV set2) = ', 0.9978997755369339)
+('HMS P Corr_Factor (750 MeV set2) = ', 0.9980257698820536)
+('HMS P Corr_Factor (750 MeV set3) = ', 0.9980257698820536)

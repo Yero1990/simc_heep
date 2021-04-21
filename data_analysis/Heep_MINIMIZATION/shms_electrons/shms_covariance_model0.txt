@@ -1,0 +1,28 @@
+****COVARIANCE MATRIX*****
+
+2x2 matrix is as follows
+
+     |      0    |      1    |
+-------------------------------
+   0 |  1.499e-09  -6.576e-10 
+   1 | -6.576e-10   8.333e-10 
+
+---Optimized Parameters---
+total equations x total runs = 4x3 = 12 observations, # parameters = 2, dof = 10 
+initial chi2 = 35.6321 initial chi2/dof = 3.56321
+chi2 = 16.2938  chi2/dof = 1.62938
+dEf / Ef = 4.70511e-05
+dth_e = 8.34063e-05
+=== Uncertainty in Parameters (Diagonal Elements) ===
+sqrt[cov(0,0)] = dEf / Ef = 3.87172e-05
+sqrt[cov(1,1)] = dth_e [rad] = 2.88668e-05
+=== Uncertainty in Parameters (Off-Diagonal Elements) ===
+cov(0,1) = dEf_Ef * dth_e = -6.57601e-10
+****CORRELATION MATRIX*****
+
+2x2 matrix is as follows
+
+     |      0    |      1    |
+-------------------------------
+   0 |          1     -0.5884 
+   1 |    -0.5884           1 

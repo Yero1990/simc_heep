@@ -1,0 +1,23 @@
+#This file contains the momentum fraction difference between DATA/SIMC 
+#The momentum fraction is defined as: dP = (Pcalc - Pmeas)
+#The mean of this distribution is fitted for data and simc, and the difference is taken 
+
+#!Run[i,0]/    Pf_data[f,1]/     Pf_data_err[f,2]/     Pf_simc[f,3]/     Pf_simc_err[f,4]/
+3288    0.000176116    8.83156e-06    0.000692005     2.55385e-05
+3371    3.26395e-06    2.63885e-05    0.000699259     3.50907e-05
+3374    9.88228e-05    5.96189e-06    0.000677701     1.4616e-05
+3377    5.09239e-05    5.02727e-06    0.000705343     1.57591e-05
+
+#SIMC-DATA
+#Run 3288: mean: 0.000515889 err: 2.70224e-05
+#Run 3371: mean: 0.000695995 err: 4.39057e-05
+#Run 3374: mean: 0.000578878 err: 1.57851e-05
+#Run 3377: mean: 0.000654419 err: 1.65416e-05
+
+#Momentum Correction Factor: 
+#del = (simc - data)
+#corr_factor = 1 - (del/Pcentral)
+#3288: 0.99994   +/-  3.16635e-06  [GeV]  
+#3371: 0.999918   +/-  5.14465e-06  [GeV]  
+#3374: 0.999932   +/-  1.84962e-06  [GeV]  
+#3377: 0.999923   +/-  1.93826e-06  [GeV]  

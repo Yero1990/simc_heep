@@ -114,8 +114,8 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
   //gROOT->SetBatch(kTRUE);
     
   //Read DATA ROOTfiles  
-  //TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_-1.root",run);     
-  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_scaler_test_%d_-1.root",run);     
+  TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_heep_check_%d_50000.root",run);     
+  //TString filename =Form("../../hallc_replay/ROOTfiles/coin_replay_scaler_test_%d_-1.root",run);     
 
 
   TFile *data_file = new TFile(filename, "READ"); 
@@ -673,6 +673,10 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
     Ep = TMath::Sqrt(MP*MP + Pf*Pf);
     Emv2 = nu + MP - Ep;
     c_Em = Em < 0.04;      
+    if(run==3288){c_Em = Em < -0.125;}
+    if(run==3371){c_Em = Em < -0.115;}
+    if(run==3374){c_Em = Em < -0.14;}
+    if(run==3377){c_Em = Em < -0.14;}
     theta_e_calc = asin( Pf*sin(theta_p) / (Eb + MP - Ep) );
     detheta = theta_e_calc -theta_e;
 
@@ -712,7 +716,8 @@ void analyze_heepData(int run, string eArm="P", bool Qnorm=true)
     ecoll_c5 = abs(eXColl)<3.&&abs(eYColl)<3.;
 
     //APPLY CUTS: BEGIN CUTS LOOP
-    if (c_hdelta&&c_edelta&&c_ecal&&W>=0.85&&W<=1.05&&c_bcm4a_current&&c_pEDTM)   
+    if (c_hdelta&&c_edelta&&c_Em&&c_ecal)   
+    //if()
     {     
 
 

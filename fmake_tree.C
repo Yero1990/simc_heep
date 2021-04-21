@@ -14,27 +14,30 @@
 #include "TString.h"
 #include "TTree.h"
 
+#include "utilities.h"
+
 using namespace std;
 
 // create a tree from the simc ascii file
 
-using namespace std;
-
-int fmake_tree()
+int fmake_tree(string ikin_filename)
 {
-
+  
+  string kin_ext = split(ikin_filename, '.')[0];
+  string normfact_name = "normfact_"+kin_ext+".data";
   // normalization factor in file normfact.dat
   // SIMC data in current.data
-  ifstream f_normfac("normfact.data");
+  
+  ifstream f_normfac(normfact_name);
   if ( !f_normfac.is_open() ){
     cout << "normfact.data is not open !" << endl;
     return(-1);
   }
 
   // simc output is in worksim
-  ifstream f_simc("worksim/current.data");
+  ifstream f_simc("worksim/"+ikin_filename);
   if ( !f_simc.is_open() ){
-    cout << "worksim/current.data is not open !" << endl;
+    cout << "worksim/"+ikin_filename+" is not open !" << endl;
     return(-1);
   }
 
@@ -50,16 +53,13 @@ int fmake_tree()
   
 
   // Tree variables and branch names
-  //Float_t val[100];
-  //Float_t Normfac;
   Double_t val[100];
   Double_t Normfac;
-
+  
   TString tag_name[100]; // tag names
   TString var_branch[100]; // branch name string
   TString var_name[100]; 
-  //TString var_type("/F"); // all variables of the same type
-  TString var_type("/D");
+  TString var_type("/D"); // all variables of the same type
 
   // read file
   // header information
@@ -80,8 +80,15 @@ int fmake_tree()
     cout << tag_name[i] << endl;
   }
 
+
+  //replace '.data' with '.root' in file name
+  size_t pos = ikin_filename.find("data");
+  
+  ikin_filename.replace(pos, std::string("data").length(), "root");   // 5 = length( $name )
+  
+  string fpath="worksim_voli/"+ikin_filename;
   // create output file in worksim
-  TFile *f = new TFile("worksim_voli/simc.root", "RECREATE", NTtitle);
+  TFile *f = new TFile(fpath.c_str(), "RECREATE", NTtitle);
 
   // Create the tree
 

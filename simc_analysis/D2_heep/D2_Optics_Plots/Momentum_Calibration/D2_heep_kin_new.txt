@@ -1,0 +1,12 @@
+#Deuteron Heep Summary
+#data_simc_Pfrac = (Pcalc_data - Pmeas_data) / Pmeas_data   - (Pcalc_simc - Pmeas_simc) / Pmeas_simc
+#NMR [T],  Momentum [GeV/c]  Angle [deg]
+#Corrected SHMS Momentum: 8.535956 GeV/c
+#The HMS momentum corr. factor were second order (that is, there was already a previous corr. factor) This was done in addtition, so it must be treated 
+#separately
+
+#! Run[i,0]/ nmr_true[f,1]/ nmr_P[f,2]/ hms_Angle[f,3]/ shms_P[f,4]/ shms_Angle[f,5]/  hPcorr_factor[f,6]/   hPcorr_factor_err[f,7]/   beam_e[f,8]/  x_BPM[f,9]/ y_BPM[f,10]/ hmsX_MisPoint[f,11]/ hmsY_MisPoint[f,12]/ shmsX_MisPoint[f,13]/ shmsY_MisPoint[f,14]/ 
+   3288      0.804333 	    2.938 	37.338 		8.7 	     12.194 	       0.996714	     3.33608e-05	       10.6005 	     0.02645     0.01657      0.083188 	       	   0.28602 		 -0.126 	      -0.06 	
+   3371      0.952715 	    3.48 	33.545 		8.7 	     13.93 	       0.996792	     5.61415e-05	       10.6005 	     0.02645     0.0167       0.083545 	       	   0.236799 	    	 -0.126 	      -0.06 				  
+   3374      0.632393 	    2.31 	42.9 		8.7 	     9.928 	       0.997871	     4.37149e-05	       10.6005 	     0.02652     0.01659      0.088909 	       	   0.324 		 -0.126 	      -0.06 			
+   3377      0.517404 	    1.8899 	47.605 		8.7 	     8.495 	       0.998366	     4.80143e-05	       10.6005 	     0.02637     0.01697      0.099545 	       	   0.324 		 -0.126 	      -0.06 			

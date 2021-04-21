@@ -29,7 +29,7 @@ Double_t nbins = 100;
 //----------Kinematic Quantities---------
 //Emiss
 Double_t Em_nbins = 100;
-Double_t Em_xmin = -0.05;
+Double_t Em_xmin = -0.2;//-0.05;
 Double_t Em_xmax = 0.1;
 
 //Pmiss
@@ -46,12 +46,12 @@ Double_t Pmy_xmin = -0.15;
 Double_t Pmy_xmax = 0.15;
 
 Double_t Pmz_nbins = nbins;
-Double_t Pmz_xmin = -0.15;
+Double_t Pmz_xmin = -0.25;//-0.15;
 Double_t Pmz_xmax = 0.15;
 
 Double_t MM2_nbins = nbins;
 Double_t MM2_xmin = -0.01;
-Double_t MM2_xmax = 0.01;
+Double_t MM2_xmax = 0.01;    
 
 //Q2
 Double_t Q2_nbins = nbins;
@@ -61,8 +61,8 @@ Double_t om_nbins = nbins;
 
 //W_inv
 Double_t W_nbins = nbins;
-Double_t W_xmin = 0.85;
-Double_t W_xmax = 1.05;;
+Double_t W_xmin = 0.5;//0.85;
+Double_t W_xmax = 1.05;//1.05;;
 
 //theta_elec
 Double_t the_nbins = nbins;

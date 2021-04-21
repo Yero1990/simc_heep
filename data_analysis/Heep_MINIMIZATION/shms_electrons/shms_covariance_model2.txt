@@ -1,0 +1,41 @@
+****COVARIANCE MATRIX*****
+
+4x4 matrix is as follows
+
+     |      0    |      1    |      2    |      3    |
+---------------------------------------------------------
+   0 |  5.623e-07   6.839e-07  -1.213e-07  -6.267e-08 
+   1 |  6.839e-07    8.34e-07  -1.488e-07  -7.014e-08 
+   2 | -1.213e-07  -1.488e-07   2.754e-08   8.433e-09 
+   3 | -6.267e-08  -7.014e-08   8.433e-09   5.617e-08 
+
+---Optimized Parameters---
+total equations x total runs = 4x3 = 12 observations, # parameters = 4, dof = 8 
+initial chi2 = 35.6321 initial chi2/dof = 4.45401
+chi2 = 9.36812  chi2/dof = 1.17102
+dEb / Eb = -0.00164769
+dEf / Ef = -0.00199839
+dth_e = 0.000469832
+dth_p = -0.000147982
+=== Uncertainty in Parameters (Diagonal Elements) ===
+sqrt[cov(0,0)] = dEb / Eb = 0.000749839
+sqrt[cov(1,1)] = dEf / Ef = 0.000913231
+sqrt[cov(2,2)] = dth_e [rad] = 0.000165951
+sqrt[cov(3,3)] = dth_p [rad] = 0.000236996
+=== Uncertainty in Parameters (Off-Diagonal Elements) ===
+cov(0,1) = dEb_Eb * dEf_Ef = 6.83851e-07
+cov(0,2) = dEb_Eb * dth_e = -1.21324e-07
+cov(0,3) = dEb_Eb * dth_p = -6.26743e-08
+cov(1,2) = dEf_Ef * dth_e = -1.48849e-07
+cov(1,3) = dEf_Ef * dth_p = -7.01424e-08
+cov(2,3) = dth_e * dth_p = 8.43255e-09
+****CORRELATION MATRIX*****
+
+4x4 matrix is as follows
+
+     |      0    |      1    |      2    |      3    |
+---------------------------------------------------------
+   0 |          1      0.9986      -0.975     -0.3527 
+   1 |     0.9986           1     -0.9822     -0.3241 
+   2 |     -0.975     -0.9822           1      0.2144 
+   3 |    -0.3527     -0.3241      0.2144           1 
